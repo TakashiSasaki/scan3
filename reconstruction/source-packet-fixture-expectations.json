@@ -148,5 +148,11 @@
     "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
     "reason": "Duplicate ownerDecision id is operational"
+  },
+  {
+    "fixture": "invalid-whitespace-path",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "Whitespace only path"
   }
 ]
