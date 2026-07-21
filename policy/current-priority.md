@@ -1,8 +1,10 @@
 # Current Priority
 
-1. Stride 2A.11 closeout
-2. Stride 2A.10 audit addendum
-3. Verification outcome separation (NOT_APPLICABLE vs SKIP)
-4. Schema error path exact matching
-5. Operational error code executable closure
-6. Next stride gating (Stride 2B gate)
+1. Complete Stride 2A.12 repository-local corrections.
+2. Complete repository-local verification with explicit PASS, FAIL, SKIP, and NOT_APPLICABLE reporting.
+3. Export the verified workspace to `main`.
+4. Obtain external confirmation of the GitHub Actions result for the exported commit.
+5. Obtain external audit acceptance.
+6. Wait for a validated source packet.
+7. Begin Stride 2B only after source-packet validation and external audit acceptance.
+8. Do not create a new runtime before schema agreement.

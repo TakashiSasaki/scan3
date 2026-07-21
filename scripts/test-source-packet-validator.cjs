@@ -2,6 +2,7 @@ const { execFileSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const { isCapabilityLimitedSymlinkError } = require('./lib/symlink-capability.cjs');
 
 const defaultManifest = {
   "formatVersion": "1.0",
@@ -13,13 +14,11 @@ const defaultManifest = {
   "ownerDecisions": []
 };
 
-const ALLOWED_SYMLINK_ERRORS = new Set(['EPERM', 'ENOSYS', 'EINVAL', 'EACCES']);
-
 function safeSymlink(target, linkPath, type) {
   try {
     fs.symlinkSync(target, linkPath, type);
   } catch (e) {
-    if (e.code && ALLOWED_SYMLINK_ERRORS.has(e.code)) {
+    if (isCapabilityLimitedSymlinkError(e)) {
       throw new Error("symlink creation not supported");
     }
     throw new Error(`Unexpected setup error during symlink creation [${e.code || 'UNKNOWN'}]: ${e.message}`);
@@ -175,8 +174,16 @@ if (require.main === module) {
   let notApplicable = 0;
   const results = [];
 
-  function logTest(name, result, reason) {
-    results.push({ name, result, reason: reason || null });
+  function recordResult(name, kind, result, expectedErrorCode, actualErrorCode, reason) {
+    results.push({
+      name,
+      kind,
+      result,
+      expectedErrorCode: expectedErrorCode || null,
+      actualErrorCode: actualErrorCode || null,
+      reason: reason || null
+    });
+
     if (!isJson) {
       if (result === 'SKIP') {
         console.log(`SKIP: ${name} — ${reason}`);
@@ -196,14 +203,14 @@ if (require.main === module) {
   for (const name of fixtureDirs) {
     if (!expectedFixtures.has(name)) {
       failed++;
-      logTest(name, 'FAIL', 'Fixture directory exists on filesystem but is missing from catalog');
+      recordResult(name, 'static', 'FAIL', null, null, 'Fixture directory exists on filesystem but is missing from catalog');
     }
   }
 
   for (const exp of expectations) {
     if (!fixtureDirs.has(exp.fixture)) {
       failed++;
-      logTest(exp.fixture, 'FAIL', 'Fixture catalog entry exists but directory is missing from filesystem');
+      recordResult(exp.fixture, 'static', 'FAIL', exp.expectedErrorCode || null, null, 'Fixture catalog entry exists but directory is missing from filesystem');
       continue;
     }
     
@@ -211,19 +218,19 @@ if (require.main === module) {
     const manifestPath = path.join(target, 'manifest.json');
     if (!fs.existsSync(manifestPath)) {
       failed++;
-      logTest(exp.fixture, 'FAIL', 'manifest.json not found in fixture directory');
+      recordResult(exp.fixture, 'static', 'FAIL', exp.expectedErrorCode || null, null, 'manifest.json not found in fixture directory');
       continue;
     }
 
     if (exp.operationalExpected === 'NOT_APPLICABLE') {
       notApplicable++;
-      logTest(exp.fixture, 'NOT_APPLICABLE', exp.reason || 'Operational validation not reached for schema-invalid fixture');
+      recordResult(exp.fixture, 'static', 'NOT_APPLICABLE', null, null, exp.reason || 'Operational validation not reached for schema-invalid fixture');
       continue;
     }
 
     if (exp.operationalExpected === 'SKIP_ALLOWED') {
       skipped++;
-      logTest(exp.fixture, 'SKIP', exp.reason);
+      recordResult(exp.fixture, 'static', 'SKIP', exp.expectedErrorCode || null, null, exp.reason);
       continue;
     }
 
@@ -238,24 +245,23 @@ if (require.main === module) {
     }
     
     const expectSuccess = exp.operationalExpected === 'PASS';
-    
-    let isCodeMatch = true;
     let actualCode = null;
     if (!success && stderr) {
       const match = stderr.match(/\[([A-Z0-9_]+)\]/);
       if (match) actualCode = match[1];
     }
 
+    let isCodeMatch = true;
     if (exp.expectedErrorCode) {
       isCodeMatch = actualCode === exp.expectedErrorCode;
     }
 
     if (success === expectSuccess && isCodeMatch) {
       passed++;
-      logTest(exp.fixture, 'PASS');
+      recordResult(exp.fixture, 'static', 'PASS', exp.expectedErrorCode || null, actualCode, null);
     } else {
       failed++;
-      logTest(exp.fixture, 'FAIL', `Expected success: ${expectSuccess}, expectedErrorCode: ${exp.expectedErrorCode || 'N/A'}, but got success: ${success}, actualCode: ${actualCode}. Output: ${stderr}`);
+      recordResult(exp.fixture, 'static', 'FAIL', exp.expectedErrorCode || null, actualCode, `Expected success: ${expectSuccess}, expectedErrorCode: ${exp.expectedErrorCode || 'N/A'}, but got success: ${success}, actualCode: ${actualCode}. Output: ${stderr}`);
     }
   }
 
@@ -265,7 +271,6 @@ if (require.main === module) {
   const dynamicExpectationsPath = path.join(__dirname, '../reconstruction/source-packet-dynamic-test-expectations.json');
   const dynamicExpectations = JSON.parse(fs.readFileSync(dynamicExpectationsPath, 'utf8'));
 
-  // Verify bidirectional match between registry and setup mapping
   const dynamicRegistryNames = new Set(dynamicExpectations.map(e => e.name));
   const dynamicSetupNames = new Set(Object.keys(dynamicTestSetups));
 
@@ -308,17 +313,17 @@ if (require.main === module) {
         }
         if (actualCode && actualCode === expectedErrorCode) {
           passed++;
-          logTest(name, 'PASS');
+          recordResult(name, 'dynamic', 'PASS', expectedErrorCode, actualCode, null);
           continue;
         }
 
         const isAllowedSkip = environmentDependent && allowedSkipReasons.includes(setupError.message);
         if (isAllowedSkip) {
           skipped++;
-          logTest(name, 'SKIP', setupError.message);
+          recordResult(name, 'dynamic', 'SKIP', expectedErrorCode, actualCode, setupError.message);
         } else {
           failed++;
-          logTest(name, 'FAIL', `Unexpected setup error: ${setupError.message}`);
+          recordResult(name, 'dynamic', 'FAIL', expectedErrorCode, actualCode, `Unexpected setup error: ${setupError.message}`);
         }
         continue;
       }
@@ -341,10 +346,10 @@ if (require.main === module) {
 
       if (success === false && actualCode === expectedErrorCode) {
         passed++;
-        logTest(name, 'PASS');
+        recordResult(name, 'dynamic', 'PASS', expectedErrorCode, actualCode, null);
       } else {
         failed++;
-        logTest(name, 'FAIL', `Expected error code [${expectedErrorCode}], but got success=${success}, actualCode=[${actualCode}], output=${stderr}`);
+        recordResult(name, 'dynamic', 'FAIL', expectedErrorCode, actualCode, `Expected error code [${expectedErrorCode}], but got success=${success}, actualCode=[${actualCode}], output=${stderr}`);
       }
     }
   } finally {

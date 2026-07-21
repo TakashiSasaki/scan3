@@ -31,14 +31,14 @@ Synchronize source packet constraints across schema, expectation catalog, tests,
 1. decisionsとdecision requestsを読む。
 2. schema dialectとowner decisionsを確認する。
 3. schemaを更新する。
-4. fixture expectation catalogを更新する。
-5. schema testを更新する。
-6. operational validatorとtestを更新する。
-7. constraint JSONとmatrixを更新する。
-8. READMEを更新する。
-9. accepted artifact inventoryを更新する。
-10. contract validationを実行する。
-11. verification claimを分類する。
+4. static-fixture outcome state machineを検証し、fixture expectation catalogを更新する。
+5. exact schemaErrorPathsを更新する。
+6. static, dynamic, および direct-test registriesと constraintIds を更新する。
+7. exact Ajv evidence testsを実行する。
+8. operational error-code evidence closureを実行する。
+9. constraint matrixを再生成・検証する。
+10. accepted-artifact dependency closureを更新する。
+11. unresolved semantic changesをdecision gatesを通して分類する。
 12. unresolved semantic issueがあればdecision requestを作る。
 
 # Decision Gates

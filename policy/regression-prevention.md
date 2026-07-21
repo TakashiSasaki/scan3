@@ -47,6 +47,17 @@ This policy document defines rules to prevent recurrences of issues identified d
 - Any items that cannot be verified due to environment constraints must remain documented as unverified/SKIP.
 - Items where a validation layer is intentionally not reached (e.g., operational validation on schema-invalid fixtures) must be documented as NOT_APPLICABLE.
 
+### Applicability Semantics Integrity
+- PASS, FAIL, SKIP, and NOT_APPLICABLE are distinct validation outcome classifications.
+- A validation layer intentionally not reached (such as operational validation on schema-invalid fixtures) is NOT_APPLICABLE.
+- An environment capability limitation (such as unsupported filesystem symlinks) is SKIP.
+- Neither SKIP nor NOT_APPLICABLE may be counted or reported as PASS.
+- Command success status and per-case outcomes must be reported separately.
+- Setup, execution, assertion, and cleanup failures must be classified separately.
+- Fixed-path temporary security resources are strictly forbidden.
+- Machine-readable registries must define allowed outcome combinations.
+- Executable evidence, not source-text occurrence, proves error-code coverage.
+
 ## 7. Guardrail Precision
 - Static analysis must explicitly identify the prohibited targets.
 - Guardrails must not over-reject legitimate semantic naming or future extensions.

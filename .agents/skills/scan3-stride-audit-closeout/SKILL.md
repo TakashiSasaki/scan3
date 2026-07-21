@@ -28,13 +28,13 @@ Audit the current stride for regressions, incomplete constraints, and missing de
 # Procedure
 1. workspace baseline preflightを実施し、sentinelとcontrol registryの存在を確認する。
 2. policyとcurrent priorityを読む。
-3. accepted artifact inventoryを検査する。
-4. 意図しない削除を確認する。
-5. task requirementと実装を比較する。
-6. validatorの主張と実際の検査範囲を比較する。
-7. regressionを一般化してpolicy候補を作る。
-8. decisionが必要な事項をledgerへ記録する。
-9. automated、environment-dependent、manual、externalを分離する。
+3. fixed accepted-artifact dependenciesとinventoryを検査・検証する。
+4. current-priority gate orderを検証する。
+5. command statusをcase outcomesから分離して報告する。
+6. JSON evidence commandsを実行する。
+7. PASS, FAIL, SKIP, および NOT_APPLICABLE の件数を記録する。
+8. SKIPまたはNOT_APPLICABLEが0より大きい場合、「100% PASS」や「all tests passed」と報告することを禁止する。
+9. GitHub Actionsおよび外部監査を分離された外部状態として記録する。
 10. 過去closeoutを書き換えずaddendumを作る。
 11. current stride closeoutを作る。
 12. AI StudioではGitHub CI結果を確認できないと記録する。

@@ -40,11 +40,15 @@ function check() {
   
   const expectations = JSON.parse(fs.readFileSync(expectationsPath, 'utf-8'));
   for (const exp of expectations) {
-    if (exp.schemaExpected === "PASS" && exp.operationalExpected === "FAIL") {
-      if (!exp.reason) throw new Error(`Missing reason for schema-valid/operational-invalid fixture: ${exp.fixture}`);
-    }
-    if (exp.schemaExpected === "FAIL" && exp.operationalExpected === "PASS") {
-      throw new Error(`Schema-invalid fixture cannot be operational-only: ${exp.fixture}`);
+    const pair = `${exp.schemaExpected}/${exp.operationalExpected}`;
+    if (pair === "PASS/FAIL") {
+      if (exp.reason !== null) throw new Error(`PASS/FAIL fixture ${exp.fixture} must have reason: null`);
+    } else if (pair === "FAIL/NOT_APPLICABLE") {
+      if (!exp.reason) throw new Error(`Missing reason for schema-invalid fixture: ${exp.fixture}`);
+    } else if (pair === "PASS/PASS") {
+      if (exp.reason !== null) throw new Error(`PASS/PASS fixture ${exp.fixture} must have reason: null`);
+    } else {
+      throw new Error(`Forbidden outcome pair "${pair}" in fixture ${exp.fixture}`);
     }
   }
 

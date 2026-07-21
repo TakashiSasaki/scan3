@@ -45,6 +45,17 @@ These guidelines are not unique to the `scan3` project and are broadly applicabl
 - Procedural Skill Extraction
 - Independent Verification Escalation
 
+## Applicability Semantics Integrity
+- PASS, FAIL, SKIP, and NOT_APPLICABLE are distinct validation outcome classifications.
+- A validation layer intentionally not reached (such as operational validation on schema-invalid fixtures) is NOT_APPLICABLE.
+- An environment capability limitation (such as unsupported filesystem symlinks) is SKIP.
+- Neither SKIP nor NOT_APPLICABLE may be counted or reported as PASS.
+- Command success status and per-case outcomes must be reported separately.
+- Setup, execution, assertion, and cleanup failures must be classified separately.
+- Fixed-path temporary security resources are strictly forbidden.
+- Machine-readable registries must define allowed outcome combinations.
+- Executable evidence, not source-text occurrence, proves error-code coverage.
+
 ## Verification Pipeline Closure
 - Ensure all relevant validators (schemas, contracts, tests, skills, controls) are connected to the central verification pipeline (e.g., verify:reconstruction).
 - An unlinked validator provides no protective value and cannot be claimed as a control.

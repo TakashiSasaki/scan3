@@ -1,75 +1,131 @@
+const fs = require('fs');
+const path = require('path');
 const { validateRawRelativePath } = require('./validate-source-packet.cjs');
+const { OPERATIONAL_ERROR_CODES } = require('./lib/operational-error-codes.cjs');
+
+const isJson = process.argv.includes('--json');
+const registryPath = path.join(__dirname, '../reconstruction/source-packet-direct-test-expectations.json');
+
+let rawRegistry;
+try {
+  rawRegistry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+} catch (e) {
+  if (!isJson) {
+    console.error(`SETUP FAIL: Unable to read or parse direct test expectations registry: ${e.message}`);
+  }
+  process.exit(1);
+}
+
+if (!Array.isArray(rawRegistry)) {
+  if (!isJson) {
+    console.error('SETUP FAIL: Direct test expectations registry must be an array');
+  }
+  process.exit(1);
+}
+
+const suite = rawRegistry.find(s => s && s.name === 'source-packet-path-helper');
+if (!suite) {
+  if (!isJson) {
+    console.error('SETUP FAIL: Suite "source-packet-path-helper" not found in direct test registry');
+  }
+  process.exit(1);
+}
+
+if (!Array.isArray(suite.cases) || suite.cases.length === 0) {
+  if (!isJson) {
+    console.error('SETUP FAIL: Suite "source-packet-path-helper" has no cases in direct test registry');
+  }
+  process.exit(1);
+}
 
 let passed = 0;
 let failed = 0;
 let skipped = 0;
 let notApplicable = 0;
+const testResults = [];
 
-function runPathTest(name, inputPath, fieldName, expectSuccess, expectedCode) {
-  let success = false;
-  let actualCode = null;
-  let errorMsg = '';
+for (const caseDef of suite.cases) {
+  const caseName = caseDef.name;
+  const input = caseDef.input;
+  const fieldName = caseDef.fieldName || 'payloadPath';
+  const expectedOutcome = caseDef.expectedOutcome;
+  const expectedErrorCode = expectedOutcome === 'ERROR' ? caseDef.expectedErrorCode : null;
+
+  let actualSuccess = false;
+  let actualErrorCode = null;
+  let execError = null;
 
   try {
-    validateRawRelativePath(inputPath, fieldName);
-    success = true;
+    validateRawRelativePath(input, fieldName);
+    actualSuccess = true;
   } catch (e) {
-    success = false;
-    actualCode = e.code || null;
-    errorMsg = e.message || String(e);
+    actualSuccess = false;
+    actualErrorCode = e.code || null;
+    execError = e.message || String(e);
   }
 
-  if (expectSuccess) {
-    if (success) {
-      passed++;
-      console.log(`PASS: ${name}`);
+  let result = 'FAIL';
+  let reason = null;
+
+  if (expectedOutcome === 'PASS') {
+    if (actualSuccess) {
+      result = 'PASS';
     } else {
-      failed++;
-      console.error(`FAIL: ${name} (Expected success, but got error: ${errorMsg})`);
+      result = 'FAIL';
+      reason = `Expected PASS but thrown error code [${actualErrorCode}]: ${execError}`;
+    }
+  } else if (expectedOutcome === 'ERROR') {
+    if (!actualSuccess && actualErrorCode === expectedErrorCode) {
+      result = 'PASS';
+    } else if (actualSuccess) {
+      result = 'FAIL';
+      reason = `Expected ERROR code [${expectedErrorCode}] but operation succeeded without throwing`;
+    } else {
+      result = 'FAIL';
+      reason = `Expected ERROR code [${expectedErrorCode}], but got [${actualErrorCode}]: ${execError}`;
     }
   } else {
-    if (!success && actualCode === expectedCode) {
-      passed++;
-      console.log(`PASS: ${name} (Received expected code [${actualCode}])`);
+    result = 'FAIL';
+    reason = `Invalid expectedOutcome in registry case: ${expectedOutcome}`;
+  }
+
+  if (result === 'PASS') {
+    passed++;
+  } else {
+    failed++;
+  }
+
+  testResults.push({
+    suite: suite.name,
+    name: caseName,
+    result,
+    expectedOutcome,
+    expectedErrorCode,
+    actualErrorCode,
+    reason
+  });
+
+  if (!isJson) {
+    if (result === 'PASS') {
+      console.log(`PASS: ${caseName} (${expectedOutcome === 'ERROR' ? `Received expected code [${actualErrorCode}]` : 'Success'})`);
     } else {
-      failed++;
-      console.error(`FAIL: ${name} (Expected error code [${expectedCode}], got success=${success}, actualCode=[${actualCode}], error=${errorMsg})`);
+      console.error(`FAIL: ${caseName} — ${reason}`);
     }
   }
 }
 
-// 1. NUL character
-runPathTest('NUL character path', 'file\0.txt', 'payloadPath', false, 'PATH_INVALID');
-
-// 2. Absolute POSIX path
-runPathTest('Absolute POSIX path', '/etc/passwd', 'payloadPath', false, 'PATH_INVALID');
-
-// 3. Windows drive path (backslash and forward slash)
-runPathTest('Windows drive path backslash', 'C:\\Windows\\System32', 'payloadPath', false, 'PATH_INVALID');
-runPathTest('Windows drive path slash', 'C:/Windows/System32', 'payloadPath', false, 'PATH_INVALID');
-
-// 4. UNC path
-runPathTest('UNC path', '\\\\server\\share\\file.txt', 'payloadPath', false, 'PATH_INVALID');
-
-// 5. '.' segment
-runPathTest('Dot segment in middle', 'a/./b.txt', 'payloadPath', false, 'PATH_INVALID');
-runPathTest('Dot segment alone', '.', 'payloadPath', false, 'PATH_INVALID');
-
-// 6. '..' segment
-runPathTest('Dot dot segment in middle', 'a/../b.txt', 'payloadPath', false, 'PATH_INVALID');
-runPathTest('Dot dot segment alone', '..', 'payloadPath', false, 'PATH_INVALID');
-
-// 7. Whitespace-only path
-runPathTest('Whitespace-only path', '   ', 'payloadPath', false, 'PATH_INVALID');
-
-// 8. Non-string path
-runPathTest('Non-string path', 12345, 'payloadPath', false, 'PATH_INVALID');
-
-// 9. Valid dotted filename
-runPathTest('Valid dotted filename archive', 'archive.tar.gz', 'payloadPath', true, null);
-runPathTest('Valid dotted filename nested', 'directory.name/file.name.txt', 'payloadPath', true, null);
-
-console.log(`\nPath Helper Test Summary: PASS: ${passed}, FAIL: ${failed}, SKIP: ${skipped}, NOT_APPLICABLE: ${notApplicable}`);
+if (isJson) {
+  const jsonOutput = {
+    passed,
+    failed,
+    skipped,
+    notApplicable,
+    tests: testResults
+  };
+  console.log(JSON.stringify(jsonOutput, null, 2));
+} else {
+  console.log(`\nPath Helper Test Summary: PASS: ${passed}, FAIL: ${failed}, SKIP: ${skipped}, NOT_APPLICABLE: ${notApplicable}`);
+}
 
 if (failed > 0) {
   process.exit(1);

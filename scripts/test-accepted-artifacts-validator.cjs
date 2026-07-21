@@ -4,9 +4,9 @@ const os = require('os');
 const { execFileSync } = require('child_process');
 const { validateArtifactPath } = require('./validate-accepted-artifacts.cjs');
 const { REQUIRED_ACCEPTED_ARTIFACTS } = require('./lib/required-accepted-artifacts.cjs');
+const { isCapabilityLimitedSymlinkError } = require('./lib/symlink-capability.cjs');
 
 const validatorPath = path.join(__dirname, 'validate-accepted-artifacts.cjs');
-const ALLOWED_SYMLINK_ERRORS = new Set(['EPERM', 'ENOSYS', 'EINVAL', 'EACCES']);
 
 let passed = 0;
 let failed = 0;
@@ -123,7 +123,7 @@ try {
   if (symlinkCreated) {
     runTest('symlink artifact', [...baseReqs, relativeSymlinkArtifact], false);
   } else {
-    if (setupError && setupError.code && ALLOWED_SYMLINK_ERRORS.has(setupError.code)) {
+    if (isCapabilityLimitedSymlinkError(setupError)) {
       skipped++;
       console.log(`SKIP: symlink artifact - ${setupError.message}`);
     } else {
