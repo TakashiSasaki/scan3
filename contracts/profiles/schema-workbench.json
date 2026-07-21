@@ -1,0 +1,17 @@
+{
+  "profile": "schema-workbench",
+  "contracts": [
+    {
+      "id": "core-vocabulary",
+      "version": "0.1.0"
+    },
+    {
+      "id": "efp-core",
+      "version": "0.1.0"
+    },
+    {
+      "id": "scan-domain",
+      "version": "0.1.0"
+    }
+  ]
+}

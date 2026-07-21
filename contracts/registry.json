@@ -1,0 +1,22 @@
+{
+  "packages": [
+    {
+      "id": "core-vocabulary",
+      "version": "0.1.0",
+      "status": "draft",
+      "path": "contracts/packages/core-vocabulary/0.1.0/contract.json"
+    },
+    {
+      "id": "efp-core",
+      "version": "0.1.0",
+      "status": "draft",
+      "path": "contracts/packages/efp-core/0.1.0/contract.json"
+    },
+    {
+      "id": "scan-domain",
+      "version": "0.1.0",
+      "status": "draft",
+      "path": "contracts/packages/scan-domain/0.1.0/contract.json"
+    }
+  ]
+}

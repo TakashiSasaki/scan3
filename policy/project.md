@@ -1,0 +1,21 @@
+# Project Policy
+
+- 旧アプリは `/app/legacy` に隔離される。
+- 旧アプリは `photos.moukaeritai.work` だけを使用する。
+- 新アプリは `scan.moukaeritai.work` だけを使用する。
+- 両データベース間のcross-readを禁止する。
+- 両データベース間のcross-writeを禁止する。
+- dual-writeを禁止する。
+- fallback readを禁止する。
+- migrationを禁止する。
+- backfillを禁止する。
+- reconciliationを禁止する。
+- compatibility layerを自動的に追加しない。
+- 旧アプリ復元後はfrozen specificationとして扱う。
+- 新モデルは当面schema-firstで、runtimeを作らない。
+- `/demo` はproduction dataへ書き込まない。
+- production Firebase操作にはリポジトリ所有者の明示的指示が必要である。
+- AI StudioはGitHub `main` への一方向export環境である。
+- 重要な判断はリポジトリ内に記録する。
+- 過去のapplication versionとcontract versionを継承しない。
+- タスクの範囲外の検証ゲート、抽象化、migration機構を善意で追加しない。
