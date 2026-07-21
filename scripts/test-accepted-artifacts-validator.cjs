@@ -63,28 +63,6 @@ runDirectTest('dir/file..name.md', 'dir/file..name.md', true);
 runDirectTest('dir/../file.md', 'dir/../file.md', false);
 runDirectTest('dir/./file.md', 'dir/./file.md', false);
 
-// Positive tests
-runTest('empty array is allowed if all requirements present', [
-  'reconstruction/accepted-artifacts.json',
-  'scripts/validate-accepted-artifacts.cjs',
-  'policy/regression-prevention.md',
-  'policy/decision-gates.md',
-  'AGENTS.md',
-  'README.md',
-  'package.json',
-  'package-lock.json',
-  '.github/workflows/verify-reconstruction.yml',
-  'reconstruction/source-packet-constraints.json',
-  'reconstruction/source-packet-fixture-expectations.json',
-  'scripts/test-source-packet-validator.cjs',
-  'scripts/test-source-packet-schema.cjs',
-  'scripts/validate-source-packet-contract.cjs',
-  'scripts/validate-agent-skills.cjs',
-  'scripts/validate-ci-workflow.cjs',
-  'scripts/validate-control-registries.cjs',
-  'reconstruction/agent-skills.json'
-], true);
-
 const baseReqs = [
   'reconstruction/accepted-artifacts.json',
   'scripts/validate-accepted-artifacts.cjs',
@@ -97,6 +75,11 @@ const baseReqs = [
   '.github/workflows/verify-reconstruction.yml',
   'reconstruction/source-packet-constraints.json',
   'reconstruction/source-packet-fixture-expectations.json',
+  'reconstruction/source-packet-dynamic-test-expectations.json',
+  'docs/reconstruction/stride-2a-6-audit-addendum.md',
+  'docs/reconstruction/stride-2a-7-closeout.md',
+  'docs/reconstruction/stride-2a-7-audit-addendum.md',
+  'docs/reconstruction/stride-2a-8-closeout.md',
   'scripts/test-source-packet-validator.cjs',
   'scripts/test-source-packet-schema.cjs',
   'scripts/validate-source-packet-contract.cjs',
@@ -105,6 +88,9 @@ const baseReqs = [
   'scripts/validate-control-registries.cjs',
   'reconstruction/agent-skills.json'
 ];
+
+// Positive tests
+runTest('empty array is allowed if all requirements present', baseReqs, true);
 
 runTest('valid file..name.md', [...baseReqs, 'reconstruction/examples/valid-dotted-filenames/manifest.json'], true);
 

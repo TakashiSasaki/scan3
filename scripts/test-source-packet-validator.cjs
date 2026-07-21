@@ -13,6 +13,19 @@ const defaultManifest = {
   "ownerDecisions": []
 };
 
+const ALLOWED_SYMLINK_ERRORS = new Set(['EPERM', 'ENOSYS', 'EINVAL', 'EACCES']);
+
+function safeSymlink(target, linkPath, type) {
+  try {
+    fs.symlinkSync(target, linkPath, type);
+  } catch (e) {
+    if (e.code && ALLOWED_SYMLINK_ERRORS.has(e.code)) {
+      throw new Error("symlink creation not supported");
+    }
+    throw new Error(`Unexpected setup error during symlink creation [${e.code || 'UNKNOWN'}]: ${e.message}`);
+  }
+}
+
 const dynamicTestSetups = {
   'invalid-payload-root-missing': (packetDir, payloadDir) => {
     fs.writeFileSync(path.join(packetDir, 'manifest.json'), JSON.stringify(defaultManifest));
@@ -22,22 +35,14 @@ const dynamicTestSetups = {
     fs.writeFileSync(path.join(packetDir, 'manifest.json'), JSON.stringify(defaultManifest));
   },
   'invalid-payload-root-symlink': (packetDir, payloadDir) => {
-    const realDir = path.join(os.tmpdir(), 'scan3-real-root-' + Math.random().toString(36).substring(2));
+    const realDir = path.join(packetDir, 'real-root-target');
     fs.mkdirSync(realDir, { recursive: true });
-    try {
-      fs.symlinkSync(realDir, payloadDir, 'dir');
-    } catch (e) {
-      throw new Error("symlink creation not supported");
-    }
+    safeSymlink(realDir, payloadDir, 'dir');
     fs.writeFileSync(path.join(packetDir, 'manifest.json'), JSON.stringify(defaultManifest));
   },
   'invalid-payload-root-dangling-symlink': (packetDir, payloadDir) => {
     const nonExistentDir = path.join(packetDir, 'does-not-exist');
-    try {
-      fs.symlinkSync(nonExistentDir, payloadDir, 'dir');
-    } catch (e) {
-      throw new Error("symlink creation not supported");
-    }
+    safeSymlink(nonExistentDir, payloadDir, 'dir');
     fs.writeFileSync(path.join(packetDir, 'manifest.json'), JSON.stringify(defaultManifest));
   },
   'invalid-payload-file-missing': (packetDir, payloadDir) => {
@@ -54,13 +59,9 @@ const dynamicTestSetups = {
   },
   'invalid-payload-file-symlink-outside': (packetDir, payloadDir) => {
     fs.mkdirSync(payloadDir, { recursive: true });
-    const outsideFile = path.join(os.tmpdir(), 'scan3-outside-' + Math.random().toString(36).substring(2) + '.txt');
+    const outsideFile = path.join(packetDir, 'outside-target-file.txt');
     fs.writeFileSync(outsideFile, 'test');
-    try {
-      fs.symlinkSync(outsideFile, path.join(payloadDir, 'outside.txt'));
-    } catch (e) {
-      throw new Error("symlink creation not supported");
-    }
+    safeSymlink(outsideFile, path.join(payloadDir, 'outside.txt'));
     const manifest = { ...defaultManifest, files: [{
       "sourcePath": "outside.txt",
       "payloadPath": "outside.txt",
@@ -75,11 +76,7 @@ const dynamicTestSetups = {
     fs.mkdirSync(payloadDir, { recursive: true });
     const insideFile = path.join(payloadDir, 'inside.txt');
     fs.writeFileSync(insideFile, 'test');
-    try {
-      fs.symlinkSync(insideFile, path.join(payloadDir, 'link.txt'));
-    } catch (e) {
-      throw new Error("symlink creation not supported");
-    }
+    safeSymlink(insideFile, path.join(payloadDir, 'link.txt'));
     const manifest = { ...defaultManifest, files: [{
       "sourcePath": "link.txt",
       "payloadPath": "link.txt",
@@ -93,11 +90,7 @@ const dynamicTestSetups = {
   'invalid-payload-file-dangling-symlink': (packetDir, payloadDir) => {
     fs.mkdirSync(payloadDir, { recursive: true });
     const nonExistentFile = path.join(payloadDir, 'does-not-exist.txt');
-    try {
-      fs.symlinkSync(nonExistentFile, path.join(payloadDir, 'link.txt'));
-    } catch (e) {
-      throw new Error("symlink creation not supported");
-    }
+    safeSymlink(nonExistentFile, path.join(payloadDir, 'link.txt'));
     const manifest = { ...defaultManifest, files: [{
       "sourcePath": "link.txt",
       "payloadPath": "link.txt",
@@ -114,11 +107,7 @@ const dynamicTestSetups = {
     fs.mkdirSync(realSubdir);
     const insideFile = path.join(realSubdir, 'file.txt');
     fs.writeFileSync(insideFile, 'test');
-    try {
-      fs.symlinkSync(realSubdir, path.join(payloadDir, 'link-sub'), 'dir');
-    } catch (e) {
-      throw new Error("symlink creation not supported");
-    }
+    safeSymlink(realSubdir, path.join(payloadDir, 'link-sub'), 'dir');
     const manifest = { ...defaultManifest, files: [{
       "sourcePath": "link-sub/file.txt",
       "payloadPath": "link-sub/file.txt",
@@ -241,12 +230,23 @@ if (require.main === module) {
     
     const expectSuccess = exp.operationalExpected === 'PASS';
     
-    if (success === expectSuccess) {
+    let isCodeMatch = true;
+    let actualCode = null;
+    if (!success && stderr) {
+      const match = stderr.match(/\[([A-Z0-9_]+)\]/);
+      if (match) actualCode = match[1];
+    }
+
+    if (exp.expectedErrorCode) {
+      isCodeMatch = actualCode === exp.expectedErrorCode;
+    }
+
+    if (success === expectSuccess && isCodeMatch) {
       passed++;
       logTest(exp.fixture, 'PASS');
     } else {
       failed++;
-      logTest(exp.fixture, 'FAIL', `Expected success: ${expectSuccess}, but got: ${success}. Output: ${stderr}`);
+      logTest(exp.fixture, 'FAIL', `Expected success: ${expectSuccess}, expectedErrorCode: ${exp.expectedErrorCode || 'N/A'}, but got success: ${success}, actualCode: ${actualCode}. Output: ${stderr}`);
     }
   }
 
@@ -311,12 +311,18 @@ if (require.main === module) {
         stderr = e.stderr ? e.stderr.toString() : e.message;
       }
       
-      if (success === false && stderr.includes(`[${expectedErrorCode}]`)) {
+      let actualCode = null;
+      if (!success && stderr) {
+        const match = stderr.match(/\[([A-Z0-9_]+)\]/);
+        if (match) actualCode = match[1];
+      }
+
+      if (success === false && actualCode === expectedErrorCode) {
         passed++;
         logTest(name, 'PASS');
       } else {
         failed++;
-        logTest(name, 'FAIL', `Expected error code [${expectedErrorCode}], but got success=${success}, output=${stderr}`);
+        logTest(name, 'FAIL', `Expected error code [${expectedErrorCode}], but got success=${success}, actualCode=[${actualCode}], output=${stderr}`);
       }
     }
   } finally {

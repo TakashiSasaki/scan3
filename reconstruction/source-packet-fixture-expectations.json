@@ -15,144 +15,250 @@
     "fixture": "invalid-nul-path",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/safeRelativePath",
     "reason": "NUL character in path"
   },
   {
     "fixture": "invalid-dot-segment-posix",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/safeRelativePath",
     "reason": "POSIX dot segment in path"
   },
   {
     "fixture": "invalid-dot-segment-windows",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/safeRelativePath",
     "reason": "Windows dot segment in path"
   },
   {
     "fixture": "invalid-packet-id-type",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "type",
+    "expectedSchemaPath": "/definitions/nonBlankString",
     "reason": "packetId is not a string"
   },
   {
     "fixture": "invalid-purpose-type",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "type",
+    "expectedSchemaPath": "/definitions/nonBlankString",
     "reason": "purpose is not a string"
   },
   {
     "fixture": "invalid-source-repository-type",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "type",
+    "expectedSchemaPath": "/definitions/nonBlankString",
     "reason": "source repository missing or invalid type"
   },
   {
     "fixture": "invalid-file-entry-type",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "type",
+    "expectedSchemaPath": "/type",
     "reason": "file entry is not an object"
   },
   {
     "fixture": "invalid-owner-decision-array",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "type",
+    "expectedSchemaPath": "/type",
     "reason": "ownerDecisions is not an array"
   },
   {
     "fixture": "invalid-noninteger-size",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "type",
+    "expectedSchemaPath": "/properties/sizeBytes",
     "reason": "sizeBytes is not an integer"
   },
   {
     "fixture": "invalid-notes-type",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "type",
+    "expectedSchemaPath": "/properties/notes",
     "reason": "notes is not a string"
   },
   {
     "fixture": "invalid-missing-owner-value",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
     "reason": "owner decision is missing value property"
   },
   {
     "fixture": "invalid-hash",
     "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
+    "expectedErrorCode": "PAYLOAD_HASH_MISMATCH",
     "reason": "File hash mismatch is an operational check"
   },
   {
     "fixture": "invalid-size",
     "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
+    "expectedErrorCode": "PAYLOAD_SIZE_MISMATCH",
     "reason": "File size mismatch is an operational check"
   },
   {
     "fixture": "invalid-duplicate-destination",
     "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
+    "expectedErrorCode": "DUPLICATE_RESTORE_DESTINATION",
     "reason": "Duplicate intendedDestination is an operational check"
   },
   {
     "fixture": "invalid-embedded-traversal",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/safeRelativePath",
     "reason": "Path traversal segment"
   },
   {
     "fixture": "invalid-path-traversal",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/safeRelativePath",
     "reason": "Path traversal segment (POSIX)"
   },
   {
     "fixture": "invalid-windows-traversal",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/safeRelativePath",
     "reason": "Path traversal segment (Windows)"
   },
   {
     "fixture": "invalid-unknown-top-level-property",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "additionalProperties",
+    "expectedSchemaPath": "/additionalProperties",
     "reason": "Unknown top-level property"
   },
   {
     "fixture": "invalid-unknown-file-property",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "additionalProperties",
+    "expectedSchemaPath": "/additionalProperties",
     "reason": "Unknown file property"
   },
   {
     "fixture": "invalid-missing-intended-destination",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
     "reason": "Missing intendedDestination"
   },
   {
     "fixture": "invalid-duplicate-source-path",
     "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
+    "expectedErrorCode": "DUPLICATE_SOURCE_PATH",
     "reason": "Duplicate sourcePath is operational"
   },
   {
     "fixture": "invalid-duplicate-payload-path",
     "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
+    "expectedErrorCode": "DUPLICATE_PAYLOAD_PATH",
     "reason": "Duplicate payloadPath is operational"
   },
   {
     "fixture": "invalid-duplicate-owner-decision-id",
     "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
+    "expectedErrorCode": "DUPLICATE_OWNER_DECISION_ID",
     "reason": "Duplicate ownerDecision id is operational"
   },
   {
     "fixture": "invalid-whitespace-path",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/safeRelativePath",
     "reason": "Whitespace only path"
+  },
+  {
+    "fixture": "invalid-unknown-source-property",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "additionalProperties",
+    "expectedSchemaPath": "/additionalProperties",
+    "reason": "Unknown source property"
+  },
+  {
+    "fixture": "invalid-unknown-destination-property",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "additionalProperties",
+    "expectedSchemaPath": "/additionalProperties",
+    "reason": "Unknown destination property"
+  },
+  {
+    "fixture": "invalid-unknown-owner-decision-property",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "additionalProperties",
+    "expectedSchemaPath": "/additionalProperties",
+    "reason": "Unknown ownerDecision property"
+  },
+  {
+    "fixture": "invalid-format-version",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "const",
+    "expectedSchemaPath": "/properties/formatVersion",
+    "reason": "formatVersion must be 1.0"
+  },
+  {
+    "fixture": "invalid-missing-top-level-field",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "reason": "Missing top-level required field"
+  },
+  {
+    "fixture": "invalid-commit-sha",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/fullCommitSha",
+    "reason": "Invalid commit SHA format"
+  },
+  {
+    "fixture": "invalid-sha256-format",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/sha256",
+    "reason": "Invalid sha256 hash format"
+  },
+  {
+    "fixture": "invalid-disposition",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "enum",
+    "expectedSchemaPath": "/properties/disposition",
+    "reason": "Invalid disposition enum value"
   }
 ]

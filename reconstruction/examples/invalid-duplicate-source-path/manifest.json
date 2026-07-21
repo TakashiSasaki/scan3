@@ -8,16 +8,16 @@
     {
       "sourcePath": "example.txt",
       "payloadPath": "example.txt",
-      "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
-      "sizeBytes": 4,
+      "sha256": "40de7ed218ae3ed0731a948eb93d4208f2ac03388a5805fae9b52d3dd2f973d2",
+      "sizeBytes": 14,
       "disposition": "restore",
       "intendedDestination": "example1.txt"
     },
     {
       "sourcePath": "example.txt",
       "payloadPath": "example2.txt",
-      "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
-      "sizeBytes": 4,
+      "sha256": "40de7ed218ae3ed0731a948eb93d4208f2ac03388a5805fae9b52d3dd2f973d2",
+      "sizeBytes": 14,
       "disposition": "restore",
       "intendedDestination": "example2.txt"
     }

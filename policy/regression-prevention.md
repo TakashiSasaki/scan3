@@ -91,7 +91,9 @@ This policy document defines rules to prevent recurrences of issues identified d
 
 ### Evidence-Backed Constraint Matrix
 - constraint matrixのimplemented／verified主張には実装箇所とfixtureを対応させる。
-- fixtureが先行layerで拒否される場合、後続constraintの証拠にしない。
+- fixtureが先行layerで拒否される場合、後続constraintの証拠にしない（単一分岐による複数制約の証拠再利用禁止）。
+- Test runnerはstderrの部分一致だけでなく、実際のerror codeを抽出して完全一致を確認する（Failure Code & Schema Path Proof）。
+- 動的に生成されるオペレーショナルテスト（Dynamic Operational Evidence）は、動的テストレジストリに登録し、エラーコードの完全一致とコントロールレジストリにおける対比マッピングを必須とする。
 - 実装されていないconstraintをimplementedと表現しない。
 - schema、validator、fixture、matrixの不一致をautomated gateで検出する。
 - deferred constraintを明示できるようにする。

@@ -1,6 +1,6 @@
 # Current Priority
 
-1. Stride 2A.7 repository-local correction
+1. Stride 2A.8 repository-local correction
 2. repository-local verification
 3. mainへのexport
 4. GitHub Actions結果のexternal confirmation

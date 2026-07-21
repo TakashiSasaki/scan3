@@ -57,5 +57,15 @@
   "docs/reconstruction/stride-2a-6-closeout.md",
   "docs/reconstruction/stride-2a-6-audit-addendum.md",
   "docs/reconstruction/stride-2a-7-closeout.md",
-  "reconstruction/source-packet-dynamic-test-expectations.json"
+  "docs/reconstruction/stride-2a-7-audit-addendum.md",
+  "docs/reconstruction/stride-2a-8-closeout.md",
+  "reconstruction/source-packet-dynamic-test-expectations.json",
+  "reconstruction/examples/invalid-unknown-source-property/manifest.json",
+  "reconstruction/examples/invalid-unknown-destination-property/manifest.json",
+  "reconstruction/examples/invalid-unknown-owner-decision-property/manifest.json",
+  "reconstruction/examples/invalid-format-version/manifest.json",
+  "reconstruction/examples/invalid-missing-top-level-field/manifest.json",
+  "reconstruction/examples/invalid-commit-sha/manifest.json",
+  "reconstruction/examples/invalid-sha256-format/manifest.json",
+  "reconstruction/examples/invalid-disposition/manifest.json"
 ]

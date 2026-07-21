@@ -1,6 +1,23 @@
 const fs = require('fs');
 const path = require('path');
 
+const VALID_OPERATIONAL_ERROR_CODES = new Set([
+  'PAYLOAD_ROOT_MISSING',
+  'PAYLOAD_ROOT_SYMLINK',
+  'PAYLOAD_ROOT_NOT_DIRECTORY',
+  'PAYLOAD_FILE_MISSING',
+  'PAYLOAD_REALPATH_ESCAPE',
+  'PAYLOAD_ANCESTOR_SYMLINK',
+  'PAYLOAD_FILE_SYMLINK',
+  'PAYLOAD_NOT_REGULAR_FILE',
+  'PAYLOAD_SIZE_MISMATCH',
+  'PAYLOAD_HASH_MISMATCH',
+  'DUPLICATE_OWNER_DECISION_ID',
+  'DUPLICATE_SOURCE_PATH',
+  'DUPLICATE_PAYLOAD_PATH',
+  'DUPLICATE_RESTORE_DESTINATION'
+]);
+
 function validateFixtureCatalog() {
   const catalogPath = path.join(__dirname, '../reconstruction/source-packet-fixture-expectations.json');
   const expectations = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
@@ -8,6 +25,16 @@ function validateFixtureCatalog() {
   if (!Array.isArray(expectations)) throw new Error('Fixture catalog must be an array');
 
   const names = new Set();
+  const allowedFields = new Set([
+    'fixture',
+    'schemaExpected',
+    'operationalExpected',
+    'reason',
+    'expectedErrorCode',
+    'expectedSchemaKeyword',
+    'expectedSchemaPath'
+  ]);
+
   for (const exp of expectations) {
     if (!exp.fixture || typeof exp.fixture !== 'string' || exp.fixture.trim() === '') throw new Error('Fixture name must be non-empty string');
     if (names.has(exp.fixture)) throw new Error(`Duplicate fixture name: ${exp.fixture}`);
@@ -18,9 +45,14 @@ function validateFixtureCatalog() {
 
     if (!exp.reason || typeof exp.reason !== 'string' || exp.reason.trim() === '') throw new Error('Reason must be non-empty string');
 
-    const allowedFields = new Set(['fixture', 'schemaExpected', 'operationalExpected', 'reason']);
     for (const key of Object.keys(exp)) {
       if (!allowedFields.has(key)) throw new Error(`Unknown field in fixture catalog: ${key}`);
+    }
+
+    if (exp.expectedErrorCode) {
+      if (!VALID_OPERATIONAL_ERROR_CODES.has(exp.expectedErrorCode)) {
+        throw new Error(`Fixture ${exp.fixture} specifies invalid or unregistered expectedErrorCode: ${exp.expectedErrorCode}`);
+      }
     }
   }
 
@@ -33,6 +65,8 @@ function validateFixtureCatalog() {
   for (const name of fixtureDirs) {
     if (!names.has(name)) throw new Error(`Fixture directory missing from catalog: ${name}`);
   }
+
+  return names;
 }
 
 function resolveJsonPointer(obj, pointer) {
@@ -88,6 +122,10 @@ function validateDynamicTestRegistry() {
       throw new Error('Dynamic test expectation expectedErrorCode must be a non-empty string');
     }
 
+    if (!VALID_OPERATIONAL_ERROR_CODES.has(entry.expectedErrorCode)) {
+      throw new Error(`Dynamic test ${trimmedName} specifies invalid or unregistered expectedErrorCode: ${entry.expectedErrorCode}`);
+    }
+
     if (typeof entry.environmentDependent !== 'boolean') {
       throw new Error('Dynamic test expectation environmentDependent must be a boolean');
     }
@@ -98,13 +136,14 @@ function validateDynamicTestRegistry() {
 
     const reasons = new Set();
     for (const r of entry.allowedSkipReasons) {
-      if (typeof r !== 'string') {
-        throw new Error('Dynamic test expectation allowedSkipReason must be a string');
+      if (typeof r !== 'string' || r.trim() === '') {
+        throw new Error(`Dynamic test expectation allowedSkipReason must be a non-empty trimmed string in: ${trimmedName}`);
       }
-      if (reasons.has(r)) {
-        throw new Error(`Duplicate allowedSkipReason "${r}" in dynamic test: ${trimmedName}`);
+      const trimmedReason = r.trim();
+      if (reasons.has(trimmedReason)) {
+        throw new Error(`Duplicate allowedSkipReason "${trimmedReason}" in dynamic test: ${trimmedName}`);
       }
-      reasons.add(r);
+      reasons.add(trimmedReason);
     }
 
     if (entry.environmentDependent === false && entry.allowedSkipReasons.length > 0) {
@@ -129,7 +168,14 @@ function validateDynamicTestRegistry() {
   return names;
 }
 
-function validateConstraintRegistry() {
+function validateConstraintRegistry(staticFixtureNames, dynamicTestNames) {
+  // Verify static fixture names and dynamic test names do not collide
+  for (const staticName of staticFixtureNames) {
+    if (dynamicTestNames.has(staticName)) {
+      throw new Error(`Collision between static fixture and dynamic test name: ${staticName}`);
+    }
+  }
+
   const constraintsPath = path.join(__dirname, '../reconstruction/source-packet-constraints.json');
   const constraints = JSON.parse(fs.readFileSync(constraintsPath, 'utf8'));
   
@@ -137,15 +183,15 @@ function validateConstraintRegistry() {
 
   const schemaObj = JSON.parse(fs.readFileSync(path.join(__dirname, '../reconstruction/source-packet.schema.json'), 'utf8'));
   
-  const expectations = JSON.parse(fs.readFileSync(path.join(__dirname, '../reconstruction/source-packet-fixture-expectations.json'), 'utf8'));
-  const validFixtures = new Set(expectations.map(e => e.fixture));
+  const catalogPath = path.join(__dirname, '../reconstruction/source-packet-fixture-expectations.json');
+  const expectations = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+  const staticExpectationsMap = new Map(expectations.map(e => [e.fixture, e]));
   
-  // Load dynamic test names from single source of truth
   const dynamicExpectationsPath = path.join(__dirname, '../reconstruction/source-packet-dynamic-test-expectations.json');
   const dynamicExpectations = JSON.parse(fs.readFileSync(dynamicExpectationsPath, 'utf8'));
-  for (const d of dynamicExpectations) {
-    validFixtures.add(d.name);
-  }
+  const dynamicExpectationsMap = new Map(dynamicExpectations.map(d => [d.name, d]));
+
+  const validFixtures = new Set([...staticFixtureNames, ...dynamicTestNames]);
 
   const ids = new Set();
   for (const c of constraints) {
@@ -173,17 +219,24 @@ function validateConstraintRegistry() {
       throw new Error(`Invalid status: ${c.status} in ${c.id}`);
     }
 
-    if (c.authoritativeLayer === 'schema' && !c.schemaPointer) {
-      throw new Error(`schema constraint must have schemaPointer in ${c.id}`);
+    if (c.authoritativeLayer === 'schema') {
+      if (!c.schemaPointer) throw new Error(`schema constraint must have schemaPointer in ${c.id}`);
+      if (c.operationalEvidence !== null) throw new Error(`schema constraint must NOT have operationalEvidence in ${c.id}`);
     }
-    if (c.authoritativeLayer === 'operational' && !c.operationalEvidence) {
-      throw new Error(`operational constraint must have operationalEvidence in ${c.id}`);
+    if (c.authoritativeLayer === 'operational') {
+      if (!c.operationalEvidence) throw new Error(`operational constraint must have operationalEvidence in ${c.id}`);
+      if (c.schemaPointer !== null) throw new Error(`operational constraint must NOT have schemaPointer in ${c.id}`);
     }
-    if (c.authoritativeLayer === 'both' && (!c.schemaPointer || !c.operationalEvidence)) {
-      throw new Error(`both constraint must have schemaPointer and operationalEvidence in ${c.id}`);
+    if (c.authoritativeLayer === 'both') {
+      if (!c.schemaPointer || !c.operationalEvidence) throw new Error(`both constraint must have schemaPointer and operationalEvidence in ${c.id}`);
     }
-    if (c.authoritativeLayer === 'deferred' && !['deferred', 'not-implemented'].includes(c.status)) {
-      throw new Error(`deferred constraint status must be deferred or not-implemented in ${c.id}`);
+    if (c.authoritativeLayer === 'deferred') {
+      if (c.schemaPointer !== null || c.operationalEvidence !== null) {
+        throw new Error(`deferred constraint must NOT have schemaPointer or operationalEvidence in ${c.id}`);
+      }
+      if (!['deferred', 'not-implemented'].includes(c.status)) {
+        throw new Error(`deferred constraint status must be deferred or not-implemented in ${c.id}`);
+      }
     }
 
     if (c.schemaPointer) {
@@ -237,6 +290,36 @@ function validateConstraintRegistry() {
       if (!c.fixtures || c.fixtures.length === 0) throw new Error(`Implemented constraint ${c.id} missing fixtures`);
       for (const f of c.fixtures) {
         if (!validFixtures.has(f)) throw new Error(`Fixture ${f} not found in catalog or dynamic tests for constraint ${c.id}`);
+
+        // Check mapping between evidence and expected error code
+        if (c.operationalEvidence) {
+          const staticExp = staticExpectationsMap.get(f);
+          const dynamicExp = dynamicExpectationsMap.get(f);
+          let expCode = null;
+          if (staticExp && staticExp.operationalExpected === 'FAIL') {
+            expCode = staticExp.expectedErrorCode;
+          } else if (dynamicExp) {
+            expCode = dynamicExp.expectedErrorCode;
+          }
+          if (expCode && expCode !== c.operationalEvidence.marker) {
+            throw new Error(`Mismatched expectedErrorCode [${expCode}] in fixture "${f}" vs operational marker [${c.operationalEvidence.marker}] in constraint ${c.id}`);
+          }
+        }
+
+        // Check mapping between schema pointer and expected schema path
+        if (c.schemaPointer) {
+          const staticExp = staticExpectationsMap.get(f);
+          if (staticExp && staticExp.schemaExpected === 'FAIL' && staticExp.expectedSchemaPath) {
+            const matches = staticExp.expectedSchemaPath === c.schemaPointer ||
+                            staticExp.expectedSchemaPath.endsWith(c.schemaPointer) ||
+                            c.schemaPointer.endsWith(staticExp.expectedSchemaPath) ||
+                            staticExp.expectedSchemaPath.startsWith(c.schemaPointer) ||
+                            c.schemaPointer.startsWith(staticExp.expectedSchemaPath);
+            if (!matches) {
+              throw new Error(`Mismatched expectedSchemaPath "${staticExp.expectedSchemaPath}" in fixture "${f}" vs schemaPointer "${c.schemaPointer}" in constraint ${c.id}`);
+            }
+          }
+        }
       }
       
       if (!c.schemaPointer && !c.operationalEvidence) {
@@ -282,9 +365,9 @@ function validateSkillRegistry() {
 }
 
 try {
-  validateFixtureCatalog();
-  validateDynamicTestRegistry();
-  validateConstraintRegistry();
+  const staticNames = validateFixtureCatalog();
+  const dynamicNames = validateDynamicTestRegistry();
+  validateConstraintRegistry(staticNames, dynamicNames);
   validateSkillRegistry();
   console.log("Control registries validation passed.");
 } catch (e) {

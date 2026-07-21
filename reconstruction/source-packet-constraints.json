@@ -18,7 +18,8 @@
     "schemaPointer": "/definitions/sourceDescriptor/additionalProperties",
     "operationalEvidence": null,
     "fixtures": [
-      "minimal"
+      "minimal",
+      "invalid-unknown-source-property"
     ],
     "status": "implemented"
   },
@@ -29,7 +30,8 @@
     "schemaPointer": "/definitions/destinationDescriptor/additionalProperties",
     "operationalEvidence": null,
     "fixtures": [
-      "minimal"
+      "minimal",
+      "invalid-unknown-destination-property"
     ],
     "status": "implemented"
   },
@@ -52,14 +54,15 @@
     "schemaPointer": "/definitions/ownerDecision/additionalProperties",
     "operationalEvidence": null,
     "fixtures": [
-      "minimal"
+      "minimal",
+      "invalid-unknown-owner-decision-property"
     ],
     "status": "implemented"
   },
   {
     "id": "C-PATH-1",
     "description": "Safe relative paths forbid NUL, absolute, drive letters, UNC, and dot segments",
-    "authoritativeLayer": "schema",
+    "authoritativeLayer": "both",
     "schemaPointer": "/definitions/safeRelativePath/pattern",
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
@@ -78,7 +81,7 @@
   {
     "id": "C-PATH-2",
     "description": "Safe relative paths forbid whitespace-only paths",
-    "authoritativeLayer": "schema",
+    "authoritativeLayer": "both",
     "schemaPointer": "/definitions/safeRelativePath/pattern",
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
@@ -181,7 +184,7 @@
     "schemaPointer": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
-      "marker": "Duplicate sourcePath"
+      "marker": "DUPLICATE_SOURCE_PATH"
     },
     "fixtures": [
       "invalid-duplicate-source-path"
@@ -195,7 +198,7 @@
     "schemaPointer": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
-      "marker": "Duplicate payloadPath"
+      "marker": "DUPLICATE_PAYLOAD_PATH"
     },
     "fixtures": [
       "invalid-duplicate-payload-path"
@@ -209,7 +212,7 @@
     "schemaPointer": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
-      "marker": "Duplicate intendedDestination for restore"
+      "marker": "DUPLICATE_RESTORE_DESTINATION"
     },
     "fixtures": [
       "invalid-duplicate-destination"
@@ -223,7 +226,7 @@
     "schemaPointer": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
-      "marker": "Duplicate ownerDecision id"
+      "marker": "DUPLICATE_OWNER_DECISION_ID"
     },
     "fixtures": [
       "invalid-duplicate-owner-decision-id"
@@ -257,7 +260,8 @@
     "schemaPointer": "/properties/formatVersion/const",
     "operationalEvidence": null,
     "fixtures": [
-      "minimal"
+      "minimal",
+      "invalid-format-version"
     ],
     "status": "implemented"
   },
@@ -268,7 +272,8 @@
     "schemaPointer": "/required",
     "operationalEvidence": null,
     "fixtures": [
-      "minimal"
+      "minimal",
+      "invalid-missing-top-level-field"
     ],
     "status": "implemented"
   },
@@ -276,10 +281,11 @@
     "id": "C-TYPE-STR",
     "description": "Non-blank string type",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/nonBlankString/pattern",
+    "schemaPointer": "/definitions/nonBlankString",
     "operationalEvidence": null,
     "fixtures": [
-      "minimal"
+      "minimal",
+      "invalid-packet-id-type"
     ],
     "status": "implemented"
   },
@@ -287,10 +293,11 @@
     "id": "C-TYPE-SHA1",
     "description": "Commit SHA type",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/fullCommitSha/pattern",
+    "schemaPointer": "/definitions/fullCommitSha",
     "operationalEvidence": null,
     "fixtures": [
-      "minimal"
+      "minimal",
+      "invalid-commit-sha"
     ],
     "status": "implemented"
   },
@@ -298,10 +305,11 @@
     "id": "C-TYPE-SHA256",
     "description": "SHA-256 type",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/sha256/pattern",
+    "schemaPointer": "/definitions/sha256",
     "operationalEvidence": null,
     "fixtures": [
-      "minimal"
+      "minimal",
+      "invalid-sha256-format"
     ],
     "status": "implemented"
   },
@@ -324,7 +332,8 @@
     "schemaPointer": "/definitions/fileEntry/properties/disposition/enum",
     "operationalEvidence": null,
     "fixtures": [
-      "minimal"
+      "minimal",
+      "invalid-disposition"
     ],
     "status": "implemented"
   },

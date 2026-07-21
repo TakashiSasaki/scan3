@@ -71,7 +71,10 @@ function validateExistingRegularPayloadFile(payloadFullPath, payloadDirFullPath,
     try {
       realPath = fs.realpathSync(payloadFullPath);
     } catch (e) {
-      throw new OperationalError('PAYLOAD_FILE_SYMLINK', `Payload is a dangling symbolic link for ${fieldName}: ${payloadFullPath}`);
+      if (e.code === 'ENOENT' || e.code === 'ELOOP') {
+        throw new OperationalError('PAYLOAD_FILE_SYMLINK', `Payload is a dangling symbolic link for ${fieldName}: ${payloadFullPath}`);
+      }
+      throw e;
     }
     if (!realPath.startsWith(payloadDirReal + path.sep) && realPath !== payloadDirReal) {
       throw new OperationalError('PAYLOAD_REALPATH_ESCAPE', `Payload real path escapes payload root for ${fieldName}: ${payloadFullPath}`);
@@ -142,7 +145,7 @@ function validate() {
 
   for (const decision of manifest.ownerDecisions) {
     // Uniqueness is an operational constraint.
-    if (seenDecisionIds.has(decision.id)) throw new Error(`Duplicate ownerDecision id: ${decision.id}`);
+    if (seenDecisionIds.has(decision.id)) throw new OperationalError('DUPLICATE_OWNER_DECISION_ID', `Duplicate ownerDecision id: ${decision.id}`);
     seenDecisionIds.add(decision.id);
   }
 
@@ -170,8 +173,8 @@ function validate() {
     validateRawRelativePath(file.sourcePath, 'sourcePath');
     validateRawRelativePath(file.payloadPath, 'payloadPath');
     
-    if (seenSourcePaths.has(file.sourcePath)) throw new Error(`Duplicate sourcePath: ${file.sourcePath}`);
-    if (seenPayloadPaths.has(file.payloadPath)) throw new Error(`Duplicate payloadPath: ${file.payloadPath}`);
+    if (seenSourcePaths.has(file.sourcePath)) throw new OperationalError('DUPLICATE_SOURCE_PATH', `Duplicate sourcePath: ${file.sourcePath}`);
+    if (seenPayloadPaths.has(file.payloadPath)) throw new OperationalError('DUPLICATE_PAYLOAD_PATH', `Duplicate payloadPath: ${file.payloadPath}`);
     seenSourcePaths.add(file.sourcePath);
     seenPayloadPaths.add(file.payloadPath);
 
@@ -190,7 +193,7 @@ function validate() {
       validateRawRelativePath(file.intendedDestination, 'intendedDestination');
       if (file.disposition === 'restore') {
         if (seenDestinations.has(file.intendedDestination)) {
-          throw new Error(`Duplicate intendedDestination for restore: ${file.intendedDestination}`);
+          throw new OperationalError('DUPLICATE_RESTORE_DESTINATION', `Duplicate intendedDestination for restore: ${file.intendedDestination}`);
         }
         seenDestinations.add(file.intendedDestination);
       }
