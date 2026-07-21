@@ -3,7 +3,10 @@
     "name": "invalid-payload-root-missing",
     "expectedErrorCode": "PAYLOAD_ROOT_MISSING",
     "environmentDependent": false,
-    "allowedSkipReasons": []
+    "allowedSkipReasons": [],
+    "constraintIds": [
+      "C-PAYLOAD-ROOT-1"
+    ]
   },
   {
     "name": "invalid-payload-root-symlink",
@@ -11,6 +14,9 @@
     "environmentDependent": true,
     "allowedSkipReasons": [
       "symlink creation not supported"
+    ],
+    "constraintIds": [
+      "C-PAYLOAD-ROOT-2"
     ]
   },
   {
@@ -19,19 +25,28 @@
     "environmentDependent": true,
     "allowedSkipReasons": [
       "symlink creation not supported"
+    ],
+    "constraintIds": [
+      "C-PAYLOAD-ROOT-2"
     ]
   },
   {
     "name": "invalid-payload-root-not-directory",
     "expectedErrorCode": "PAYLOAD_ROOT_NOT_DIRECTORY",
     "environmentDependent": false,
-    "allowedSkipReasons": []
+    "allowedSkipReasons": [],
+    "constraintIds": [
+      "C-PAYLOAD-ROOT-3"
+    ]
   },
   {
     "name": "invalid-payload-file-missing",
     "expectedErrorCode": "PAYLOAD_FILE_MISSING",
     "environmentDependent": false,
-    "allowedSkipReasons": []
+    "allowedSkipReasons": [],
+    "constraintIds": [
+      "C-PAYLOAD-FILE-1"
+    ]
   },
   {
     "name": "invalid-payload-file-symlink-outside",
@@ -39,6 +54,9 @@
     "environmentDependent": true,
     "allowedSkipReasons": [
       "symlink creation not supported"
+    ],
+    "constraintIds": [
+      "C-PAYLOAD-2"
     ]
   },
   {
@@ -47,6 +65,9 @@
     "environmentDependent": true,
     "allowedSkipReasons": [
       "symlink creation not supported"
+    ],
+    "constraintIds": [
+      "C-PAYLOAD-NO-SYMLINK"
     ]
   },
   {
@@ -55,6 +76,9 @@
     "environmentDependent": true,
     "allowedSkipReasons": [
       "symlink creation not supported"
+    ],
+    "constraintIds": [
+      "C-PAYLOAD-NO-SYMLINK"
     ]
   },
   {
@@ -63,24 +87,45 @@
     "environmentDependent": true,
     "allowedSkipReasons": [
       "symlink creation not supported"
+    ],
+    "constraintIds": [
+      "C-PAYLOAD-ANCESTOR-SYMLINK"
     ]
   },
   {
     "name": "invalid-payload-not-regular-file",
     "expectedErrorCode": "PAYLOAD_NOT_REGULAR_FILE",
     "environmentDependent": false,
-    "allowedSkipReasons": []
+    "allowedSkipReasons": [],
+    "constraintIds": [
+      "C-PAYLOAD-REGULAR"
+    ]
   },
   {
     "name": "invalid-payload-size-mismatch",
     "expectedErrorCode": "PAYLOAD_SIZE_MISMATCH",
     "environmentDependent": false,
-    "allowedSkipReasons": []
+    "allowedSkipReasons": [],
+    "constraintIds": [
+      "C-PAYLOAD-SIZE"
+    ]
   },
   {
     "name": "invalid-payload-hash-mismatch",
     "expectedErrorCode": "PAYLOAD_HASH_MISMATCH",
     "environmentDependent": false,
-    "allowedSkipReasons": []
+    "allowedSkipReasons": [],
+    "constraintIds": [
+      "C-PAYLOAD-HASH"
+    ]
+  },
+  {
+    "name": "invalid-raw-relative-path",
+    "expectedErrorCode": "PATH_INVALID",
+    "environmentDependent": false,
+    "allowedSkipReasons": [],
+    "constraintIds": [
+      "C-PATH-RAW"
+    ]
   }
 ]

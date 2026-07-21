@@ -15,6 +15,7 @@
     {
       "id": "OD-001",
       "value": "accepted",
+      "reason": "test reason",
       "unknownProp": "invalid"
     }
   ]

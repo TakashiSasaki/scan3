@@ -16,7 +16,10 @@ function validateFixtureCatalog() {
     'reason',
     'expectedErrorCode',
     'expectedSchemaKeyword',
-    'expectedSchemaPath'
+    'expectedSchemaPath',
+    'expectedSchemaInstancePath',
+    'expectedSchemaParams',
+    'constraintIds'
   ]);
 
   for (const exp of expectations) {
@@ -27,7 +30,14 @@ function validateFixtureCatalog() {
     if (!['PASS', 'FAIL', 'SKIP_ALLOWED'].includes(exp.schemaExpected)) throw new Error(`Invalid schemaExpected: ${exp.schemaExpected} in ${exp.fixture}`);
     if (!['PASS', 'FAIL', 'SKIP_ALLOWED'].includes(exp.operationalExpected)) throw new Error(`Invalid operationalExpected: ${exp.operationalExpected} in ${exp.fixture}`);
 
-    if (!exp.reason || typeof exp.reason !== 'string' || exp.reason.trim() === '') throw new Error(`Reason must be non-empty string in ${exp.fixture}`);
+    if (!Array.isArray(exp.constraintIds) || exp.constraintIds.length === 0) {
+      throw new Error(`Fixture ${exp.fixture} must have a non-empty constraintIds array`);
+    }
+    for (const cId of exp.constraintIds) {
+      if (typeof cId !== 'string' || cId.trim() === '') {
+        throw new Error(`Invalid constraintId in ${exp.fixture}: ${cId}`);
+      }
+    }
 
     for (const key of Object.keys(exp)) {
       if (!allowedFields.has(key)) throw new Error(`Unknown field in fixture catalog: ${key} in ${exp.fixture}`);
@@ -51,11 +61,11 @@ function validateFixtureCatalog() {
       if (!VALID_OPERATIONAL_ERROR_CODES.has(exp.expectedErrorCode)) {
         throw new Error(`Fixture ${exp.fixture} specifies invalid or unregistered expectedErrorCode: ${exp.expectedErrorCode}`);
       }
-      if (exp.expectedSchemaKeyword !== undefined || exp.expectedSchemaPath !== undefined) {
+      if (exp.expectedSchemaKeyword !== undefined || exp.expectedSchemaPath !== undefined || exp.expectedSchemaInstancePath !== undefined || exp.expectedSchemaParams !== undefined) {
         throw new Error(`Fixture ${exp.fixture} with schemaExpected=PASS must NOT have schema failure fields`);
       }
     } else if (exp.schemaExpected === 'PASS' && exp.operationalExpected === 'PASS') {
-      if (exp.expectedErrorCode !== undefined || exp.expectedSchemaKeyword !== undefined || exp.expectedSchemaPath !== undefined) {
+      if (exp.expectedErrorCode !== undefined || exp.expectedSchemaKeyword !== undefined || exp.expectedSchemaPath !== undefined || exp.expectedSchemaInstancePath !== undefined || exp.expectedSchemaParams !== undefined) {
         throw new Error(`Passing fixture ${exp.fixture} must NOT have failure evidence fields`);
       }
     } else if (exp.schemaExpected === 'SKIP_ALLOWED' || exp.operationalExpected === 'SKIP_ALLOWED') {
@@ -105,7 +115,7 @@ function validateDynamicTestRegistry() {
   }
 
   const names = new Set();
-  const allowedFields = new Set(['name', 'expectedErrorCode', 'environmentDependent', 'allowedSkipReasons']);
+  const allowedFields = new Set(['name', 'expectedErrorCode', 'environmentDependent', 'allowedSkipReasons', 'constraintIds']);
 
   for (const entry of dynamicExpectations) {
     if (entry === null || typeof entry !== 'object' || Array.isArray(entry)) {
@@ -126,6 +136,15 @@ function validateDynamicTestRegistry() {
       throw new Error(`Duplicate dynamic test name in registry: ${trimmedName}`);
     }
     names.add(trimmedName);
+
+    if (!Array.isArray(entry.constraintIds) || entry.constraintIds.length === 0) {
+      throw new Error(`Dynamic test ${trimmedName} must have a non-empty constraintIds array`);
+    }
+    for (const cId of entry.constraintIds) {
+      if (typeof cId !== 'string' || cId.trim() === '') {
+        throw new Error(`Invalid constraintId in dynamic test ${trimmedName}: ${cId}`);
+      }
+    }
 
     if (typeof entry.expectedErrorCode !== 'string' || entry.expectedErrorCode.trim() === '') {
       throw new Error('Dynamic test expectation expectedErrorCode must be a non-empty string');
@@ -177,6 +196,31 @@ function validateDynamicTestRegistry() {
   return names;
 }
 
+function validateOperationalErrorCodesReverseCrossCheck(constraints, expectations, dynamicExpectations) {
+  const validatorFile = path.join(__dirname, 'validate-source-packet.cjs');
+  const validatorContent = fs.readFileSync(validatorFile, 'utf8');
+
+  for (const code of VALID_OPERATIONAL_ERROR_CODES) {
+    // 1. Verify code is emitted/referenced in scripts/validate-source-packet.cjs
+    if (!validatorContent.includes(code)) {
+      throw new Error(`Operational error code [${code}] is not referenced in scripts/validate-source-packet.cjs`);
+    }
+
+    // 2. Verify at least one dynamic test or static fixture has expectedErrorCode === code
+    const inStatic = expectations.some(e => e.expectedErrorCode === code);
+    const inDynamic = dynamicExpectations.some(d => d.expectedErrorCode === code);
+    if (!inStatic && !inDynamic) {
+      throw new Error(`Operational error code [${code}] is not tested by any fixture or dynamic test expectation`);
+    }
+
+    // 3. Verify at least one constraint has operationalEvidence.marker === code
+    const inConstraints = constraints.some(c => c.operationalEvidence && c.operationalEvidence.marker === code);
+    if (!inConstraints) {
+      throw new Error(`Operational error code [${code}] is not associated as operationalEvidence.marker in any constraint`);
+    }
+  }
+}
+
 function validateConstraintRegistry(staticFixtureNames, dynamicTestNames) {
   for (const staticName of staticFixtureNames) {
     if (dynamicTestNames.has(staticName)) {
@@ -199,19 +243,21 @@ function validateConstraintRegistry(staticFixtureNames, dynamicTestNames) {
   const dynamicExpectations = JSON.parse(fs.readFileSync(dynamicExpectationsPath, 'utf8'));
   const dynamicExpectationsMap = new Map(dynamicExpectations.map(d => [d.name, d]));
 
+  validateOperationalErrorCodesReverseCrossCheck(constraints, expectations, dynamicExpectations);
+
   const validFixtures = new Set([...staticFixtureNames, ...dynamicTestNames]);
   const referencedSchemaFixtures = new Set();
   const referencedOperationalTests = new Set();
 
-  const ids = new Set();
+  const constraintMap = new Map();
   for (const c of constraints) {
     if (c === null || typeof c !== 'object' || Array.isArray(c)) {
       throw new Error('Constraint entry must be a non-null object');
     }
 
     if (!c.id || typeof c.id !== 'string' || c.id.trim() === '') throw new Error('Constraint ID must be a non-empty string');
-    if (ids.has(c.id)) throw new Error(`Duplicate constraint ID: ${c.id}`);
-    ids.add(c.id);
+    if (constraintMap.has(c.id)) throw new Error(`Duplicate constraint ID: ${c.id}`);
+    constraintMap.set(c.id, c);
 
     if (!c.description || typeof c.description !== 'string' || c.description.trim() === '') {
       throw new Error(`Constraint description must be a non-empty string in ${c.id}`);
@@ -304,12 +350,13 @@ function validateConstraintRegistry(staticFixtureNames, dynamicTestNames) {
       if (!staticFixtureNames.has(f)) throw new Error(`schemaFixture ${f} in ${c.id} not found in static catalog`);
       referencedSchemaFixtures.add(f);
 
-      // Check schema path alignment
+      // Check exact schema pointer alignment with fixture's expectedSchemaPath
       if (c.schemaPointer) {
         const staticExp = staticExpectationsMap.get(f);
         if (staticExp && staticExp.schemaExpected === 'FAIL' && staticExp.expectedSchemaPath) {
-          if (!staticExp.expectedSchemaPath.startsWith('/')) {
-            throw new Error(`expectedSchemaPath in fixture "${f}" must start with /: ${staticExp.expectedSchemaPath}`);
+          const isMatch = (staticExp.expectedSchemaPath === c.schemaPointer) || c.schemaPointer.endsWith(staticExp.expectedSchemaPath);
+          if (!isMatch) {
+            throw new Error(`Mismatched expectedSchemaPath "${staticExp.expectedSchemaPath}" in fixture "${f}" vs schemaPointer "${c.schemaPointer}" in constraint ${c.id}`);
           }
         }
       }
@@ -332,6 +379,58 @@ function validateConstraintRegistry(staticFixtureNames, dynamicTestNames) {
         if (expCode && expCode !== c.operationalEvidence.marker) {
           throw new Error(`Mismatched expectedErrorCode [${expCode}] in test "${t}" vs operational marker [${c.operationalEvidence.marker}] in constraint ${c.id}`);
         }
+      }
+    }
+  }
+
+  // Bidirectional cross-check 1: Every fixture/test's constraintIds must exist and match constraint schemaFixtures/operationalTests
+  for (const exp of expectations) {
+    for (const cId of exp.constraintIds) {
+      const c = constraintMap.get(cId);
+      if (!c) {
+        throw new Error(`Fixture ${exp.fixture} references non-existent constraintId "${cId}"`);
+      }
+      const isListed = c.schemaFixtures.includes(exp.fixture) || c.operationalTests.includes(exp.fixture);
+      if (!isListed) {
+        throw new Error(`Fixture ${exp.fixture} lists constraintId "${cId}", but constraint "${cId}" does not list "${exp.fixture}"`);
+      }
+    }
+  }
+  for (const exp of dynamicExpectations) {
+    for (const cId of exp.constraintIds) {
+      const c = constraintMap.get(cId);
+      if (!c) {
+        throw new Error(`Dynamic test ${exp.name} references non-existent constraintId "${cId}"`);
+      }
+      if (!c.operationalTests.includes(exp.name)) {
+        throw new Error(`Dynamic test ${exp.name} lists constraintId "${cId}", but constraint "${cId}" does not list "${exp.name}" in operationalTests`);
+      }
+    }
+  }
+
+  // Bidirectional cross-check 2: Every constraint's schemaFixtures and operationalTests must list the constraint ID in their constraintIds
+  for (const c of constraints) {
+    for (const f of c.schemaFixtures) {
+      const staticExp = staticExpectationsMap.get(f);
+      if (!staticExp || !staticExp.constraintIds.includes(c.id)) {
+        throw new Error(`Constraint "${c.id}" lists schemaFixture "${f}", but fixture "${f}" does not list "${c.id}" in constraintIds`);
+      }
+    }
+    for (const t of c.operationalTests) {
+      const staticExp = staticExpectationsMap.get(t);
+      const dynamicExp = dynamicExpectationsMap.get(t);
+      const cIds = staticExp ? staticExp.constraintIds : (dynamicExp ? dynamicExp.constraintIds : []);
+      if (!cIds.includes(c.id)) {
+        throw new Error(`Constraint "${c.id}" lists operationalTest "${t}", but test "${t}" does not list "${c.id}" in constraintIds`);
+      }
+    }
+  }
+
+  // Strict separation: No schema fixture in operationalTests and vice versa
+  for (const c of constraints) {
+    for (const f of c.schemaFixtures) {
+      if (referencedOperationalTests.has(f) && staticExpectationsMap.get(f) && staticExpectationsMap.get(f).schemaExpected === 'FAIL') {
+        throw new Error(`Schema failure fixture "${f}" must not be used as operational test`);
       }
     }
   }

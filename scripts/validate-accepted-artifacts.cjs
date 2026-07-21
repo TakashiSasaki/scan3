@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { REQUIRED_ACCEPTED_ARTIFACTS } = require('./lib/required-accepted-artifacts.cjs');
 
 function validateArtifactPath(entry) {
   if (typeof entry !== 'string' || entry.trim() === '') {
@@ -40,31 +41,7 @@ if (require.main === module) {
     process.exit(1);
   }
 
-  const REQUIRED_ENTRIES = [
-    'reconstruction/accepted-artifacts.json',
-    'scripts/validate-accepted-artifacts.cjs',
-    'policy/regression-prevention.md',
-    'policy/decision-gates.md',
-    'AGENTS.md',
-    'README.md',
-    'package.json',
-    'package-lock.json',
-    '.github/workflows/verify-reconstruction.yml',
-    'reconstruction/source-packet-constraints.json',
-    'reconstruction/source-packet-fixture-expectations.json',
-    'reconstruction/source-packet-dynamic-test-expectations.json',
-    'docs/reconstruction/stride-2a-6-audit-addendum.md',
-    'docs/reconstruction/stride-2a-7-closeout.md',
-    'docs/reconstruction/stride-2a-7-audit-addendum.md',
-    'docs/reconstruction/stride-2a-8-closeout.md',
-    'scripts/test-source-packet-validator.cjs',
-    'scripts/test-source-packet-schema.cjs',
-    'scripts/validate-source-packet-contract.cjs',
-    'scripts/validate-agent-skills.cjs',
-    'scripts/validate-ci-workflow.cjs',
-    'scripts/validate-control-registries.cjs',
-    'reconstruction/agent-skills.json'
-  ];
+  const REQUIRED_ENTRIES = REQUIRED_ACCEPTED_ARTIFACTS;
 
   const rootDir = path.resolve(__dirname, '..');
   const seen = new Set();

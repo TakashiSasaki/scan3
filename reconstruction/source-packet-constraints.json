@@ -6,7 +6,6 @@
     "schemaPointer": "/additionalProperties",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-unknown-top-level-property"
     ],
     "operationalTests": [],
@@ -19,7 +18,6 @@
     "schemaPointer": "/definitions/sourceDescriptor/additionalProperties",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-unknown-source-property"
     ],
     "operationalTests": [],
@@ -32,7 +30,6 @@
     "schemaPointer": "/definitions/destinationDescriptor/additionalProperties",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-unknown-destination-property"
     ],
     "operationalTests": [],
@@ -45,7 +42,6 @@
     "schemaPointer": "/definitions/fileEntry/additionalProperties",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-unknown-file-property"
     ],
     "operationalTests": [],
@@ -58,7 +54,6 @@
     "schemaPointer": "/definitions/ownerDecision/additionalProperties",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-unknown-owner-decision-property"
     ],
     "operationalTests": [],
@@ -92,6 +87,21 @@
       "invalid-whitespace-path"
     ],
     "operationalTests": [],
+    "status": "implemented"
+  },
+  {
+    "id": "C-PATH-RAW",
+    "description": "Direct JS-level raw relative path validation defense-in-depth",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "PATH_INVALID"
+    },
+    "schemaFixtures": [],
+    "operationalTests": [
+      "invalid-raw-relative-path"
+    ],
     "status": "implemented"
   },
   {
@@ -287,34 +297,76 @@
     "schemaPointer": "/required",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-missing-top-level-field",
       "invalid-missing-format-version",
       "invalid-missing-purpose",
       "invalid-missing-source",
       "invalid-missing-destination",
       "invalid-missing-files",
-      "invalid-missing-owner-decisions",
-      "invalid-file-entry-type",
+      "invalid-missing-owner-decisions"
+    ],
+    "operationalTests": [],
+    "status": "implemented"
+  },
+  {
+    "id": "C-REQ-FILE-OBJ",
+    "description": "File entry must be an object",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/fileEntry/type",
+    "operationalEvidence": null,
+    "schemaFixtures": [
+      "invalid-file-entry-type"
+    ],
+    "operationalTests": [],
+    "status": "implemented"
+  },
+  {
+    "id": "C-REQ-OWNER-OBJ",
+    "description": "Owner decision must be an object",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/ownerDecision/type",
+    "operationalEvidence": null,
+    "schemaFixtures": [
       "invalid-owner-decision-array"
     ],
     "operationalTests": [],
     "status": "implemented"
   },
   {
-    "id": "C-TYPE-STR",
-    "description": "Non-blank string type",
+    "id": "C-TYPE-STR-TYPE",
+    "description": "Non-blank string type check",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/nonBlankString",
+    "schemaPointer": "/definitions/nonBlankString/type",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-packet-id-type",
       "invalid-purpose-type",
-      "invalid-source-repository-type",
-      "invalid-empty-string",
-      "invalid-blank-string",
+      "invalid-source-repository-type"
+    ],
+    "operationalTests": [],
+    "status": "implemented"
+  },
+  {
+    "id": "C-TYPE-NOTES-TYPE",
+    "description": "Notes property string type check",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/fileEntry/properties/notes/type",
+    "operationalEvidence": null,
+    "schemaFixtures": [
       "invalid-notes-type"
+    ],
+    "operationalTests": [],
+    "status": "implemented"
+  },
+  {
+    "id": "C-TYPE-STR-PATTERN",
+    "description": "Non-blank string pattern check",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/nonBlankString/pattern",
+    "operationalEvidence": null,
+    "schemaFixtures": [
+      "invalid-empty-string",
+      "invalid-blank-string"
     ],
     "operationalTests": [],
     "status": "implemented"
@@ -326,7 +378,6 @@
     "schemaPointer": "/definitions/fullCommitSha/pattern",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-commit-sha"
     ],
     "operationalTests": [],
@@ -339,22 +390,42 @@
     "schemaPointer": "/definitions/sha256/pattern",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-sha256-format"
     ],
     "operationalTests": [],
     "status": "implemented"
   },
   {
-    "id": "C-TYPE-INT",
-    "description": "Safe integer for sizeBytes",
+    "id": "C-TYPE-INT-TYPE",
+    "description": "Integer type check for sizeBytes",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/fileEntry/properties/sizeBytes",
+    "schemaPointer": "/definitions/fileEntry/properties/sizeBytes/type",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
-      "invalid-noninteger-size",
-      "invalid-negative-size",
+      "invalid-noninteger-size"
+    ],
+    "operationalTests": [],
+    "status": "implemented"
+  },
+  {
+    "id": "C-TYPE-INT-MIN",
+    "description": "Minimum value check for sizeBytes",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/fileEntry/properties/sizeBytes/minimum",
+    "operationalEvidence": null,
+    "schemaFixtures": [
+      "invalid-negative-size"
+    ],
+    "operationalTests": [],
+    "status": "implemented"
+  },
+  {
+    "id": "C-TYPE-INT-MAX",
+    "description": "Maximum value check for sizeBytes",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/fileEntry/properties/sizeBytes/maximum",
+    "operationalEvidence": null,
+    "schemaFixtures": [
       "invalid-large-size"
     ],
     "operationalTests": [],
@@ -364,10 +435,9 @@
     "id": "C-ENUM-DISP",
     "description": "Disposition enum",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/fileEntry/properties/disposition",
+    "schemaPointer": "/definitions/fileEntry/properties/disposition/enum",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-disposition"
     ],
     "operationalTests": [],
@@ -377,10 +447,9 @@
     "id": "C-REQ-OWNER",
     "description": "Owner decision missing value",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/ownerDecision",
+    "schemaPointer": "/definitions/ownerDecision/required",
     "operationalEvidence": null,
     "schemaFixtures": [
-      "minimal",
       "invalid-missing-owner-value"
     ],
     "operationalTests": [],

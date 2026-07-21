@@ -157,6 +157,10 @@ const dynamicTestSetups = {
       "intendedDestination": "test.txt"
     }]};
     fs.writeFileSync(path.join(packetDir, 'manifest.json'), JSON.stringify(manifest));
+  },
+  'invalid-raw-relative-path': (packetDir, payloadDir) => {
+    const { validateRawRelativePath } = require('./validate-source-packet.cjs');
+    validateRawRelativePath('\0invalid-path', 'sourcePath');
   }
 };
 
@@ -290,6 +294,19 @@ if (require.main === module) {
       }
       
       if (setupError) {
+        let actualCode = null;
+        if (setupError.code) {
+          actualCode = setupError.code;
+        } else if (setupError.message) {
+          const match = setupError.message.match(/\[([A-Z0-9_]+)\]/);
+          if (match) actualCode = match[1];
+        }
+        if (actualCode && actualCode === expectedErrorCode) {
+          passed++;
+          logTest(name, 'PASS');
+          continue;
+        }
+
         const isAllowedSkip = environmentDependent && allowedSkipReasons.includes(setupError.message);
         if (isAllowedSkip) {
           skipped++;

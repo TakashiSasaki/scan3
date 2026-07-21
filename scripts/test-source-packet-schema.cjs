@@ -8,6 +8,18 @@ const fixturesDir = path.join(__dirname, "..", "reconstruction", "examples");
 
 const validator = createValidator();
 
+function deepEqual(a, b) {
+  if (a === b) return true;
+  if (typeof a !== 'object' || a === null || typeof b !== 'object' || b === null) return false;
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (const key of keysA) {
+    if (!keysB.includes(key) || !deepEqual(a[key], b[key])) return false;
+  }
+  return true;
+}
+
 let failed = 0;
 
 for (const exp of expectations) {
@@ -32,16 +44,20 @@ for (const exp of expectations) {
     } else {
       const expectedKeyword = exp.expectedSchemaKeyword;
       const expectedPathClean = exp.expectedSchemaPath ? exp.expectedSchemaPath.replace(/^#/, '') : null;
+      const expectedInstancePath = exp.expectedSchemaInstancePath !== undefined ? exp.expectedSchemaInstancePath : null;
+      const expectedParams = exp.expectedSchemaParams !== undefined ? exp.expectedSchemaParams : null;
 
       const hasExactMatchingError = errors && errors.some(err => {
         const errPathClean = (err.schemaPath || '').replace(/^#/, '');
         const keywordMatch = !expectedKeyword || err.keyword === expectedKeyword;
         const pathMatch = !expectedPathClean || errPathClean === expectedPathClean;
-        return keywordMatch && pathMatch;
+        const instanceMatch = expectedInstancePath === null || err.instancePath === expectedInstancePath;
+        const paramsMatch = expectedParams === null || deepEqual(err.params, expectedParams);
+        return keywordMatch && pathMatch && instanceMatch && paramsMatch;
       });
 
       if (!hasExactMatchingError) {
-        console.error(`[FAIL] ${exp.fixture} expected schema FAIL with exact keyword="${expectedKeyword}" and path="${expectedPathClean}", but got errors:`);
+        console.error(`[FAIL] ${exp.fixture} expected schema FAIL with exact keyword="${expectedKeyword}", path="${expectedPathClean}", instancePath="${expectedInstancePath}", params=${JSON.stringify(expectedParams)}, but got errors:`);
         console.error(JSON.stringify(errors, null, 2));
         failed++;
       } else {

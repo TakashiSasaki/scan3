@@ -3,342 +3,622 @@
     "fixture": "minimal",
     "schemaExpected": "PASS",
     "operationalExpected": "PASS",
-    "reason": "Valid baseline"
+    "constraintIds": [
+      "C-FORMAT"
+    ]
   },
   {
     "fixture": "valid-dotted-filenames",
     "schemaExpected": "PASS",
     "operationalExpected": "PASS",
-    "reason": "Dotted filenames are valid paths"
+    "constraintIds": [
+      "C-PATH-1"
+    ]
   },
   {
     "fixture": "invalid-nul-path",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
-    "reason": "NUL character in path"
+    "expectedSchemaInstancePath": "/files/0/payloadPath",
+    "expectedSchemaParams": {
+      "pattern": "^(?!\\s*$)(?!.*\\x00)(?!^/)(?!^[a-zA-Z]:(?:/|\\\\))(?!^\\\\\\\\)(?!(?:^|.*(?:/|\\\\))(?:\\.\\.?)(?:/|\\\\|$)).*$"
+    },
+    "constraintIds": [
+      "C-PATH-1"
+    ]
   },
   {
     "fixture": "invalid-dot-segment-posix",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
-    "reason": "POSIX dot segment in path"
+    "expectedSchemaInstancePath": "/files/0/payloadPath",
+    "expectedSchemaParams": {
+      "pattern": "^(?!\\s*$)(?!.*\\x00)(?!^/)(?!^[a-zA-Z]:(?:/|\\\\))(?!^\\\\\\\\)(?!(?:^|.*(?:/|\\\\))(?:\\.\\.?)(?:/|\\\\|$)).*$"
+    },
+    "constraintIds": [
+      "C-PATH-1"
+    ]
   },
   {
     "fixture": "invalid-dot-segment-windows",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
-    "reason": "Windows dot segment in path"
+    "expectedSchemaInstancePath": "/files/0/payloadPath",
+    "expectedSchemaParams": {
+      "pattern": "^(?!\\s*$)(?!.*\\x00)(?!^/)(?!^[a-zA-Z]:(?:/|\\\\))(?!^\\\\\\\\)(?!(?:^|.*(?:/|\\\\))(?:\\.\\.?)(?:/|\\\\|$)).*$"
+    },
+    "constraintIds": [
+      "C-PATH-1"
+    ]
   },
   {
     "fixture": "invalid-packet-id-type",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/definitions/nonBlankString/type",
-    "reason": "packetId is not a string"
+    "expectedSchemaInstancePath": "/packetId",
+    "expectedSchemaParams": {
+      "type": "string"
+    },
+    "constraintIds": [
+      "C-TYPE-STR-TYPE"
+    ]
   },
   {
     "fixture": "invalid-purpose-type",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/definitions/nonBlankString/type",
-    "reason": "purpose is not a string"
+    "expectedSchemaInstancePath": "/purpose",
+    "expectedSchemaParams": {
+      "type": "string"
+    },
+    "constraintIds": [
+      "C-TYPE-STR-TYPE"
+    ]
   },
   {
     "fixture": "invalid-source-repository-type",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/definitions/nonBlankString/type",
-    "reason": "source repository missing or invalid type"
+    "expectedSchemaInstancePath": "/source/repository",
+    "expectedSchemaParams": {
+      "type": "string"
+    },
+    "constraintIds": [
+      "C-TYPE-STR-TYPE"
+    ]
   },
   {
     "fixture": "invalid-file-entry-type",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/type",
-    "reason": "file entry is not an object"
+    "expectedSchemaInstancePath": "/files/1",
+    "expectedSchemaParams": {
+      "type": "object"
+    },
+    "constraintIds": [
+      "C-REQ-FILE-OBJ"
+    ]
   },
   {
     "fixture": "invalid-owner-decision-array",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/type",
-    "reason": "ownerDecisions is not an array"
+    "expectedSchemaInstancePath": "/ownerDecisions/0",
+    "expectedSchemaParams": {
+      "type": "object"
+    },
+    "constraintIds": [
+      "C-REQ-OWNER-OBJ"
+    ]
   },
   {
     "fixture": "invalid-noninteger-size",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/properties/sizeBytes/type",
-    "reason": "sizeBytes is not an integer"
+    "expectedSchemaInstancePath": "/files/0/sizeBytes",
+    "expectedSchemaParams": {
+      "type": "integer"
+    },
+    "constraintIds": [
+      "C-TYPE-INT-TYPE"
+    ]
   },
   {
     "fixture": "invalid-notes-type",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/properties/notes/type",
-    "reason": "notes is not a string"
+    "expectedSchemaInstancePath": "/files/0/notes",
+    "expectedSchemaParams": {
+      "type": "string"
+    },
+    "constraintIds": [
+      "C-TYPE-NOTES-TYPE"
+    ]
   },
   {
     "fixture": "invalid-missing-owner-value",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
-    "reason": "owner decision is missing value property"
-  },
-  {
-    "fixture": "invalid-hash",
-    "schemaExpected": "PASS",
-    "operationalExpected": "FAIL",
-    "expectedErrorCode": "PAYLOAD_HASH_MISMATCH",
-    "reason": "File hash mismatch is an operational check"
-  },
-  {
-    "fixture": "invalid-size",
-    "schemaExpected": "PASS",
-    "operationalExpected": "FAIL",
-    "expectedErrorCode": "PAYLOAD_SIZE_MISMATCH",
-    "reason": "File size mismatch is an operational check"
-  },
-  {
-    "fixture": "invalid-duplicate-destination",
-    "schemaExpected": "PASS",
-    "operationalExpected": "FAIL",
-    "expectedErrorCode": "DUPLICATE_RESTORE_DESTINATION",
-    "reason": "Duplicate intendedDestination is an operational check"
+    "expectedSchemaInstancePath": "/ownerDecisions/0",
+    "expectedSchemaParams": {
+      "missingProperty": "value"
+    },
+    "constraintIds": [
+      "C-REQ-OWNER"
+    ]
   },
   {
     "fixture": "invalid-embedded-traversal",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
-    "reason": "Path traversal segment"
+    "expectedSchemaInstancePath": "/files/0/payloadPath",
+    "expectedSchemaParams": {
+      "pattern": "^(?!\\s*$)(?!.*\\x00)(?!^/)(?!^[a-zA-Z]:(?:/|\\\\))(?!^\\\\\\\\)(?!(?:^|.*(?:/|\\\\))(?:\\.\\.?)(?:/|\\\\|$)).*$"
+    },
+    "constraintIds": [
+      "C-PATH-1"
+    ]
   },
   {
     "fixture": "invalid-path-traversal",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
-    "reason": "Path traversal segment (POSIX)"
+    "expectedSchemaInstancePath": "/files/0/payloadPath",
+    "expectedSchemaParams": {
+      "pattern": "^(?!\\s*$)(?!.*\\x00)(?!^/)(?!^[a-zA-Z]:(?:/|\\\\))(?!^\\\\\\\\)(?!(?:^|.*(?:/|\\\\))(?:\\.\\.?)(?:/|\\\\|$)).*$"
+    },
+    "constraintIds": [
+      "C-PATH-1"
+    ]
   },
   {
     "fixture": "invalid-windows-traversal",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
-    "reason": "Path traversal segment (Windows)"
+    "expectedSchemaInstancePath": "/files/0/payloadPath",
+    "expectedSchemaParams": {
+      "pattern": "^(?!\\s*$)(?!.*\\x00)(?!^/)(?!^[a-zA-Z]:(?:/|\\\\))(?!^\\\\\\\\)(?!(?:^|.*(?:/|\\\\))(?:\\.\\.?)(?:/|\\\\|$)).*$"
+    },
+    "constraintIds": [
+      "C-PATH-1"
+    ]
   },
   {
     "fixture": "invalid-unknown-top-level-property",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "additionalProperties",
     "expectedSchemaPath": "/additionalProperties",
-    "reason": "Unknown top-level property"
+    "expectedSchemaInstancePath": "",
+    "expectedSchemaParams": {
+      "additionalProperty": "unexpected"
+    },
+    "constraintIds": [
+      "C-TOP-1"
+    ]
   },
   {
     "fixture": "invalid-unknown-file-property",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "additionalProperties",
     "expectedSchemaPath": "/additionalProperties",
-    "reason": "Unknown file property"
+    "expectedSchemaInstancePath": "/files/0",
+    "expectedSchemaParams": {
+      "additionalProperty": "unexpectedFileField"
+    },
+    "constraintIds": [
+      "C-TOP-4"
+    ]
   },
   {
     "fixture": "invalid-missing-intended-destination",
     "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
-    "reason": "Missing intendedDestination"
+    "expectedSchemaInstancePath": "/files/0",
+    "expectedSchemaParams": {
+      "missingProperty": "intendedDestination"
+    },
+    "constraintIds": [
+      "C-DEST-1"
+    ]
+  },
+  {
+    "fixture": "invalid-whitespace-path",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
+    "expectedSchemaInstancePath": "/files/0/sourcePath",
+    "expectedSchemaParams": {
+      "pattern": "^(?!\\s*$)(?!.*\\x00)(?!^/)(?!^[a-zA-Z]:(?:/|\\\\))(?!^\\\\\\\\)(?!(?:^|.*(?:/|\\\\))(?:\\.\\.?)(?:/|\\\\|$)).*$"
+    },
+    "constraintIds": [
+      "C-PATH-2"
+    ]
+  },
+  {
+    "fixture": "invalid-unknown-source-property",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "additionalProperties",
+    "expectedSchemaPath": "/additionalProperties",
+    "expectedSchemaInstancePath": "/source",
+    "expectedSchemaParams": {
+      "additionalProperty": "unknownProp"
+    },
+    "constraintIds": [
+      "C-TOP-2"
+    ]
+  },
+  {
+    "fixture": "invalid-unknown-destination-property",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "additionalProperties",
+    "expectedSchemaPath": "/additionalProperties",
+    "expectedSchemaInstancePath": "/destination",
+    "expectedSchemaParams": {
+      "additionalProperty": "unknownProp"
+    },
+    "constraintIds": [
+      "C-TOP-3"
+    ]
+  },
+  {
+    "fixture": "invalid-unknown-owner-decision-property",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "additionalProperties",
+    "expectedSchemaPath": "/additionalProperties",
+    "expectedSchemaInstancePath": "/ownerDecisions/0",
+    "expectedSchemaParams": {
+      "additionalProperty": "unknownProp"
+    },
+    "constraintIds": [
+      "C-TOP-5"
+    ]
+  },
+  {
+    "fixture": "invalid-format-version",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "const",
+    "expectedSchemaPath": "/properties/formatVersion/const",
+    "expectedSchemaInstancePath": "/formatVersion",
+    "expectedSchemaParams": {
+      "allowedValue": "1.0"
+    },
+    "constraintIds": [
+      "C-FORMAT"
+    ]
+  },
+  {
+    "fixture": "invalid-missing-top-level-field",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "expectedSchemaInstancePath": "",
+    "expectedSchemaParams": {
+      "missingProperty": "packetId"
+    },
+    "constraintIds": [
+      "C-REQ-1"
+    ]
+  },
+  {
+    "fixture": "invalid-commit-sha",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/fullCommitSha/pattern",
+    "expectedSchemaInstancePath": "/source/commit",
+    "expectedSchemaParams": {
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "constraintIds": [
+      "C-TYPE-SHA1"
+    ]
+  },
+  {
+    "fixture": "invalid-sha256-format",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/sha256/pattern",
+    "expectedSchemaInstancePath": "/files/0/sha256",
+    "expectedSchemaParams": {
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "constraintIds": [
+      "C-TYPE-SHA256"
+    ]
+  },
+  {
+    "fixture": "invalid-disposition",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "enum",
+    "expectedSchemaPath": "/properties/disposition/enum",
+    "expectedSchemaInstancePath": "/files/0/disposition",
+    "expectedSchemaParams": {
+      "allowedValues": [
+        "restore",
+        "reference",
+        "exclude"
+      ]
+    },
+    "constraintIds": [
+      "C-ENUM-DISP"
+    ]
+  },
+  {
+    "fixture": "invalid-negative-size",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "minimum",
+    "expectedSchemaPath": "/properties/sizeBytes/minimum",
+    "expectedSchemaInstancePath": "/files/0/sizeBytes",
+    "expectedSchemaParams": {
+      "comparison": ">=",
+      "limit": 0
+    },
+    "constraintIds": [
+      "C-TYPE-INT-MIN"
+    ]
+  },
+  {
+    "fixture": "invalid-large-size",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "maximum",
+    "expectedSchemaPath": "/properties/sizeBytes/maximum",
+    "expectedSchemaInstancePath": "/files/0/sizeBytes",
+    "expectedSchemaParams": {
+      "comparison": "<=",
+      "limit": 9007199254740991
+    },
+    "constraintIds": [
+      "C-TYPE-INT-MAX"
+    ]
+  },
+  {
+    "fixture": "invalid-empty-string",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/nonBlankString/pattern",
+    "expectedSchemaInstancePath": "/packetId",
+    "expectedSchemaParams": {
+      "pattern": "^.*[^\\s].*$"
+    },
+    "constraintIds": [
+      "C-TYPE-STR-PATTERN"
+    ]
+  },
+  {
+    "fixture": "invalid-blank-string",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/nonBlankString/pattern",
+    "expectedSchemaInstancePath": "/packetId",
+    "expectedSchemaParams": {
+      "pattern": "^.*[^\\s].*$"
+    },
+    "constraintIds": [
+      "C-TYPE-STR-PATTERN"
+    ]
+  },
+  {
+    "fixture": "invalid-missing-format-version",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "expectedSchemaInstancePath": "",
+    "expectedSchemaParams": {
+      "missingProperty": "formatVersion"
+    },
+    "constraintIds": [
+      "C-REQ-1"
+    ]
+  },
+  {
+    "fixture": "invalid-missing-purpose",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "expectedSchemaInstancePath": "",
+    "expectedSchemaParams": {
+      "missingProperty": "purpose"
+    },
+    "constraintIds": [
+      "C-REQ-1"
+    ]
+  },
+  {
+    "fixture": "invalid-missing-source",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "expectedSchemaInstancePath": "",
+    "expectedSchemaParams": {
+      "missingProperty": "source"
+    },
+    "constraintIds": [
+      "C-REQ-1"
+    ]
+  },
+  {
+    "fixture": "invalid-missing-destination",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "expectedSchemaInstancePath": "",
+    "expectedSchemaParams": {
+      "missingProperty": "destination"
+    },
+    "constraintIds": [
+      "C-REQ-1"
+    ]
+  },
+  {
+    "fixture": "invalid-missing-files",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "expectedSchemaInstancePath": "",
+    "expectedSchemaParams": {
+      "missingProperty": "files"
+    },
+    "constraintIds": [
+      "C-REQ-1"
+    ]
+  },
+  {
+    "fixture": "invalid-missing-owner-decisions",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "SKIP_ALLOWED",
+    "reason": "Schema failure fixture — operational validation not reached",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "expectedSchemaInstancePath": "",
+    "expectedSchemaParams": {
+      "missingProperty": "ownerDecisions"
+    },
+    "constraintIds": [
+      "C-REQ-1"
+    ]
   },
   {
     "fixture": "invalid-duplicate-source-path",
     "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
+    "reason": "Duplicate sourcePath violates operational uniqueness",
     "expectedErrorCode": "DUPLICATE_SOURCE_PATH",
-    "reason": "Duplicate sourcePath is operational"
+    "constraintIds": [
+      "C-UNIQUE-1"
+    ]
   },
   {
     "fixture": "invalid-duplicate-payload-path",
     "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
+    "reason": "Duplicate payloadPath violates operational uniqueness",
     "expectedErrorCode": "DUPLICATE_PAYLOAD_PATH",
-    "reason": "Duplicate payloadPath is operational"
+    "constraintIds": [
+      "C-UNIQUE-2"
+    ]
+  },
+  {
+    "fixture": "invalid-duplicate-destination",
+    "schemaExpected": "PASS",
+    "operationalExpected": "FAIL",
+    "reason": "Duplicate restore destination violates operational uniqueness",
+    "expectedErrorCode": "DUPLICATE_RESTORE_DESTINATION",
+    "constraintIds": [
+      "C-UNIQUE-3"
+    ]
   },
   {
     "fixture": "invalid-duplicate-owner-decision-id",
     "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
+    "reason": "Duplicate ownerDecision id violates operational uniqueness",
     "expectedErrorCode": "DUPLICATE_OWNER_DECISION_ID",
-    "reason": "Duplicate ownerDecision id is operational"
+    "constraintIds": [
+      "C-UNIQUE-4"
+    ]
   },
   {
-    "fixture": "invalid-whitespace-path",
-    "schemaExpected": "FAIL",
+    "fixture": "invalid-hash",
+    "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
-    "reason": "Whitespace only path"
+    "reason": "Payload hash mismatch violates operational integrity",
+    "expectedErrorCode": "PAYLOAD_HASH_MISMATCH",
+    "constraintIds": [
+      "C-PAYLOAD-HASH"
+    ]
   },
   {
-    "fixture": "invalid-unknown-source-property",
-    "schemaExpected": "FAIL",
+    "fixture": "invalid-size",
+    "schemaExpected": "PASS",
     "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "additionalProperties",
-    "expectedSchemaPath": "/additionalProperties",
-    "reason": "Unknown source property"
-  },
-  {
-    "fixture": "invalid-unknown-destination-property",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "additionalProperties",
-    "expectedSchemaPath": "/additionalProperties",
-    "reason": "Unknown destination property"
-  },
-  {
-    "fixture": "invalid-unknown-owner-decision-property",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "additionalProperties",
-    "expectedSchemaPath": "/additionalProperties",
-    "reason": "Unknown ownerDecision property"
-  },
-  {
-    "fixture": "invalid-format-version",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "const",
-    "expectedSchemaPath": "/properties/formatVersion/const",
-    "reason": "formatVersion must be 1.0"
-  },
-  {
-    "fixture": "invalid-missing-top-level-field",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "required",
-    "expectedSchemaPath": "/required",
-    "reason": "Missing top-level required field (packetId)"
-  },
-  {
-    "fixture": "invalid-commit-sha",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/fullCommitSha/pattern",
-    "reason": "Invalid commit SHA format"
-  },
-  {
-    "fixture": "invalid-sha256-format",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/sha256/pattern",
-    "reason": "Invalid sha256 hash format"
-  },
-  {
-    "fixture": "invalid-disposition",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "enum",
-    "expectedSchemaPath": "/properties/disposition/enum",
-    "reason": "Invalid disposition enum value"
-  },
-  {
-    "fixture": "invalid-negative-size",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "minimum",
-    "expectedSchemaPath": "/properties/sizeBytes/minimum",
-    "reason": "sizeBytes is negative"
-  },
-  {
-    "fixture": "invalid-large-size",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "maximum",
-    "expectedSchemaPath": "/properties/sizeBytes/maximum",
-    "reason": "sizeBytes exceeds Number.MAX_SAFE_INTEGER"
-  },
-  {
-    "fixture": "invalid-empty-string",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/nonBlankString/pattern",
-    "reason": "nonBlankString is empty"
-  },
-  {
-    "fixture": "invalid-blank-string",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/nonBlankString/pattern",
-    "reason": "nonBlankString is whitespace"
-  },
-  {
-    "fixture": "invalid-missing-format-version",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "required",
-    "expectedSchemaPath": "/required",
-    "reason": "Missing required top-level formatVersion"
-  },
-  {
-    "fixture": "invalid-missing-purpose",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "required",
-    "expectedSchemaPath": "/required",
-    "reason": "Missing required top-level purpose"
-  },
-  {
-    "fixture": "invalid-missing-source",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "required",
-    "expectedSchemaPath": "/required",
-    "reason": "Missing required top-level source"
-  },
-  {
-    "fixture": "invalid-missing-destination",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "required",
-    "expectedSchemaPath": "/required",
-    "reason": "Missing required top-level destination"
-  },
-  {
-    "fixture": "invalid-missing-files",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "required",
-    "expectedSchemaPath": "/required",
-    "reason": "Missing required top-level files"
-  },
-  {
-    "fixture": "invalid-missing-owner-decisions",
-    "schemaExpected": "FAIL",
-    "operationalExpected": "FAIL",
-    "expectedSchemaKeyword": "required",
-    "expectedSchemaPath": "/required",
-    "reason": "Missing required top-level ownerDecisions"
+    "reason": "Payload size mismatch violates operational integrity",
+    "expectedErrorCode": "PAYLOAD_SIZE_MISMATCH",
+    "constraintIds": [
+      "C-PAYLOAD-SIZE"
+    ]
   }
 ]

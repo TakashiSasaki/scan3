@@ -77,6 +77,11 @@ These guidelines are not unique to the `scan3` project and are broadly applicabl
   - Passing fixtures forbid all failure evidence fields.
   - Skipped fixtures require an explicit non-empty `reason`.
 
+## Bidirectional Evidence Identity Binding
+- Static test fixture catalogs and dynamic operational test registries MUST explicitly declare associated `constraintIds`.
+- Control registry validators MUST enforce bidirectional consistency between declared constraints and registered test fixtures.
+- All operational error codes MUST be centralized and validated against constraint references.
+
 ## One-Way Export Baseline Guard
 - 一方向export前にworkspace baselineのsentinelを検査する。
 - baseline mismatch時はexportを停止する。
