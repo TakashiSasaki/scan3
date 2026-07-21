@@ -56,13 +56,34 @@ function resolveContainedPath(rootDir, relativePath, fieldName) {
 }
 
 function validateExistingRegularPayloadFile(payloadFullPath, payloadDirFullPath, payloadDirReal, fieldName) {
-  if (!fs.existsSync(payloadFullPath)) {
-    throw new OperationalError('PAYLOAD_FILE_MISSING', `Payload file not found for ${fieldName}: ${payloadFullPath}`);
+  let stat;
+  try {
+    stat = fs.lstatSync(payloadFullPath);
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      throw new OperationalError('PAYLOAD_FILE_MISSING', `Payload file not found for ${fieldName}: ${payloadFullPath}`);
+    }
+    throw e;
   }
+
+  if (stat.isSymbolicLink()) {
+    let realPath;
+    try {
+      realPath = fs.realpathSync(payloadFullPath);
+    } catch (e) {
+      throw new OperationalError('PAYLOAD_FILE_SYMLINK', `Payload is a dangling symbolic link for ${fieldName}: ${payloadFullPath}`);
+    }
+    if (!realPath.startsWith(payloadDirReal + path.sep) && realPath !== payloadDirReal) {
+      throw new OperationalError('PAYLOAD_REALPATH_ESCAPE', `Payload real path escapes payload root for ${fieldName}: ${payloadFullPath}`);
+    }
+    throw new OperationalError('PAYLOAD_FILE_SYMLINK', `Payload is a symbolic link for ${fieldName}: ${payloadFullPath}`);
+  }
+
   const payloadFileReal = fs.realpathSync(payloadFullPath);
   if (!payloadFileReal.startsWith(payloadDirReal + path.sep)) {
     throw new OperationalError('PAYLOAD_REALPATH_ESCAPE', `Payload real path escapes payload root for ${fieldName}: ${payloadFullPath}`);
   }
+
   let currentPath = path.dirname(payloadFullPath);
   while (currentPath !== payloadDirFullPath && currentPath !== path.parse(currentPath).root) {
     if (fs.lstatSync(currentPath).isSymbolicLink()) {
@@ -70,10 +91,7 @@ function validateExistingRegularPayloadFile(payloadFullPath, payloadDirFullPath,
     }
     currentPath = path.dirname(currentPath);
   }
-  const stat = fs.lstatSync(payloadFullPath);
-  if (stat.isSymbolicLink()) {
-    throw new OperationalError('PAYLOAD_FILE_SYMLINK', `Payload is a symbolic link for ${fieldName}: ${payloadFullPath}`);
-  }
+
   if (!stat.isFile()) {
     throw new OperationalError('PAYLOAD_NOT_REGULAR_FILE', `Payload is not a regular file for ${fieldName}: ${payloadFullPath}`);
   }
@@ -129,9 +147,16 @@ function validate() {
   }
 
   const payloadDirFullPath = path.resolve(packetDir, 'payload');
-  if (!fs.existsSync(payloadDirFullPath)) throw new OperationalError('PAYLOAD_ROOT_MISSING', `Payload root directory does not exist: ${payloadDirFullPath}`);
+  let payloadDirStat;
+  try {
+    payloadDirStat = fs.lstatSync(payloadDirFullPath);
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      throw new OperationalError('PAYLOAD_ROOT_MISSING', `Payload root directory does not exist: ${payloadDirFullPath}`);
+    }
+    throw e;
+  }
   
-  const payloadDirStat = fs.lstatSync(payloadDirFullPath);
   if (payloadDirStat.isSymbolicLink()) {
     throw new OperationalError('PAYLOAD_ROOT_SYMLINK', `Payload root directory must not be a symbolic link`);
   }

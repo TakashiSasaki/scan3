@@ -52,5 +52,10 @@
   ".agents/skills/scan3-source-packet-contract/SKILL.md",
   ".agents/skills/scan3-stride-audit-closeout/SKILL.md",
   "reconstruction/agent-skills.json",
-  "scripts/validate-control-registries.cjs"
+  "scripts/validate-control-registries.cjs",
+  "docs/reconstruction/stride-2a-5-audit-addendum.md",
+  "docs/reconstruction/stride-2a-6-closeout.md",
+  "docs/reconstruction/stride-2a-6-audit-addendum.md",
+  "docs/reconstruction/stride-2a-7-closeout.md",
+  "reconstruction/source-packet-dynamic-test-expectations.json"
 ]

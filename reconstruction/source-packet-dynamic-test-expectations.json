@@ -1,0 +1,86 @@
+[
+  {
+    "name": "invalid-payload-root-missing",
+    "expectedErrorCode": "PAYLOAD_ROOT_MISSING",
+    "environmentDependent": false,
+    "allowedSkipReasons": []
+  },
+  {
+    "name": "invalid-payload-root-symlink",
+    "expectedErrorCode": "PAYLOAD_ROOT_SYMLINK",
+    "environmentDependent": true,
+    "allowedSkipReasons": [
+      "symlink creation not supported"
+    ]
+  },
+  {
+    "name": "invalid-payload-root-dangling-symlink",
+    "expectedErrorCode": "PAYLOAD_ROOT_SYMLINK",
+    "environmentDependent": true,
+    "allowedSkipReasons": [
+      "symlink creation not supported"
+    ]
+  },
+  {
+    "name": "invalid-payload-root-not-directory",
+    "expectedErrorCode": "PAYLOAD_ROOT_NOT_DIRECTORY",
+    "environmentDependent": false,
+    "allowedSkipReasons": []
+  },
+  {
+    "name": "invalid-payload-file-missing",
+    "expectedErrorCode": "PAYLOAD_FILE_MISSING",
+    "environmentDependent": false,
+    "allowedSkipReasons": []
+  },
+  {
+    "name": "invalid-payload-file-symlink-outside",
+    "expectedErrorCode": "PAYLOAD_REALPATH_ESCAPE",
+    "environmentDependent": true,
+    "allowedSkipReasons": [
+      "symlink creation not supported"
+    ]
+  },
+  {
+    "name": "invalid-payload-file-symlink-inside",
+    "expectedErrorCode": "PAYLOAD_FILE_SYMLINK",
+    "environmentDependent": true,
+    "allowedSkipReasons": [
+      "symlink creation not supported"
+    ]
+  },
+  {
+    "name": "invalid-payload-file-dangling-symlink",
+    "expectedErrorCode": "PAYLOAD_FILE_SYMLINK",
+    "environmentDependent": true,
+    "allowedSkipReasons": [
+      "symlink creation not supported"
+    ]
+  },
+  {
+    "name": "invalid-payload-ancestor-symlink",
+    "expectedErrorCode": "PAYLOAD_ANCESTOR_SYMLINK",
+    "environmentDependent": true,
+    "allowedSkipReasons": [
+      "symlink creation not supported"
+    ]
+  },
+  {
+    "name": "invalid-payload-not-regular-file",
+    "expectedErrorCode": "PAYLOAD_NOT_REGULAR_FILE",
+    "environmentDependent": false,
+    "allowedSkipReasons": []
+  },
+  {
+    "name": "invalid-payload-size-mismatch",
+    "expectedErrorCode": "PAYLOAD_SIZE_MISMATCH",
+    "environmentDependent": false,
+    "allowedSkipReasons": []
+  },
+  {
+    "name": "invalid-payload-hash-mismatch",
+    "expectedErrorCode": "PAYLOAD_HASH_MISMATCH",
+    "environmentDependent": false,
+    "allowedSkipReasons": []
+  }
+]

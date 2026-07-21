@@ -113,7 +113,8 @@
       "marker": "PAYLOAD_ROOT_SYMLINK"
     },
     "fixtures": [
-      "invalid-payload-root-symlink"
+      "invalid-payload-root-symlink",
+      "invalid-payload-root-dangling-symlink"
     ],
     "status": "implemented"
   },
@@ -155,7 +156,6 @@
       "marker": "PAYLOAD_REALPATH_ESCAPE"
     },
     "fixtures": [
-      "symbolic-link-test",
       "invalid-payload-file-symlink-outside"
     ],
     "status": "implemented"
@@ -309,7 +309,7 @@
     "id": "C-TYPE-INT",
     "description": "Safe integer for sizeBytes",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/fileEntry/properties/sizeBytes/type",
+    "schemaPointer": "/definitions/fileEntry/properties/sizeBytes",
     "operationalEvidence": null,
     "fixtures": [
       "minimal",
@@ -332,7 +332,7 @@
     "id": "C-REQ-OWNER",
     "description": "Owner decision missing value",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/ownerDecision/properties/value",
+    "schemaPointer": "/definitions/ownerDecision/required",
     "operationalEvidence": null,
     "fixtures": [
       "minimal",
@@ -394,7 +394,8 @@
       "marker": "PAYLOAD_FILE_SYMLINK"
     },
     "fixtures": [
-      "invalid-payload-file-symlink-inside"
+      "invalid-payload-file-symlink-inside",
+      "invalid-payload-file-dangling-symlink"
     ],
     "status": "implemented"
   }
