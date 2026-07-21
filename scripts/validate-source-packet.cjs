@@ -3,6 +3,13 @@ const path = require('path');
 const crypto = require('crypto');
 const { createValidator } = require('./lib/source-packet-schema-validator.cjs');
 
+class OperationalError extends Error {
+  constructor(code, message) {
+    super(`[${code}] ${message}`);
+    this.code = code;
+  }
+}
+
 // Defensive assertion for file system security boundary.
 // Even though the schema checks regex, we perform JS-level path validation 
 // before touching the real filesystem to prevent subtle bypassing.
@@ -40,35 +47,35 @@ function validateRawRelativePath(pathValue, fieldName) {
 function resolveContainedPath(rootDir, relativePath, fieldName) {
   const resolved = path.resolve(rootDir, relativePath);
   if (!resolved.startsWith(rootDir + path.sep) && resolved !== rootDir) {
-    throw new Error(`${fieldName} escapes root directory: ${relativePath}`);
+    throw new OperationalError('PAYLOAD_REALPATH_ESCAPE', `${fieldName} escapes root directory: ${relativePath}`);
   }
   if (resolved === rootDir) {
-    throw new Error(`${fieldName} points to the root directory itself: ${relativePath}`);
+    throw new OperationalError('PAYLOAD_REALPATH_ESCAPE', `${fieldName} points to the root directory itself: ${relativePath}`);
   }
   return resolved;
 }
 
 function validateExistingRegularPayloadFile(payloadFullPath, payloadDirFullPath, payloadDirReal, fieldName) {
   if (!fs.existsSync(payloadFullPath)) {
-    throw new Error(`Payload file not found for ${fieldName}: ${payloadFullPath}`);
+    throw new OperationalError('PAYLOAD_FILE_MISSING', `Payload file not found for ${fieldName}: ${payloadFullPath}`);
   }
   const payloadFileReal = fs.realpathSync(payloadFullPath);
   if (!payloadFileReal.startsWith(payloadDirReal + path.sep)) {
-    throw new Error(`Payload real path escapes payload root for ${fieldName}: ${payloadFullPath}`);
+    throw new OperationalError('PAYLOAD_REALPATH_ESCAPE', `Payload real path escapes payload root for ${fieldName}: ${payloadFullPath}`);
   }
-  let currentPath = payloadFullPath;
+  let currentPath = path.dirname(payloadFullPath);
   while (currentPath !== payloadDirFullPath && currentPath !== path.parse(currentPath).root) {
     if (fs.lstatSync(currentPath).isSymbolicLink()) {
-       throw new Error(`Payload path contains symbolic link for ${fieldName}: ${payloadFullPath}`);
+       throw new OperationalError('PAYLOAD_ANCESTOR_SYMLINK', `Payload path contains symbolic link for ${fieldName}: ${payloadFullPath}`);
     }
     currentPath = path.dirname(currentPath);
   }
   const stat = fs.lstatSync(payloadFullPath);
-  if (!stat.isFile()) {
-    throw new Error(`Payload is not a regular file for ${fieldName}: ${payloadFullPath}`);
-  }
   if (stat.isSymbolicLink()) {
-    throw new Error(`Payload is a symbolic link for ${fieldName}: ${payloadFullPath}`);
+    throw new OperationalError('PAYLOAD_FILE_SYMLINK', `Payload is a symbolic link for ${fieldName}: ${payloadFullPath}`);
+  }
+  if (!stat.isFile()) {
+    throw new OperationalError('PAYLOAD_NOT_REGULAR_FILE', `Payload is not a regular file for ${fieldName}: ${payloadFullPath}`);
   }
   return stat;
 }
@@ -122,14 +129,14 @@ function validate() {
   }
 
   const payloadDirFullPath = path.resolve(packetDir, 'payload');
-  if (!fs.existsSync(payloadDirFullPath)) throw new Error(`Payload root directory does not exist: ${payloadDirFullPath}`);
+  if (!fs.existsSync(payloadDirFullPath)) throw new OperationalError('PAYLOAD_ROOT_MISSING', `Payload root directory does not exist: ${payloadDirFullPath}`);
   
   const payloadDirStat = fs.lstatSync(payloadDirFullPath);
   if (payloadDirStat.isSymbolicLink()) {
-    throw new Error(`Payload root directory must not be a symbolic link`);
+    throw new OperationalError('PAYLOAD_ROOT_SYMLINK', `Payload root directory must not be a symbolic link`);
   }
   if (!payloadDirStat.isDirectory()) {
-    throw new Error(`Payload root must be a directory`);
+    throw new OperationalError('PAYLOAD_ROOT_NOT_DIRECTORY', `Payload root must be a directory`);
   }
   const payloadDirReal = fs.realpathSync(payloadDirFullPath);
 
@@ -146,13 +153,13 @@ function validate() {
     const payloadFullPath = resolveContainedPath(payloadDirFullPath, file.payloadPath, 'payloadPath');
     const stat = validateExistingRegularPayloadFile(payloadFullPath, payloadDirFullPath, payloadDirReal, file.payloadPath);
 
-    if (stat.size !== file.sizeBytes) throw new Error(`Size mismatch for ${file.payloadPath}: expected ${file.sizeBytes}, got ${stat.size}`);
+    if (stat.size !== file.sizeBytes) throw new OperationalError('PAYLOAD_SIZE_MISMATCH', `Size mismatch for ${file.payloadPath}: expected ${file.sizeBytes}, got ${stat.size}`);
     
     const fileBuffer = fs.readFileSync(payloadFullPath);
     const hashSum = crypto.createHash('sha256');
     hashSum.update(fileBuffer);
     const hex = hashSum.digest('hex');
-    if (hex !== file.sha256) throw new Error(`SHA-256 mismatch for ${file.payloadPath}: expected ${file.sha256}, got ${hex}`);
+    if (hex !== file.sha256) throw new OperationalError('PAYLOAD_HASH_MISMATCH', `SHA-256 mismatch for ${file.payloadPath}: expected ${file.sha256}, got ${hex}`);
 
     if (file.intendedDestination) {
       validateRawRelativePath(file.intendedDestination, 'intendedDestination');

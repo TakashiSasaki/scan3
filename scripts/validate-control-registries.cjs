@@ -9,14 +9,14 @@ function validateFixtureCatalog() {
 
   const names = new Set();
   for (const exp of expectations) {
-    if (!exp.fixture || typeof exp.fixture !== 'string') throw new Error('Fixture name must be non-empty string');
+    if (!exp.fixture || typeof exp.fixture !== 'string' || exp.fixture.trim() === '') throw new Error('Fixture name must be non-empty string');
     if (names.has(exp.fixture)) throw new Error(`Duplicate fixture name: ${exp.fixture}`);
     names.add(exp.fixture);
 
     if (!['PASS', 'FAIL', 'SKIP_ALLOWED'].includes(exp.schemaExpected)) throw new Error(`Invalid schemaExpected: ${exp.schemaExpected}`);
     if (!['PASS', 'FAIL', 'SKIP_ALLOWED'].includes(exp.operationalExpected)) throw new Error(`Invalid operationalExpected: ${exp.operationalExpected}`);
 
-    if (!exp.reason || typeof exp.reason !== 'string') throw new Error('Reason must be non-empty string');
+    if (!exp.reason || typeof exp.reason !== 'string' || exp.reason.trim() === '') throw new Error('Reason must be non-empty string');
 
     const allowedFields = new Set(['fixture', 'schemaExpected', 'operationalExpected', 'reason']);
     for (const key of Object.keys(exp)) {
@@ -59,7 +59,16 @@ function validateConstraintRegistry() {
   const validFixtures = new Set(expectations.map(e => e.fixture));
   // Include dynamic tests
   validFixtures.add('symbolic-link-test');
+  validFixtures.add('invalid-payload-root-missing');
+  validFixtures.add('invalid-payload-root-symlink');
   validFixtures.add('invalid-payload-root-not-directory');
+  validFixtures.add('invalid-payload-file-missing');
+  validFixtures.add('invalid-payload-file-symlink-outside');
+  validFixtures.add('invalid-payload-file-symlink-inside');
+  validFixtures.add('invalid-payload-ancestor-symlink');
+  validFixtures.add('invalid-payload-not-regular-file');
+  validFixtures.add('invalid-payload-size-mismatch');
+  validFixtures.add('invalid-payload-hash-mismatch');
 
   const ids = new Set();
   for (const c of constraints) {
@@ -67,11 +76,29 @@ function validateConstraintRegistry() {
     if (ids.has(c.id)) throw new Error(`Duplicate constraint ID: ${c.id}`);
     ids.add(c.id);
 
+    const allowedFields = new Set(['id', 'description', 'authoritativeLayer', 'schemaPointer', 'operationalEvidence', 'fixtures', 'status']);
+    for (const key of Object.keys(c)) {
+      if (!allowedFields.has(key)) throw new Error(`Unknown field in constraint registry: ${key}`);
+    }
+
     if (!['schema', 'operational', 'both', 'deferred'].includes(c.authoritativeLayer)) {
       throw new Error(`Invalid authoritativeLayer: ${c.authoritativeLayer}`);
     }
-    if (!['implemented', 'deferred'].includes(c.status)) {
+    if (!['implemented', 'deferred', 'not-implemented'].includes(c.status)) {
       throw new Error(`Invalid status: ${c.status}`);
+    }
+
+    if (c.authoritativeLayer === 'schema' && !c.schemaPointer) {
+      throw new Error(`schema constraint must have schemaPointer in ${c.id}`);
+    }
+    if (c.authoritativeLayer === 'operational' && !c.operationalEvidence) {
+      throw new Error(`operational constraint must have operationalEvidence in ${c.id}`);
+    }
+    if (c.authoritativeLayer === 'both' && (!c.schemaPointer || !c.operationalEvidence)) {
+      throw new Error(`both constraint must have schemaPointer and operationalEvidence in ${c.id}`);
+    }
+    if (c.authoritativeLayer === 'deferred' && !['deferred', 'not-implemented'].includes(c.status)) {
+      throw new Error(`deferred constraint status must be deferred or not-implemented in ${c.id}`);
     }
 
     if (c.schemaPointer) {
@@ -107,14 +134,19 @@ function validateSkillRegistry() {
   const skillsPath = path.join(__dirname, '../reconstruction/agent-skills.json');
   const data = JSON.parse(fs.readFileSync(skillsPath, 'utf8'));
   
+  const rootKeys = Object.keys(data);
+  if (rootKeys.length !== 1 || rootKeys[0] !== 'skills') {
+    throw new Error('Skill registry must only contain a "skills" property');
+  }
+
   if (!Array.isArray(data.skills)) throw new Error('Skills must be an array');
 
   const names = new Set();
   const dirs = new Set();
 
   for (const skill of data.skills) {
-    if (!skill.name || typeof skill.name !== 'string') throw new Error('Skill name must be non-empty string');
-    if (!skill.directory || typeof skill.directory !== 'string') throw new Error('Skill directory must be non-empty string');
+    if (!skill.name || typeof skill.name !== 'string' || skill.name.trim() === '') throw new Error('Skill name must be non-empty string');
+    if (!skill.directory || typeof skill.directory !== 'string' || skill.directory.trim() === '') throw new Error('Skill directory must be non-empty string');
     
     if (names.has(skill.name)) throw new Error(`Duplicate skill name: ${skill.name}`);
     if (dirs.has(skill.directory)) throw new Error(`Duplicate skill directory: ${skill.directory}`);

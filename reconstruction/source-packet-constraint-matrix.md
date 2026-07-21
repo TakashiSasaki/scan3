@@ -11,8 +11,12 @@ This file is generated from `source-packet-constraints.json`. Do not edit manual
 | C-TOP-5 | Owner decision is a closed object | implemented | schema | minimal |
 | C-PATH-1 | Safe relative paths forbid NUL, absolute, drive letters, UNC, and dot segments | implemented | schema | invalid-nul-path, invalid-dot-segment-posix, invalid-dot-segment-windows, invalid-path-traversal, invalid-windows-traversal, valid-dotted-filenames |
 | C-PATH-2 | Safe relative paths forbid whitespace-only paths | implemented | schema | invalid-whitespace-path |
-| C-PAYLOAD-1 | Payload root must exist and be a directory | implemented | operational | invalid-payload-root-not-directory |
-| C-PAYLOAD-2 | Payload paths must not escape payload root via symlinks (realpath containment) | implemented | operational | symbolic-link-test |
+| C-PAYLOAD-ROOT-1 | Payload root must exist | implemented | operational | invalid-payload-root-missing |
+| C-PAYLOAD-ROOT-2 | Payload root must not be a symbolic link | implemented | operational | invalid-payload-root-symlink |
+| C-PAYLOAD-ROOT-3 | Payload root must be a directory | implemented | operational | invalid-payload-root-not-directory |
+| C-PAYLOAD-FILE-1 | Payload file must exist | implemented | operational | invalid-payload-file-missing |
+| C-PAYLOAD-2 | Payload paths must not escape payload root via symlinks (realpath containment) | implemented | operational | symbolic-link-test, invalid-payload-file-symlink-outside |
+| C-PAYLOAD-ANCESTOR-SYMLINK | Payload path must not contain symbolic link | implemented | operational | invalid-payload-ancestor-symlink |
 | C-UNIQUE-1 | Exact-string duplicate sourcePath forbidden | implemented | operational | invalid-duplicate-source-path |
 | C-UNIQUE-2 | Exact-string duplicate payloadPath forbidden | implemented | operational | invalid-duplicate-payload-path |
 | C-UNIQUE-3 | Exact-string duplicate restore intendedDestination forbidden | implemented | operational | invalid-duplicate-destination |
@@ -27,7 +31,7 @@ This file is generated from `source-packet-constraints.json`. Do not edit manual
 | C-TYPE-INT | Safe integer for sizeBytes | implemented | schema | minimal, invalid-noninteger-size |
 | C-ENUM-DISP | Disposition enum | implemented | schema | minimal |
 | C-REQ-OWNER | Owner decision missing value | implemented | schema | minimal, invalid-missing-owner-value |
-| C-PAYLOAD-SIZE | Actual file size match | implemented | operational | invalid-size |
-| C-PAYLOAD-HASH | Actual file hash match | implemented | operational | invalid-hash |
-| C-PAYLOAD-REGULAR | Payload must be a regular file | implemented | operational | minimal |
-| C-PAYLOAD-NO-SYMLINK | Payload must not be a symbolic link | implemented | operational | symbolic-link-test |
+| C-PAYLOAD-SIZE | Actual file size match | implemented | operational | invalid-size, invalid-payload-size-mismatch |
+| C-PAYLOAD-HASH | Actual file hash match | implemented | operational | invalid-hash, invalid-payload-hash-mismatch |
+| C-PAYLOAD-REGULAR | Payload must be a regular file | implemented | operational | invalid-payload-not-regular-file |
+| C-PAYLOAD-NO-SYMLINK | Payload must not be a symbolic link | implemented | operational | invalid-payload-file-symlink-inside |

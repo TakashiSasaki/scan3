@@ -2,12 +2,33 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { execFileSync } = require('child_process');
+const { validateArtifactPath } = require('./validate-accepted-artifacts.cjs');
 
 const validatorPath = path.join(__dirname, 'validate-accepted-artifacts.cjs');
 
 let passed = 0;
 let failed = 0;
 let skipped = 0;
+
+function runDirectTest(name, entryPath, expectedSuccess) {
+  let success = false;
+  let error = '';
+  try {
+    validateArtifactPath(entryPath);
+    success = true;
+  } catch (e) {
+    success = false;
+    error = e.message;
+  }
+  if (success === expectedSuccess) {
+    passed++;
+    console.log(`PASS (Direct): ${name}`);
+  } else {
+    failed++;
+    console.error(`FAIL (Direct): ${name} (Expected success: ${expectedSuccess}, Got: ${success})`);
+    if (!success) console.error(error);
+  }
+}
 
 function runTest(name, inventory, expectedSuccess) {
   const tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'scan3-art-'));
@@ -35,6 +56,12 @@ function runTest(name, inventory, expectedSuccess) {
     if (!success) console.error(stderr);
   }
 }
+
+// Direct positive/negative string tests (bypasses fs existence)
+runDirectTest('file..name.md', 'file..name.md', true);
+runDirectTest('dir/file..name.md', 'dir/file..name.md', true);
+runDirectTest('dir/../file.md', 'dir/../file.md', false);
+runDirectTest('dir/./file.md', 'dir/./file.md', false);
 
 // Positive tests
 runTest('empty array is allowed if all requirements present', [

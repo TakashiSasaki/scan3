@@ -90,16 +90,58 @@
     "status": "implemented"
   },
   {
-    "id": "C-PAYLOAD-1",
-    "description": "Payload root must exist and be a directory",
+    "id": "C-PAYLOAD-ROOT-1",
+    "description": "Payload root must exist",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
-      "marker": "Payload root must be a directory"
+      "marker": "PAYLOAD_ROOT_MISSING"
+    },
+    "fixtures": [
+      "invalid-payload-root-missing"
+    ],
+    "status": "implemented"
+  },
+  {
+    "id": "C-PAYLOAD-ROOT-2",
+    "description": "Payload root must not be a symbolic link",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "PAYLOAD_ROOT_SYMLINK"
+    },
+    "fixtures": [
+      "invalid-payload-root-symlink"
+    ],
+    "status": "implemented"
+  },
+  {
+    "id": "C-PAYLOAD-ROOT-3",
+    "description": "Payload root must be a directory",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "PAYLOAD_ROOT_NOT_DIRECTORY"
     },
     "fixtures": [
       "invalid-payload-root-not-directory"
+    ],
+    "status": "implemented"
+  },
+  {
+    "id": "C-PAYLOAD-FILE-1",
+    "description": "Payload file must exist",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "PAYLOAD_FILE_MISSING"
+    },
+    "fixtures": [
+      "invalid-payload-file-missing"
     ],
     "status": "implemented"
   },
@@ -110,10 +152,25 @@
     "schemaPointer": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
-      "marker": "Payload real path escapes payload root"
+      "marker": "PAYLOAD_REALPATH_ESCAPE"
     },
     "fixtures": [
-      "symbolic-link-test"
+      "symbolic-link-test",
+      "invalid-payload-file-symlink-outside"
+    ],
+    "status": "implemented"
+  },
+  {
+    "id": "C-PAYLOAD-ANCESTOR-SYMLINK",
+    "description": "Payload path must not contain symbolic link",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "PAYLOAD_ANCESTOR_SYMLINK"
+    },
+    "fixtures": [
+      "invalid-payload-ancestor-symlink"
     ],
     "status": "implemented"
   },
@@ -290,10 +347,11 @@
     "schemaPointer": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
-      "marker": "Size mismatch for"
+      "marker": "PAYLOAD_SIZE_MISMATCH"
     },
     "fixtures": [
-      "invalid-size"
+      "invalid-size",
+      "invalid-payload-size-mismatch"
     ],
     "status": "implemented"
   },
@@ -304,10 +362,11 @@
     "schemaPointer": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
-      "marker": "SHA-256 mismatch for"
+      "marker": "PAYLOAD_HASH_MISMATCH"
     },
     "fixtures": [
-      "invalid-hash"
+      "invalid-hash",
+      "invalid-payload-hash-mismatch"
     ],
     "status": "implemented"
   },
@@ -318,10 +377,10 @@
     "schemaPointer": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
-      "marker": "Payload is not a regular file for"
+      "marker": "PAYLOAD_NOT_REGULAR_FILE"
     },
     "fixtures": [
-      "minimal"
+      "invalid-payload-not-regular-file"
     ],
     "status": "implemented"
   },
@@ -332,10 +391,10 @@
     "schemaPointer": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
-      "marker": "Payload is a symbolic link for"
+      "marker": "PAYLOAD_FILE_SYMLINK"
     },
     "fixtures": [
-      "symbolic-link-test"
+      "invalid-payload-file-symlink-inside"
     ],
     "status": "implemented"
   }
