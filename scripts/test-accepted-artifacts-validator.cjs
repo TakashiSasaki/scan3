@@ -11,6 +11,7 @@ const ALLOWED_SYMLINK_ERRORS = new Set(['EPERM', 'ENOSYS', 'EINVAL', 'EACCES']);
 let passed = 0;
 let failed = 0;
 let skipped = 0;
+let notApplicable = 0;
 
 function runDirectTest(name, entryPath, expectedSuccess) {
   let success = false;
@@ -47,7 +48,12 @@ function runTest(name, inventory, expectedSuccess) {
     stderr = e.stderr ? e.stderr.toString() : e.message;
   }
   
-  fs.rmSync(tmpdir, { recursive: true, force: true });
+  try {
+    fs.rmSync(tmpdir, { recursive: true, force: true });
+  } catch (e) {
+    failed++;
+    console.error(`FAIL: Cleanup failed for temporary inventory directory ${tmpdir}: ${e.message}`);
+  }
   
   if (success === expectedSuccess) {
     passed++;
@@ -98,11 +104,11 @@ runTest('NUL path', [...baseReqs, 'package\0.json'], false);
 // . segment test
 runTest('. segment', [...baseReqs, 'scripts/./validate-accepted-artifacts.cjs'], false);
 
-// Symlink test inside temporary subdirectory of workspace
-const tempSymlinkDir = path.join(__dirname, '..', 'reconstruction', 'examples', 'temp-symlink-test-dir');
-fs.mkdirSync(tempSymlinkDir, { recursive: true });
+// Collision-safe unique temporary directory under reconstruction/examples for symlink test
+const examplesBaseDir = path.join(__dirname, '..', 'reconstruction', 'examples');
+const tempSymlinkDir = fs.mkdtempSync(path.join(examplesBaseDir, 'symlink-test-'));
 const symlinkPath = path.join(tempSymlinkDir, 'temp-symlink.txt');
-const relativeSymlinkArtifact = 'reconstruction/examples/temp-symlink-test-dir/temp-symlink.txt';
+const relativeSymlinkArtifact = path.relative(path.join(__dirname, '..'), symlinkPath).replace(/\\/g, '/');
 
 try {
   let symlinkCreated = false;
@@ -126,13 +132,24 @@ try {
     }
   }
 } finally {
-  if (fs.existsSync(symlinkPath)) {
-    try { fs.unlinkSync(symlinkPath); } catch (e) {}
+  let cleanupFailed = false;
+  let cleanupError = null;
+  try {
+    if (fs.existsSync(symlinkPath)) {
+      fs.unlinkSync(symlinkPath);
+    }
+    if (fs.existsSync(tempSymlinkDir)) {
+      fs.rmSync(tempSymlinkDir, { recursive: true, force: true });
+    }
+  } catch (e) {
+    cleanupFailed = true;
+    cleanupError = e;
   }
-  if (fs.existsSync(tempSymlinkDir)) {
-    try { fs.rmSync(tempSymlinkDir, { recursive: true, force: true }); } catch (e) {}
+  if (cleanupFailed) {
+    failed++;
+    console.error(`FAIL: Cleanup failed for temporary symlink directory ${tempSymlinkDir}: ${cleanupError ? cleanupError.message : 'Unknown error'}`);
   }
 }
 
-console.log(`\nSummary: PASS: ${passed}, FAIL: ${failed}, SKIP: ${skipped}`);
+console.log(`\nSummary: PASS: ${passed}, FAIL: ${failed}, SKIP: ${skipped}, NOT_APPLICABLE: ${notApplicable}`);
 if (failed > 0) process.exit(1);

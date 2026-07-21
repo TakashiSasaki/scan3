@@ -4,6 +4,9 @@
     "description": "Top-level is a closed object",
     "authoritativeLayer": "schema",
     "schemaPointer": "/additionalProperties",
+    "schemaErrorPaths": [
+      "/additionalProperties"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-unknown-top-level-property"
@@ -16,6 +19,9 @@
     "description": "Source descriptor is a closed object",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/sourceDescriptor/additionalProperties",
+    "schemaErrorPaths": [
+      "/additionalProperties"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-unknown-source-property"
@@ -28,6 +34,9 @@
     "description": "Destination descriptor is a closed object",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/destinationDescriptor/additionalProperties",
+    "schemaErrorPaths": [
+      "/additionalProperties"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-unknown-destination-property"
@@ -40,6 +49,9 @@
     "description": "File entry is a closed object",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/additionalProperties",
+    "schemaErrorPaths": [
+      "/additionalProperties"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-unknown-file-property"
@@ -52,6 +64,9 @@
     "description": "Owner decision is a closed object",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/ownerDecision/additionalProperties",
+    "schemaErrorPaths": [
+      "/additionalProperties"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-unknown-owner-decision-property"
@@ -64,6 +79,9 @@
     "description": "Safe relative paths forbid NUL, absolute, drive letters, UNC, and dot segments",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/safeRelativePath/pattern",
+    "schemaErrorPaths": [
+      "/definitions/safeRelativePath/pattern"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-nul-path",
@@ -82,6 +100,9 @@
     "description": "Safe relative paths forbid whitespace-only paths",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/safeRelativePath/pattern",
+    "schemaErrorPaths": [
+      "/definitions/safeRelativePath/pattern"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-whitespace-path"
@@ -94,13 +115,14 @@
     "description": "Direct JS-level raw relative path validation defense-in-depth",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PATH_INVALID"
     },
     "schemaFixtures": [],
     "operationalTests": [
-      "invalid-raw-relative-path"
+      "test-source-packet-path-helper"
     ],
     "status": "implemented"
   },
@@ -109,6 +131,7 @@
     "description": "Payload root must exist",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_ROOT_MISSING"
@@ -124,6 +147,7 @@
     "description": "Payload root must not be a symbolic link",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_ROOT_SYMLINK"
@@ -140,6 +164,7 @@
     "description": "Payload root must be a directory",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_ROOT_NOT_DIRECTORY"
@@ -155,6 +180,7 @@
     "description": "Payload file must exist",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_FILE_MISSING"
@@ -170,6 +196,7 @@
     "description": "Payload paths must not escape payload root via symlinks (realpath containment)",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_REALPATH_ESCAPE"
@@ -185,6 +212,7 @@
     "description": "Payload path must not contain symbolic link",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_ANCESTOR_SYMLINK"
@@ -200,6 +228,7 @@
     "description": "Exact-string duplicate sourcePath forbidden",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "DUPLICATE_SOURCE_PATH"
@@ -215,6 +244,7 @@
     "description": "Exact-string duplicate payloadPath forbidden",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "DUPLICATE_PAYLOAD_PATH"
@@ -230,6 +260,7 @@
     "description": "Exact-string duplicate restore intendedDestination forbidden",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "DUPLICATE_RESTORE_DESTINATION"
@@ -245,6 +276,7 @@
     "description": "Exact-string duplicate owner decision id forbidden",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "DUPLICATE_OWNER_DECISION_ID"
@@ -260,6 +292,7 @@
     "description": "Case-insensitive collision protection",
     "authoritativeLayer": "deferred",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": null,
     "schemaFixtures": [],
     "operationalTests": [],
@@ -270,6 +303,9 @@
     "description": "intendedDestination is required for all entries",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/required",
+    "schemaErrorPaths": [
+      "/required"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-missing-intended-destination"
@@ -282,6 +318,9 @@
     "description": "formatVersion must be 1.0",
     "authoritativeLayer": "schema",
     "schemaPointer": "/properties/formatVersion/const",
+    "schemaErrorPaths": [
+      "/properties/formatVersion/const"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "minimal",
@@ -295,6 +334,9 @@
     "description": "Required fields at top level",
     "authoritativeLayer": "schema",
     "schemaPointer": "/required",
+    "schemaErrorPaths": [
+      "/required"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-missing-top-level-field",
@@ -313,6 +355,9 @@
     "description": "File entry must be an object",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/type",
+    "schemaErrorPaths": [
+      "/type"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-file-entry-type"
@@ -325,6 +370,9 @@
     "description": "Owner decision must be an object",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/ownerDecision/type",
+    "schemaErrorPaths": [
+      "/type"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-owner-decision-array"
@@ -337,6 +385,9 @@
     "description": "Non-blank string type check",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/nonBlankString/type",
+    "schemaErrorPaths": [
+      "/definitions/nonBlankString/type"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-packet-id-type",
@@ -351,6 +402,9 @@
     "description": "Notes property string type check",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/properties/notes/type",
+    "schemaErrorPaths": [
+      "/properties/notes/type"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-notes-type"
@@ -363,6 +417,9 @@
     "description": "Non-blank string pattern check",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/nonBlankString/pattern",
+    "schemaErrorPaths": [
+      "/definitions/nonBlankString/pattern"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-empty-string",
@@ -376,6 +433,9 @@
     "description": "Commit SHA type",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fullCommitSha/pattern",
+    "schemaErrorPaths": [
+      "/definitions/fullCommitSha/pattern"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-commit-sha"
@@ -388,6 +448,9 @@
     "description": "SHA-256 type",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/sha256/pattern",
+    "schemaErrorPaths": [
+      "/definitions/sha256/pattern"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-sha256-format"
@@ -400,6 +463,9 @@
     "description": "Integer type check for sizeBytes",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/properties/sizeBytes/type",
+    "schemaErrorPaths": [
+      "/properties/sizeBytes/type"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-noninteger-size"
@@ -412,6 +478,9 @@
     "description": "Minimum value check for sizeBytes",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/properties/sizeBytes/minimum",
+    "schemaErrorPaths": [
+      "/properties/sizeBytes/minimum"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-negative-size"
@@ -424,6 +493,9 @@
     "description": "Maximum value check for sizeBytes",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/properties/sizeBytes/maximum",
+    "schemaErrorPaths": [
+      "/properties/sizeBytes/maximum"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-large-size"
@@ -436,6 +508,9 @@
     "description": "Disposition enum",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/properties/disposition/enum",
+    "schemaErrorPaths": [
+      "/properties/disposition/enum"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-disposition"
@@ -448,6 +523,9 @@
     "description": "Owner decision missing value",
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/ownerDecision/required",
+    "schemaErrorPaths": [
+      "/required"
+    ],
     "operationalEvidence": null,
     "schemaFixtures": [
       "invalid-missing-owner-value"
@@ -460,6 +538,7 @@
     "description": "Actual file size match",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_SIZE_MISMATCH"
@@ -476,6 +555,7 @@
     "description": "Actual file hash match",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_HASH_MISMATCH"
@@ -492,6 +572,7 @@
     "description": "Payload must be a regular file",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_NOT_REGULAR_FILE"
@@ -507,6 +588,7 @@
     "description": "Payload must not be a symbolic link",
     "authoritativeLayer": "operational",
     "schemaPointer": null,
+    "schemaErrorPaths": null,
     "operationalEvidence": {
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_FILE_SYMLINK"

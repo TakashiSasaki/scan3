@@ -40,11 +40,12 @@ This policy document defines rules to prevent recurrences of issues identified d
 - Explicitly verify that expected failures result in test success.
 
 ## 6. Validation Outcome Transparency
-- PASS, FAIL, SKIP must be explicitly distinguished.
-- SKIP must not be counted as PASS.
-- A state with SKIP must not be described as "all tests passed".
-- Record the exact number of PASS, FAIL, and SKIP cases along with their targets in closeout documents.
-- Any items that cannot be verified due to environment constraints must remain documented as unverified.
+- PASS, FAIL, SKIP, and NOT_APPLICABLE must be explicitly distinguished.
+- SKIP and NOT_APPLICABLE must not be counted as PASS.
+- A state with SKIP or NOT_APPLICABLE must not be described as "all tests passed" or "100% PASS".
+- Record the exact number of PASS, FAIL, SKIP, and NOT_APPLICABLE cases along with their targets in closeout documents.
+- Any items that cannot be verified due to environment constraints must remain documented as unverified/SKIP.
+- Items where a validation layer is intentionally not reached (e.g., operational validation on schema-invalid fixtures) must be documented as NOT_APPLICABLE.
 
 ## 7. Guardrail Precision
 - Static analysis must explicitly identify the prohibited targets.

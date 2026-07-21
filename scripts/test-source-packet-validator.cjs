@@ -157,10 +157,6 @@ const dynamicTestSetups = {
       "intendedDestination": "test.txt"
     }]};
     fs.writeFileSync(path.join(packetDir, 'manifest.json'), JSON.stringify(manifest));
-  },
-  'invalid-raw-relative-path': (packetDir, payloadDir) => {
-    const { validateRawRelativePath } = require('./validate-source-packet.cjs');
-    validateRawRelativePath('\0invalid-path', 'sourcePath');
   }
 };
 
@@ -176,6 +172,7 @@ if (require.main === module) {
   let passed = 0;
   let failed = 0;
   let skipped = 0;
+  let notApplicable = 0;
   const results = [];
 
   function logTest(name, result, reason) {
@@ -183,6 +180,8 @@ if (require.main === module) {
     if (!isJson) {
       if (result === 'SKIP') {
         console.log(`SKIP: ${name} — ${reason}`);
+      } else if (result === 'NOT_APPLICABLE') {
+        console.log(`NOT_APPLICABLE: ${name} — ${reason}`);
       } else if (result === 'FAIL') {
         console.error(`FAIL: ${name}${reason ? ` (${reason})` : ''}`);
       } else {
@@ -213,6 +212,12 @@ if (require.main === module) {
     if (!fs.existsSync(manifestPath)) {
       failed++;
       logTest(exp.fixture, 'FAIL', 'manifest.json not found in fixture directory');
+      continue;
+    }
+
+    if (exp.operationalExpected === 'NOT_APPLICABLE') {
+      notApplicable++;
+      logTest(exp.fixture, 'NOT_APPLICABLE', exp.reason || 'Operational validation not reached for schema-invalid fixture');
       continue;
     }
 
@@ -347,18 +352,13 @@ if (require.main === module) {
   }
 
   if (isJson) {
-    console.log(JSON.stringify({ passed, failed, skipped, tests: results }, null, 2));
+    console.log(JSON.stringify({ passed, failed, skipped, notApplicable, tests: results }, null, 2));
   } else {
     console.log('\nSummary:');
     console.log(`  PASS: ${passed}`);
     console.log(`  FAIL: ${failed}`);
-    console.log(`  SKIP: ${skipped}\n`);
-    
-    if (skipped > 0) {
-      console.log('Validator tests completed with SKIP.');
-    } else {
-      console.log('Validator tests completed successfully with no skips.');
-    }
+    console.log(`  SKIP: ${skipped}`);
+    console.log(`  NOT_APPLICABLE: ${notApplicable}\n`);
   }
 
   if (failed > 0) {

@@ -18,7 +18,7 @@
   {
     "fixture": "invalid-nul-path",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
@@ -33,7 +33,7 @@
   {
     "fixture": "invalid-dot-segment-posix",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
@@ -48,7 +48,7 @@
   {
     "fixture": "invalid-dot-segment-windows",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
@@ -63,7 +63,7 @@
   {
     "fixture": "invalid-packet-id-type",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/definitions/nonBlankString/type",
@@ -78,7 +78,7 @@
   {
     "fixture": "invalid-purpose-type",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/definitions/nonBlankString/type",
@@ -93,7 +93,7 @@
   {
     "fixture": "invalid-source-repository-type",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/definitions/nonBlankString/type",
@@ -108,7 +108,7 @@
   {
     "fixture": "invalid-file-entry-type",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/type",
@@ -123,7 +123,7 @@
   {
     "fixture": "invalid-owner-decision-array",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/type",
@@ -138,7 +138,7 @@
   {
     "fixture": "invalid-noninteger-size",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/properties/sizeBytes/type",
@@ -153,7 +153,7 @@
   {
     "fixture": "invalid-notes-type",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "type",
     "expectedSchemaPath": "/properties/notes/type",
@@ -168,7 +168,7 @@
   {
     "fixture": "invalid-missing-owner-value",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
@@ -183,7 +183,7 @@
   {
     "fixture": "invalid-embedded-traversal",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
@@ -198,7 +198,7 @@
   {
     "fixture": "invalid-path-traversal",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
@@ -213,7 +213,7 @@
   {
     "fixture": "invalid-windows-traversal",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
@@ -228,7 +228,7 @@
   {
     "fixture": "invalid-unknown-top-level-property",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "additionalProperties",
     "expectedSchemaPath": "/additionalProperties",
@@ -243,7 +243,7 @@
   {
     "fixture": "invalid-unknown-file-property",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "additionalProperties",
     "expectedSchemaPath": "/additionalProperties",
@@ -258,7 +258,7 @@
   {
     "fixture": "invalid-missing-intended-destination",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
@@ -273,7 +273,7 @@
   {
     "fixture": "invalid-whitespace-path",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
@@ -288,7 +288,7 @@
   {
     "fixture": "invalid-unknown-source-property",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "additionalProperties",
     "expectedSchemaPath": "/additionalProperties",
@@ -303,7 +303,7 @@
   {
     "fixture": "invalid-unknown-destination-property",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "additionalProperties",
     "expectedSchemaPath": "/additionalProperties",
@@ -318,7 +318,7 @@
   {
     "fixture": "invalid-unknown-owner-decision-property",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "additionalProperties",
     "expectedSchemaPath": "/additionalProperties",
@@ -333,7 +333,7 @@
   {
     "fixture": "invalid-format-version",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "const",
     "expectedSchemaPath": "/properties/formatVersion/const",
@@ -348,7 +348,7 @@
   {
     "fixture": "invalid-missing-top-level-field",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
@@ -363,7 +363,7 @@
   {
     "fixture": "invalid-commit-sha",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/fullCommitSha/pattern",
@@ -378,7 +378,7 @@
   {
     "fixture": "invalid-sha256-format",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/sha256/pattern",
@@ -393,7 +393,7 @@
   {
     "fixture": "invalid-disposition",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "enum",
     "expectedSchemaPath": "/properties/disposition/enum",
@@ -412,7 +412,7 @@
   {
     "fixture": "invalid-negative-size",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "minimum",
     "expectedSchemaPath": "/properties/sizeBytes/minimum",
@@ -428,7 +428,7 @@
   {
     "fixture": "invalid-large-size",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "maximum",
     "expectedSchemaPath": "/properties/sizeBytes/maximum",
@@ -444,7 +444,7 @@
   {
     "fixture": "invalid-empty-string",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/nonBlankString/pattern",
@@ -459,7 +459,7 @@
   {
     "fixture": "invalid-blank-string",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "pattern",
     "expectedSchemaPath": "/definitions/nonBlankString/pattern",
@@ -474,7 +474,7 @@
   {
     "fixture": "invalid-missing-format-version",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
@@ -489,7 +489,7 @@
   {
     "fixture": "invalid-missing-purpose",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
@@ -504,7 +504,7 @@
   {
     "fixture": "invalid-missing-source",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
@@ -519,7 +519,7 @@
   {
     "fixture": "invalid-missing-destination",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
@@ -534,7 +534,7 @@
   {
     "fixture": "invalid-missing-files",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
@@ -549,7 +549,7 @@
   {
     "fixture": "invalid-missing-owner-decisions",
     "schemaExpected": "FAIL",
-    "operationalExpected": "SKIP_ALLOWED",
+    "operationalExpected": "NOT_APPLICABLE",
     "reason": "Schema failure fixture — operational validation not reached",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",

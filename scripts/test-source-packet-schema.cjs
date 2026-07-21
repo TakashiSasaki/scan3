@@ -20,7 +20,10 @@ function deepEqual(a, b) {
   return true;
 }
 
+let passed = 0;
 let failed = 0;
+let skipped = 0;
+let notApplicable = 0;
 
 for (const exp of expectations) {
   const fixturePath = path.join(fixturesDir, exp.fixture, "manifest.json");
@@ -30,6 +33,18 @@ for (const exp of expectations) {
     continue;
   }
   
+  if (exp.schemaExpected === "NOT_APPLICABLE") {
+    notApplicable++;
+    console.log(`[NOT_APPLICABLE] ${exp.fixture} — ${exp.reason || 'Schema validation not applicable'}`);
+    continue;
+  }
+
+  if (exp.schemaExpected === "SKIP_ALLOWED") {
+    skipped++;
+    console.log(`[SKIP] ${exp.fixture} — ${exp.reason || 'Schema validation skipped'}`);
+    continue;
+  }
+
   const manifest = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
   const { valid, errors } = validator.validateManifestSchema(manifest);
   
@@ -61,19 +76,20 @@ for (const exp of expectations) {
         console.error(JSON.stringify(errors, null, 2));
         failed++;
       } else {
+        passed++;
         console.log(`[PASS] ${exp.fixture} (Schema: FAIL as expected)`);
       }
     }
-  } else if (exp.schemaExpected === "SKIP_ALLOWED") {
-    console.log(`[SKIP] ${exp.fixture} (schema validation skipped or ignored)`);
   } else {
+    passed++;
     console.log(`[PASS] ${exp.fixture} (Schema: ${exp.schemaExpected})`);
   }
 }
 
+console.log(`\nSchema Test Summary: PASS: ${passed}, FAIL: ${failed}, SKIP: ${skipped}, NOT_APPLICABLE: ${notApplicable}`);
+
 if (failed > 0) {
-  console.error(`Schema tests failed: ${failed}`);
   process.exit(1);
 } else {
-  console.log("All schema tests passed.");
+  process.exit(0);
 }

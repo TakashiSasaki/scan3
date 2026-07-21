@@ -11,7 +11,7 @@ This file is generated from `source-packet-constraints.json`. Do not edit manual
 | C-TOP-5 | Owner decision is a closed object | implemented | schema | invalid-unknown-owner-decision-property | - |
 | C-PATH-1 | Safe relative paths forbid NUL, absolute, drive letters, UNC, and dot segments | implemented | schema | invalid-nul-path, invalid-dot-segment-posix, invalid-dot-segment-windows, invalid-path-traversal, invalid-windows-traversal, invalid-embedded-traversal, valid-dotted-filenames | - |
 | C-PATH-2 | Safe relative paths forbid whitespace-only paths | implemented | schema | invalid-whitespace-path | - |
-| C-PATH-RAW | Direct JS-level raw relative path validation defense-in-depth | implemented | operational | - | invalid-raw-relative-path |
+| C-PATH-RAW | Direct JS-level raw relative path validation defense-in-depth | implemented | operational | - | test-source-packet-path-helper |
 | C-PAYLOAD-ROOT-1 | Payload root must exist | implemented | operational | - | invalid-payload-root-missing |
 | C-PAYLOAD-ROOT-2 | Payload root must not be a symbolic link | implemented | operational | - | invalid-payload-root-symlink, invalid-payload-root-dangling-symlink |
 | C-PAYLOAD-ROOT-3 | Payload root must be a directory | implemented | operational | - | invalid-payload-root-not-directory |

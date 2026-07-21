@@ -118,14 +118,5 @@
     "constraintIds": [
       "C-PAYLOAD-HASH"
     ]
-  },
-  {
-    "name": "invalid-raw-relative-path",
-    "expectedErrorCode": "PATH_INVALID",
-    "environmentDependent": false,
-    "allowedSkipReasons": [],
-    "constraintIds": [
-      "C-PATH-RAW"
-    ]
   }
 ]

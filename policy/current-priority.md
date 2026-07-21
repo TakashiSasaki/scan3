@@ -1,8 +1,8 @@
 # Current Priority
 
-1. Stride 2A.10 closeout
-2. Stride 2A.9 audit addendum
-3. Evidence identity and Ajv error structure enforcement
-4. Operational error code centralization
-5. Accepted artifact validator guardrail
+1. Stride 2A.11 closeout
+2. Stride 2A.10 audit addendum
+3. Verification outcome separation (NOT_APPLICABLE vs SKIP)
+4. Schema error path exact matching
+5. Operational error code executable closure
 6. Next stride gating (Stride 2B gate)
