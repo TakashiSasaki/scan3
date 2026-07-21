@@ -12,7 +12,7 @@ This file is generated from `source-packet-constraints.json`. Do not edit manual
 | C-PATH-1 | Safe relative paths forbid NUL, absolute, drive letters, UNC, and dot segments | implemented | schema | invalid-nul-path, invalid-dot-segment-posix, invalid-dot-segment-windows, invalid-path-traversal, invalid-windows-traversal, valid-dotted-filenames |
 | C-PATH-2 | Safe relative paths forbid whitespace-only paths | implemented | schema | invalid-whitespace-path |
 | C-PAYLOAD-1 | Payload root must exist and be a directory | implemented | operational | invalid-payload-root-not-directory |
-| C-PAYLOAD-2 | Payload paths must not escape payload root via symlinks (realpath containment) | implemented | operational | invalid-embedded-traversal, symbolic-link-test |
+| C-PAYLOAD-2 | Payload paths must not escape payload root via symlinks (realpath containment) | implemented | operational | symbolic-link-test |
 | C-UNIQUE-1 | Exact-string duplicate sourcePath forbidden | implemented | operational | invalid-duplicate-source-path |
 | C-UNIQUE-2 | Exact-string duplicate payloadPath forbidden | implemented | operational | invalid-duplicate-payload-path |
 | C-UNIQUE-3 | Exact-string duplicate restore intendedDestination forbidden | implemented | operational | invalid-duplicate-destination |

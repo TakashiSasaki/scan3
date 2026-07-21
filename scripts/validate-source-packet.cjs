@@ -52,6 +52,10 @@ function validateExistingRegularPayloadFile(payloadFullPath, payloadDirFullPath,
   if (!fs.existsSync(payloadFullPath)) {
     throw new Error(`Payload file not found for ${fieldName}: ${payloadFullPath}`);
   }
+  const payloadFileReal = fs.realpathSync(payloadFullPath);
+  if (!payloadFileReal.startsWith(payloadDirReal + path.sep)) {
+    throw new Error(`Payload real path escapes payload root for ${fieldName}: ${payloadFullPath}`);
+  }
   let currentPath = payloadFullPath;
   while (currentPath !== payloadDirFullPath && currentPath !== path.parse(currentPath).root) {
     if (fs.lstatSync(currentPath).isSymbolicLink()) {
@@ -65,10 +69,6 @@ function validateExistingRegularPayloadFile(payloadFullPath, payloadDirFullPath,
   }
   if (stat.isSymbolicLink()) {
     throw new Error(`Payload is a symbolic link for ${fieldName}: ${payloadFullPath}`);
-  }
-  const payloadFileReal = fs.realpathSync(payloadFullPath);
-  if (!payloadFileReal.startsWith(payloadDirReal + path.sep)) {
-    throw new Error(`Payload real path escapes payload root for ${fieldName}: ${payloadFullPath}`);
   }
   return stat;
 }

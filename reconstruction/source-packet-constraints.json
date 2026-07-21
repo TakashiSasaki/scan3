@@ -113,7 +113,6 @@
       "marker": "Payload real path escapes payload root"
     },
     "fixtures": [
-      "invalid-embedded-traversal",
       "symbolic-link-test"
     ],
     "status": "implemented"
