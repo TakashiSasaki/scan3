@@ -4,6 +4,10 @@ const Ajv = require('ajv');
 const { execFileSync } = require('child_process');
 const { generateMatrix } = require('./generate-source-packet-constraint-matrix.cjs');
 
+function hasOwn(object, key) {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+
 function resolveJsonPointer(obj, pointer) {
   if (!pointer || pointer === '') return obj;
   if (!pointer.startsWith('/')) throw new Error(`Invalid JSON pointer: ${pointer}`);
@@ -42,11 +46,14 @@ function check() {
   for (const exp of expectations) {
     const pair = `${exp.schemaExpected}/${exp.operationalExpected}`;
     if (pair === "PASS/FAIL") {
-      if (exp.reason !== null) throw new Error(`PASS/FAIL fixture ${exp.fixture} must have reason: null`);
+      if (!exp.reason || typeof exp.reason !== 'string' || exp.reason.trim() === '') throw new Error(`PASS/FAIL fixture ${exp.fixture} must have a non-empty string reason`);
+      if (hasOwn(exp, 'expectedSchemaKeyword')) throw new Error(`PASS/FAIL fixture ${exp.fixture} must NOT have expectedSchemaKeyword`);
     } else if (pair === "FAIL/NOT_APPLICABLE") {
-      if (!exp.reason) throw new Error(`Missing reason for schema-invalid fixture: ${exp.fixture}`);
+      if (!exp.reason || typeof exp.reason !== 'string' || exp.reason.trim() === '') throw new Error(`Missing reason for schema-invalid fixture: ${exp.fixture}`);
+      if (hasOwn(exp, 'expectedErrorCode')) throw new Error(`FAIL/NOT_APPLICABLE fixture ${exp.fixture} must NOT have expectedErrorCode`);
     } else if (pair === "PASS/PASS") {
-      if (exp.reason !== null) throw new Error(`PASS/PASS fixture ${exp.fixture} must have reason: null`);
+      if (hasOwn(exp, 'reason')) throw new Error(`PASS/PASS fixture ${exp.fixture} must NOT have reason`);
+      if (hasOwn(exp, 'expectedErrorCode')) throw new Error(`PASS/PASS fixture ${exp.fixture} must NOT have expectedErrorCode`);
     } else {
       throw new Error(`Forbidden outcome pair "${pair}" in fixture ${exp.fixture}`);
     }

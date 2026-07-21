@@ -2,6 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const { VALID_OPERATIONAL_ERROR_CODES } = require('./lib/operational-error-codes.cjs');
 
+function hasOwn(object, key) {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+
 function assertTrimmedNonEmptyString(val, fieldName, context) {
   if (typeof val !== 'string' || val.trim() === '' || val !== val.trim()) {
     throw new Error(`Field "${fieldName}" in ${context} must be a non-empty trimmed string (got: ${JSON.stringify(val)})`);
@@ -64,24 +68,26 @@ function validateFixtureCatalog() {
 
     // Enforce closed 3-state outcome state machine: PASS/PASS, PASS/FAIL, FAIL/NOT_APPLICABLE
     const pair = `${exp.schemaExpected}/${exp.operationalExpected}`;
+    const forbiddenPassPass = ['reason', 'expectedErrorCode', 'expectedSchemaKeyword', 'expectedSchemaPath', 'expectedSchemaInstancePath', 'expectedSchemaParams'];
+    const forbiddenPassFail = ['expectedSchemaKeyword', 'expectedSchemaPath', 'expectedSchemaInstancePath', 'expectedSchemaParams'];
 
     if (pair === 'PASS/PASS') {
-      if (exp.reason !== null) throw new Error(`Fixture ${exp.fixture} (PASS/PASS) must have reason: null`);
-      if (exp.expectedErrorCode !== null) throw new Error(`Fixture ${exp.fixture} (PASS/PASS) must have expectedErrorCode: null`);
-      if (exp.expectedSchemaKeyword !== null) throw new Error(`Fixture ${exp.fixture} (PASS/PASS) must have expectedSchemaKeyword: null`);
-      if (exp.expectedSchemaPath !== null) throw new Error(`Fixture ${exp.fixture} (PASS/PASS) must have expectedSchemaPath: null`);
-      if (exp.expectedSchemaInstancePath !== null) throw new Error(`Fixture ${exp.fixture} (PASS/PASS) must have expectedSchemaInstancePath: null`);
-      if (exp.expectedSchemaParams !== null) throw new Error(`Fixture ${exp.fixture} (PASS/PASS) must have expectedSchemaParams: null`);
+      for (const field of forbiddenPassPass) {
+        if (hasOwn(exp, field)) {
+          throw new Error(`Fixture ${exp.fixture} (PASS/PASS) must NOT have property "${field}"`);
+        }
+      }
     } else if (pair === 'PASS/FAIL') {
-      if (exp.reason !== null) throw new Error(`Fixture ${exp.fixture} (PASS/FAIL) must have reason: null`);
+      assertTrimmedNonEmptyString(exp.reason, 'reason', exp.fixture);
       assertTrimmedNonEmptyString(exp.expectedErrorCode, 'expectedErrorCode', exp.fixture);
       if (!VALID_OPERATIONAL_ERROR_CODES.has(exp.expectedErrorCode)) {
         throw new Error(`Fixture ${exp.fixture} specifies invalid or unregistered expectedErrorCode: ${exp.expectedErrorCode}`);
       }
-      if (exp.expectedSchemaKeyword !== null) throw new Error(`Fixture ${exp.fixture} (PASS/FAIL) must have expectedSchemaKeyword: null`);
-      if (exp.expectedSchemaPath !== null) throw new Error(`Fixture ${exp.fixture} (PASS/FAIL) must have expectedSchemaPath: null`);
-      if (exp.expectedSchemaInstancePath !== null) throw new Error(`Fixture ${exp.fixture} (PASS/FAIL) must have expectedSchemaInstancePath: null`);
-      if (exp.expectedSchemaParams !== null) throw new Error(`Fixture ${exp.fixture} (PASS/FAIL) must have expectedSchemaParams: null`);
+      for (const field of forbiddenPassFail) {
+        if (hasOwn(exp, field)) {
+          throw new Error(`Fixture ${exp.fixture} (PASS/FAIL) must NOT have property "${field}"`);
+        }
+      }
     } else if (pair === 'FAIL/NOT_APPLICABLE') {
       assertTrimmedNonEmptyString(exp.reason, 'reason', exp.fixture);
       assertTrimmedNonEmptyString(exp.expectedSchemaKeyword, 'expectedSchemaKeyword', exp.fixture);
@@ -93,12 +99,12 @@ function validateFixtureCatalog() {
       if (exp.expectedSchemaInstancePath !== '' && !exp.expectedSchemaInstancePath.startsWith('/')) {
         throw new Error(`Fixture ${exp.fixture} expectedSchemaInstancePath must be empty or begin with '/'`);
       }
-      if (exp.expectedSchemaParams !== null) {
-        if (typeof exp.expectedSchemaParams !== 'object' || Array.isArray(exp.expectedSchemaParams)) {
-          throw new Error(`Fixture ${exp.fixture} expectedSchemaParams must be null or a plain object`);
-        }
+      if (!hasOwn(exp, 'expectedSchemaParams') || exp.expectedSchemaParams === null || typeof exp.expectedSchemaParams !== 'object' || Array.isArray(exp.expectedSchemaParams)) {
+        throw new Error(`Fixture ${exp.fixture} (FAIL/NOT_APPLICABLE) must have expectedSchemaParams as a non-null plain object`);
       }
-      if (exp.expectedErrorCode !== null) throw new Error(`Fixture ${exp.fixture} (FAIL/NOT_APPLICABLE) must have expectedErrorCode: null`);
+      if (hasOwn(exp, 'expectedErrorCode')) {
+        throw new Error(`Fixture ${exp.fixture} (FAIL/NOT_APPLICABLE) must NOT have property "expectedErrorCode"`);
+      }
     } else {
       throw new Error(`Forbidden fixture outcome pair "${pair}" in ${exp.fixture}. Allowed pairs are PASS/PASS, PASS/FAIL, FAIL/NOT_APPLICABLE.`);
     }
