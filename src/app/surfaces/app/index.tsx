@@ -1,9 +1,9 @@
 export default function AppSurface() {
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Current Application</h1>
-      <p>Status: schema-first planning</p>
-      <p>Firestore runtime: not configured</p>
+    <div className="surface">
+      <h1 className="surface-title">Current Application</h1>
+      <p className="surface-status">Status: schema-first planning</p>
+      <p className="surface-description">Firestore runtime: not configured</p>
     </div>
   );
 }

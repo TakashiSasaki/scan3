@@ -1,11 +1,11 @@
 [
-  { "id": "public", "path": "/", "label": "Public", "description": "Landing page", "status": "active", "shortcutVisible": false },
-  { "id": "app", "path": "/app", "label": "Current Application", "description": "New application area", "status": "active", "shortcutVisible": true },
-  { "id": "legacy", "path": "/app/legacy", "label": "Legacy Application", "description": "Restored legacy app area", "status": "pending", "shortcutVisible": true },
-  { "id": "admin", "path": "/admin", "label": "Administration", "description": "Admin panel", "status": "active", "shortcutVisible": true },
-  { "id": "dev", "path": "/dev", "label": "Internal Development", "description": "Development tools", "status": "active", "shortcutVisible": true },
-  { "id": "schema", "path": "/dev/schema", "label": "Schema Workbench", "description": "Data schema design", "status": "active", "shortcutVisible": true },
-  { "id": "api", "path": "/api", "label": "External Development / API", "description": "API endpoints", "status": "active", "shortcutVisible": true },
-  { "id": "test", "path": "/test", "label": "Development Verification", "description": "Test verification", "status": "active", "shortcutVisible": true },
-  { "id": "demo", "path": "/demo", "label": "Demos", "description": "Isolated demos", "status": "active", "shortcutVisible": true }
+  { "id": "public", "path": "/", "label": "Public", "description": "Public landing surface", "status": "foundation", "shortcutVisible": false },
+  { "id": "app", "path": "/app", "label": "Current Application", "description": "Schema-first current application area; runtime not implemented", "status": "planning", "shortcutVisible": true },
+  { "id": "legacy", "path": "/app/legacy", "label": "Legacy Application", "description": "Legacy application restoration area; source packet not yet supplied", "status": "awaiting-source", "shortcutVisible": true },
+  { "id": "admin", "path": "/admin", "label": "Administration", "description": "Administration surface placeholder", "status": "placeholder", "shortcutVisible": true },
+  { "id": "dev", "path": "/dev", "label": "Internal Development", "description": "Internal development surface", "status": "foundation", "shortcutVisible": true },
+  { "id": "schema", "path": "/dev/schema", "label": "Schema Workbench", "description": "Draft schema workbench", "status": "draft", "shortcutVisible": true },
+  { "id": "api", "path": "/api", "label": "External Development / API", "description": "External development and API surface placeholder", "status": "placeholder", "shortcutVisible": true },
+  { "id": "test", "path": "/test", "label": "Development Verification", "description": "Development verification surface placeholder", "status": "placeholder", "shortcutVisible": true },
+  { "id": "demo", "path": "/demo", "label": "Demos", "description": "Isolated historical and experimental demo area", "status": "awaiting-restoration", "shortcutVisible": true }
 ]

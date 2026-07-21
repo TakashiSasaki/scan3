@@ -1,10 +1,10 @@
 export default function LegacySurface() {
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Legacy Application</h1>
-      <p>Status: awaiting historical reconstruction</p>
-      <p>Intended database: photos.moukaeritai.work</p>
-      <p>Specification will be frozen after restoration</p>
+    <div className="surface">
+      <h1 className="surface-title">Legacy Application</h1>
+      <p className="surface-status">Status: awaiting historical reconstruction</p>
+      <p className="surface-description">Intended database: photos.moukaeritai.work</p>
+      <p className="surface-details">Specification will be frozen after restoration</p>
     </div>
   );
 }

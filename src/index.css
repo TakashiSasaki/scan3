@@ -109,3 +109,27 @@ body {
   background-color: #eee;
   font-weight: bold;
 }
+
+.surface {
+  padding: 2rem;
+}
+
+.surface-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.surface-status {
+  font-weight: bold;
+  color: #333;
+}
+
+.surface-description {
+  margin-top: 0.5rem;
+  color: #666;
+}
+
+.surface-details {
+  margin-top: 1rem;
+}

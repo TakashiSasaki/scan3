@@ -23,3 +23,4 @@
 - Contractは0.1.0 draftから開始する。
 - AI Studioのmainブランチは一方向のforce-push対象であり、規範としてGitHub側で直接編集してはいけない。
 - タスクの範囲外の検証ゲート、抽象化、migration機構を善意で追加しない。
+- 過去の監査による退行を防止するため、`policy/regression-prevention.md` に従うこと。

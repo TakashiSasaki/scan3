@@ -1,9 +1,12 @@
+import DevelopmentShortcuts from '../../components/DevelopmentShortcuts';
+
 export default function PublicSurface() {
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Public Surface</h1>
-      <p>Status: placeholder</p>
-      <p>Purpose: Public facing landing pages and information.</p>
+    <div className="surface">
+      <DevelopmentShortcuts />
+      <h1 className="surface-title">Public Surface</h1>
+      <p className="surface-status">Status: foundation</p>
+      <p className="surface-description">Purpose: Public landing surface</p>
     </div>
   );
 }

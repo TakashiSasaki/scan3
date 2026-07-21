@@ -1,0 +1,40 @@
+# Regression Prevention Policy
+
+This policy document defines rules to prevent recurrences of issues identified during Stride audits. It acts as an addendum to the main project policy.
+
+## 1. Accepted Artifact Preservation
+
+- Do not implicitly delete existing artifacts unless explicitly instructed to do so.
+- Do not implicitly delete READMEs, decision records, closeout documents, manifests, policy files, or test fixtures.
+- Preserve past Stride closeout documents as historical records.
+- Do not replace or overwrite past Stride closeout documents with documents from a new Stride.
+- Before completing a task, verify changes against the baseline to ensure no unintended deletions occurred.
+- Any intentionally deleted files must be listed in the completion report with reasons.
+
+## 2. Scope-Local UI Changes
+
+- Do not place route-specific UI elements in the global layout unless explicitly requested.
+- Verify that route-specific UI does not leak into other surface areas.
+- Ensure that development-only UI is hidden in production builds.
+
+## 3. Verification Claim Integrity
+
+- Do not claim a property is "verified" unless the validator actually checks it.
+- Limit verification claims in closeout documents strictly to the executed commands and their actual scope.
+- When claiming synchronization between the catalog and router, compare all entries bidirectionally.
+- Do not use reasoning that contradicts framework specifications to justify verification logic.
+- Record unverified items explicitly as unverified or "SKIP".
+
+## 4. Implementation Status Accuracy
+
+- Do not describe a placeholder surface as "active" or "completed".
+- Do not describe a surface in the "planning" state as "implemented".
+- Do not describe an "awaiting-source" area as "restored".
+- Maintain consistency between UI descriptions, catalog status, READMEs, and closeout documents.
+
+## 5. Security Validator Negative Coverage
+
+- Prepare negative fixtures for each primary rejection condition at security boundaries.
+- For path security, validate raw paths, normalized paths, and real paths separately.
+- Check for symbolic links, path traversals, invalid types, and duplicate identifiers.
+- Explicitly verify that expected failures result in test success.

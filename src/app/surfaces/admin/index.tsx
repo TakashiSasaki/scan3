@@ -1,9 +1,9 @@
 export default function AdminSurface() {
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Admin Surface</h1>
-      <p>Status: placeholder</p>
-      <p>Purpose: Administration and management.</p>
+    <div className="surface">
+      <h1 className="surface-title">Admin Surface</h1>
+      <p className="surface-status">Status: placeholder</p>
+      <p className="surface-description">Purpose: Administration and management.</p>
     </div>
   );
 }
