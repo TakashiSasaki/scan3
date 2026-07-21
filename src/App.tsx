@@ -13,31 +13,49 @@ import SchemaWorkbenchSurface from './app/surfaces/dev/schema';
 import ApiSurface from './app/surfaces/api';
 import TestSurface from './app/surfaces/test';
 import DemoSurface from './app/surfaces/demo';
+import catalog from './app/router/surfaceCatalog.json';
+
+function DevelopmentShortcuts() {
+  if (import.meta.env.DEV !== true) {
+    return null;
+  }
+
+  const shortcuts = catalog.filter(c => c.shortcutVisible);
+
+  return (
+    <nav className="dev-shortcuts" aria-label="Development Shortcuts">
+      <div className="dev-shortcuts-header">
+        <p>Development shortcuts.</p>
+        <p>These links are navigation aids, not authorization boundaries.</p>
+      </div>
+      <ul className="dev-shortcuts-list">
+        {shortcuts.map(c => (
+          <li key={c.id} className="dev-shortcuts-item">
+            <Link to={c.path} className="dev-shortcuts-link">
+              <span className="dev-shortcuts-path">{c.path}</span>
+              <span className="dev-shortcuts-label">{c.label}</span>
+              <span className="dev-shortcuts-desc">{c.description}</span>
+              <span className={`dev-shortcuts-status status-${c.status}`}>[{c.status}]</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
 
 function Layout() {
   return (
     <div className="layout">
-      <nav className="nav">
-        <ul className="nav-list">
-          <li><Link to="/" className="nav-link">/</Link></li>
-          <li><Link to="/app" className="nav-link">/app</Link></li>
-          <li><Link to="/app/legacy" className="nav-link">/app/legacy</Link></li>
-          <li><Link to="/admin" className="nav-link">/admin</Link></li>
-          <li><Link to="/dev" className="nav-link">/dev</Link></li>
-          <li><Link to="/dev/schema" className="nav-link">/dev/schema</Link></li>
-          <li><Link to="/api" className="nav-link">/api</Link></li>
-          <li><Link to="/test" className="nav-link">/test</Link></li>
-          <li><Link to="/demo" className="nav-link">/demo</Link></li>
-        </ul>
-      </nav>
+      <DevelopmentShortcuts />
       <main className="main-content">
         <Routes>
           <Route path="/" element={<PublicSurface />} />
-          <Route path="/app" element={<AppSurface />} />
           <Route path="/app/legacy" element={<LegacySurface />} />
+          <Route path="/app" element={<AppSurface />} />
           <Route path="/admin" element={<AdminSurface />} />
-          <Route path="/dev" element={<DevSurface />} />
           <Route path="/dev/schema" element={<SchemaWorkbenchSurface />} />
+          <Route path="/dev" element={<DevSurface />} />
           <Route path="/api" element={<ApiSurface />} />
           <Route path="/test" element={<TestSurface />} />
           <Route path="/demo" element={<DemoSurface />} />

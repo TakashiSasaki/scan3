@@ -12,8 +12,10 @@
     "typecheck": "tsc --noEmit",
     "contracts:validate": "node scripts/validate-contracts.cjs",
     "sources:validate:example": "node scripts/validate-source-packet.cjs reconstruction/examples/minimal",
+    "sources:test": "node scripts/test-source-packet-validator.cjs",
+    "surfaces:validate": "node scripts/validate-surfaces.cjs",
     "verify:foundation": "npm run typecheck && npm run contracts:validate && npm run build",
-    "verify:reconstruction": "npm run verify:foundation && npm run sources:validate:example"
+    "verify:reconstruction": "npm run verify:foundation && npm run sources:validate:example && npm run sources:test && npm run surfaces:validate"
   },
   "dependencies": {
     "react": "^19.0.1",

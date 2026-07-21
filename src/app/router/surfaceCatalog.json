@@ -1,0 +1,11 @@
+[
+  { "id": "public", "path": "/", "label": "Public", "description": "Landing page", "status": "active", "shortcutVisible": false },
+  { "id": "app", "path": "/app", "label": "Current Application", "description": "New application area", "status": "active", "shortcutVisible": true },
+  { "id": "legacy", "path": "/app/legacy", "label": "Legacy Application", "description": "Restored legacy app area", "status": "pending", "shortcutVisible": true },
+  { "id": "admin", "path": "/admin", "label": "Administration", "description": "Admin panel", "status": "active", "shortcutVisible": true },
+  { "id": "dev", "path": "/dev", "label": "Internal Development", "description": "Development tools", "status": "active", "shortcutVisible": true },
+  { "id": "schema", "path": "/dev/schema", "label": "Schema Workbench", "description": "Data schema design", "status": "active", "shortcutVisible": true },
+  { "id": "api", "path": "/api", "label": "External Development / API", "description": "API endpoints", "status": "active", "shortcutVisible": true },
+  { "id": "test", "path": "/test", "label": "Development Verification", "description": "Test verification", "status": "active", "shortcutVisible": true },
+  { "id": "demo", "path": "/demo", "label": "Demos", "description": "Isolated demos", "status": "active", "shortcutVisible": true }
+]

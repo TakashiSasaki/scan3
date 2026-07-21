@@ -38,3 +38,74 @@ body {
   flex-grow: 1;
   padding: 1rem;
 }
+
+.dev-shortcuts {
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  padding: 1rem;
+}
+
+.dev-shortcuts-header p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.dev-shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dev-shortcuts-item {
+  display: block;
+}
+
+.dev-shortcuts-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+}
+
+.dev-shortcuts-link:hover {
+  background-color: #f0f0f0;
+}
+
+/* Ensure focus indicator is not hidden */
+.dev-shortcuts-link:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.dev-shortcuts-path {
+  font-family: monospace;
+  font-weight: bold;
+  color: #0056b3;
+}
+
+.dev-shortcuts-label {
+  font-weight: 600;
+}
+
+.dev-shortcuts-desc {
+  color: #555;
+  font-size: 0.9rem;
+  flex-grow: 1;
+}
+
+.dev-shortcuts-status {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  background-color: #eee;
+  font-weight: bold;
+}

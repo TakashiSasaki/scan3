@@ -10,9 +10,18 @@
 - `contracts/` および `/dev/schema`: schema workbench
 
 各Strideの想定：
-- Stride 1: 再構築基盤 (Completed)
-- Stride 2A: Offline Source Intake and Legacy Restoration Contract (Current)
-- Stride 2B: Source-backed legacy restoration (Planned)
+- Stride 1:
+  Completed
+- Stride 2A:
+  Completed after closeout
+
+Current blocker:
+  No validated historical legacy source packet has been supplied.
+
+Next:
+  External reviewer prepares the legacy source packet.
+- Stride 2B:
+  Starts only after packet validation succeeds.
 
 このStrideで実装していないもの：
 - 実働するFirebase機能、Firestoreアクセス、Cloud Functions、データ移行、旧アプリ本体、新EFP runtime

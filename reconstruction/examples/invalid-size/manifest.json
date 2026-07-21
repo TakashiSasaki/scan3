@@ -1,15 +1,15 @@
 {
   "formatVersion": "1.0",
-  "packetId": "minimal",
-  "purpose": "test minimal",
+  "packetId": "size",
+  "purpose": "test size",
   "source": { "repository": "test/source", "commit": "0000000000000000000000000000000000000000" },
   "destination": { "repository": "TakashiSasaki/scan3", "baselineCommit": "0000000000000000000000000000000000000000" },
   "files": [
     {
       "sourcePath": "example.txt",
       "payloadPath": "example.txt",
-      "sha256": "40de7ed218ae3ed0731a948eb93d4208f2ac03388a5805fae9b52d3dd2f973d2",
-      "sizeBytes": 14,
+      "sha256": "d0d4917f715ff1573201cece8151e4b491fb516e0dd850c25dec082fe9796f72",
+      "sizeBytes": 999,
       "disposition": "restore",
       "intendedDestination": "test.txt"
     }
