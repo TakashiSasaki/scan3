@@ -79,6 +79,10 @@ function validate() {
     console.error('Usage: node validate-source-packet.cjs <packet-dir-or-manifest>');
     process.exit(1);
   }
+  if (!fs.existsSync(target)) {
+    console.error(`Target not found: ${target}`);
+    process.exit(1);
+  }
   const isDir = fs.statSync(target).isDirectory();
   const manifestPath = isDir ? path.join(target, 'manifest.json') : target;
   const packetDir = isDir ? target : path.dirname(target);

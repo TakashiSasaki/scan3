@@ -19,3 +19,15 @@ This file is generated from `source-packet-constraints.json`. Do not edit manual
 | C-UNIQUE-4 | Exact-string duplicate owner decision id forbidden | implemented | operational | invalid-duplicate-owner-decision-id |
 | C-UNIQUE-5 | Case-insensitive collision protection | deferred | deferred | - |
 | C-DEST-1 | intendedDestination is required for all entries | implemented | schema | invalid-missing-intended-destination |
+| C-FORMAT | formatVersion must be 1.0 | implemented | schema | minimal |
+| C-REQ-1 | Required fields at top level | implemented | schema | minimal |
+| C-TYPE-STR | Non-blank string type | implemented | schema | minimal |
+| C-TYPE-SHA1 | Commit SHA type | implemented | schema | minimal |
+| C-TYPE-SHA256 | SHA-256 type | implemented | schema | minimal |
+| C-TYPE-INT | Safe integer for sizeBytes | implemented | schema | minimal, invalid-noninteger-size |
+| C-ENUM-DISP | Disposition enum | implemented | schema | minimal |
+| C-REQ-OWNER | Owner decision missing value | implemented | schema | minimal, invalid-missing-owner-value |
+| C-PAYLOAD-SIZE | Actual file size match | implemented | operational | invalid-size |
+| C-PAYLOAD-HASH | Actual file hash match | implemented | operational | invalid-hash |
+| C-PAYLOAD-REGULAR | Payload must be a regular file | implemented | operational | minimal |
+| C-PAYLOAD-NO-SYMLINK | Payload must not be a symbolic link | implemented | operational | symbolic-link-test |

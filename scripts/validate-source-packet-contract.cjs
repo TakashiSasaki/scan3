@@ -2,6 +2,22 @@ const fs = require('fs');
 const path = require('path');
 const Ajv = require('ajv');
 const { execFileSync } = require('child_process');
+const { generateMatrix } = require('./generate-source-packet-constraint-matrix.cjs');
+
+function resolveJsonPointer(obj, pointer) {
+  if (!pointer || pointer === '') return obj;
+  if (!pointer.startsWith('/')) throw new Error(`Invalid JSON pointer: ${pointer}`);
+  const parts = pointer.split('/').slice(1);
+  let current = obj;
+  for (const part of parts) {
+    const unescaped = part.replace(/~1/g, '/').replace(/~0/g, '~');
+    if (current === undefined || current === null || typeof current !== 'object' || !(unescaped in current)) {
+      throw new Error(`JSON pointer not resolvable: ${pointer} at ${unescaped}`);
+    }
+    current = current[unescaped];
+  }
+  return current;
+}
 
 function check() {
   const rootDir = path.join(__dirname, '..');
@@ -16,7 +32,6 @@ function check() {
   
   const matrixPath = path.join(rootDir, 'reconstruction', 'source-packet-constraint-matrix.md');
   if (!fs.existsSync(matrixPath)) throw new Error('Constraint matrix not found');
-
   const constraintsPath = path.join(rootDir, 'reconstruction', 'source-packet-constraints.json');
   if (!fs.existsSync(constraintsPath)) throw new Error('Constraint JSON not found');
   
@@ -54,7 +69,7 @@ function check() {
     }
     if (c.authoritativeLayer === 'schema') {
       if (!c.schemaPointer) throw new Error(`Schema authoritative constraint missing pointer: ${c.id}`);
-      // Basic check for pointer existence in schema object structure could be added here, but string presence is a start
+      resolveJsonPointer(schema, c.schemaPointer);
     } else if (c.authoritativeLayer === 'operational' || c.authoritativeLayer === 'both') {
       if (!c.operationalEvidence || !c.operationalEvidence.file || !c.operationalEvidence.marker) {
         throw new Error(`Operational constraint missing evidence: ${c.id}`);
@@ -68,12 +83,11 @@ function check() {
     }
   }
 
-  // Ensure matrix is up to date
+  // Ensure matrix is up to date (Read-only)
   const currentMatrix = fs.readFileSync(matrixPath, 'utf8');
-  execFileSync(process.execPath, [path.join(__dirname, 'generate-source-packet-constraint-matrix.cjs')]);
-  const newMatrix = fs.readFileSync(matrixPath, 'utf8');
-  if (currentMatrix !== newMatrix) {
-    throw new Error('Constraint matrix was not up to date. Run generator.');
+  const expectedMatrix = generateMatrix();
+  if (currentMatrix !== expectedMatrix) {
+    throw new Error('Constraint matrix is not up to date with constraints JSON. Run generator script manually.');
   }
 
   console.log("Running schema tests...");

@@ -26,17 +26,18 @@ Audit the current stride for regressions, incomplete constraints, and missing de
 - Implementation files
 
 # Procedure
-1. policyとcurrent priorityを読む。
-2. accepted artifact inventoryを検査する。
-3. 意図しない削除を確認する。
-4. task requirementと実装を比較する。
-5. validatorの主張と実際の検査範囲を比較する。
-6. regressionを一般化してpolicy候補を作る。
-7. decisionが必要な事項をledgerへ記録する。
-8. automated、environment-dependent、manual、externalを分離する。
-9. 過去closeoutを書き換えずaddendumを作る。
-10. current stride closeoutを作る。
-11. AI StudioではGitHub CI結果を確認できないと記録する。
+1. workspace baseline preflightを実施し、sentinelとcontrol registryの存在を確認する。
+2. policyとcurrent priorityを読む。
+3. accepted artifact inventoryを検査する。
+4. 意図しない削除を確認する。
+5. task requirementと実装を比較する。
+6. validatorの主張と実際の検査範囲を比較する。
+7. regressionを一般化してpolicy候補を作る。
+8. decisionが必要な事項をledgerへ記録する。
+9. automated、environment-dependent、manual、externalを分離する。
+10. 過去closeoutを書き換えずaddendumを作る。
+11. current stride closeoutを作る。
+12. AI StudioではGitHub CI結果を確認できないと記録する。
 
 # Decision Gates
 - Are there unrecorded owner decisions? If so, record them.

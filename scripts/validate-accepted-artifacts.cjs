@@ -35,7 +35,9 @@ const REQUIRED_ENTRIES = [
   'scripts/test-source-packet-schema.cjs',
   'scripts/validate-source-packet-contract.cjs',
   'scripts/validate-agent-skills.cjs',
-  'scripts/validate-ci-workflow.cjs'
+  'scripts/validate-ci-workflow.cjs',
+  'scripts/validate-control-registries.cjs',
+  'reconstruction/agent-skills.json'
 ];
 
 const rootDir = path.resolve(__dirname, '..');

@@ -32,7 +32,9 @@
   "scripts/validate-surfaces.cjs",
   "docs/reconstruction/decisions.md",
   "docs/reconstruction/stride-2a-3-audit-addendum.md",
+  "docs/reconstruction/stride-2a-4-audit-addendum.md",
   "docs/reconstruction/stride-2a-4-closeout.md",
+  "docs/reconstruction/stride-2a-5-closeout.md",
   "docs/reconstruction/ci.md",
   "docs/reconstruction/agent-skills.md",
   "package.json",
@@ -48,5 +50,7 @@
   ".github/workflows/verify-reconstruction.yml",
   ".agents/skills/README.md",
   ".agents/skills/scan3-source-packet-contract/SKILL.md",
-  ".agents/skills/scan3-stride-audit-closeout/SKILL.md"
+  ".agents/skills/scan3-stride-audit-closeout/SKILL.md",
+  "reconstruction/agent-skills.json",
+  "scripts/validate-control-registries.cjs"
 ]

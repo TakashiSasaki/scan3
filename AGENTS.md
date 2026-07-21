@@ -24,4 +24,9 @@ Important Constraints:
 - source packetに含まれないhistorical fileを実装しない
 - provenanceとowner decisionの優先順位を守る
 
+Repository-Local Skills:
+When requested or when context matches, you MUST refer to these handwritten skills located in `.agents/skills/`:
+- `scan3-source-packet-contract`
+- `scan3-stride-audit-closeout`
+
 *(Note: This is a temporary handwritten instruction file, not an agent-policy generated file.)*

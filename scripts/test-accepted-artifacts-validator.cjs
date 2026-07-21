@@ -53,7 +53,9 @@ runTest('empty array is allowed if all requirements present', [
   'scripts/test-source-packet-schema.cjs',
   'scripts/validate-source-packet-contract.cjs',
   'scripts/validate-agent-skills.cjs',
-  'scripts/validate-ci-workflow.cjs'
+  'scripts/validate-ci-workflow.cjs',
+  'scripts/validate-control-registries.cjs',
+  'reconstruction/agent-skills.json'
 ], true);
 
 const baseReqs = [
@@ -72,10 +74,33 @@ const baseReqs = [
   'scripts/test-source-packet-schema.cjs',
   'scripts/validate-source-packet-contract.cjs',
   'scripts/validate-agent-skills.cjs',
-  'scripts/validate-ci-workflow.cjs'
+  'scripts/validate-ci-workflow.cjs',
+  'scripts/validate-control-registries.cjs',
+  'reconstruction/agent-skills.json'
 ];
 
 runTest('valid file..name.md', [...baseReqs, 'reconstruction/examples/valid-dotted-filenames/manifest.json'], true);
+
+// self-reference 欠落
+runTest('self-reference 欠落', baseReqs.filter(x => x !== 'reconstruction/accepted-artifacts.json'), false);
+
+// validator 欠落
+runTest('validator 欠落', baseReqs.filter(x => x !== 'scripts/validate-accepted-artifacts.cjs'), false);
+
+// duplicate
+runTest('duplicate', [...baseReqs, 'AGENTS.md'], false);
+
+// absolute path
+runTest('absolute path', [...baseReqs, '/AGENTS.md'], false);
+
+// .. segment
+runTest('.. segment', [...baseReqs, 'reconstruction/../AGENTS.md'], false);
+
+// nonexistent file
+runTest('nonexistent file', [...baseReqs, 'nonexistent-file.txt'], false);
+
+// directory
+runTest('directory', [...baseReqs, 'reconstruction/examples'], false);
 
 // NUL path test (Cannot use a real file with NUL, so we just pass NUL to validator and it should fail)
 runTest('NUL path', [...baseReqs, 'package\0.json'], false);

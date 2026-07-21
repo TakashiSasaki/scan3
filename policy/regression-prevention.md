@@ -129,3 +129,30 @@ This policy document defines rules to prevent recurrences of issues identified d
 - local PASSとCI PASSを区別する。
 - CI未実行または未確認をCI SUCCESSと表現しない。
 - deployment workflowとverification workflowを分離する。
+
+### Verification Pipeline Closure
+- Ensure all relevant validators (schemas, contracts, tests, skills, controls) are connected to the central verification pipeline (e.g., verify:reconstruction).
+- An unlinked validator provides no protective value and cannot be claimed as a control.
+
+### Side-Effect-Free Validation
+- Contract validation and evidence generation should be read-only during validation.
+- Do not mutate the state, rewrite baseline files, or apply unapproved changes silently during the validation phase.
+- Use in-memory comparisons or dry-runs for verifying artifact synchronization.
+
+### Skill Activation and Enforcement
+- Procedural skills MUST be referenced explicitly in `AGENTS.md` so that the agent context is aware of them.
+- Ensure the skill structure (`SKILL.md`) follows the agreed schema.
+
+### Transient Artifact Hygiene
+- Avoid leaving temporary root scripts, intermediate outputs, or orphaned payload tests in the workspace after task completion.
+- Temporary files must be cleaned up to prevent inventory drift and side-effects.
+
+### Machine-Readable Control Validation
+- Verify the integrity of control registries (fixture catalogs, constraint matrices, skill lists) through automated validators.
+- Reject unknown fields, malformed formats, duplicate IDs, and unregistered target references.
+
+### One-Way Export Baseline Guard
+- 一方向export前にworkspace baselineのsentinelを検査する。
+- baseline mismatch時はexportを停止する。
+- 不足artifactを会話履歴から推測して再作成しない。
+- current priorityとaccepted artifactをexport前に検証する。
