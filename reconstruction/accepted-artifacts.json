@@ -1,0 +1,19 @@
+[
+  "README.md",
+  "AGENTS.md",
+  "policy/project.md",
+  "policy/current-priority.md",
+  "policy/regression-prevention.md",
+  "docs/reconstruction/stride-1-closeout.md",
+  "docs/reconstruction/stride-2a-closeout.md",
+  "docs/reconstruction/stride-2a-audit-addendum.md",
+  "docs/reconstruction/stride-2a-1-closeout.md",
+  "docs/reconstruction/upstream-policy-candidates.md",
+  "reconstruction/source-packet.schema.json",
+  "reconstruction/README.md",
+  "scripts/validate-source-packet.cjs",
+  "scripts/test-source-packet-validator.cjs",
+  "scripts/validate-surfaces.cjs",
+  "scripts/validate-style-residues.cjs",
+  "contracts/registry.json"
+]

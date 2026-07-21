@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 
 const catalogPath = path.join(__dirname, '../src/app/router/surfaceCatalog.json');
-
 let catalog;
 try {
   catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
@@ -23,6 +22,15 @@ const requiredPaths = [
   '/demo'
 ];
 
+const allowedStatuses = [
+  'foundation',
+  'planning',
+  'awaiting-source',
+  'placeholder',
+  'draft',
+  'awaiting-restoration'
+];
+
 const paths = new Set();
 const ids = new Set();
 let allPassed = true;
@@ -40,7 +48,21 @@ for (const entry of catalog) {
   if (!entry.label) { console.error(`FAIL: Missing label for ${entry.path}`); allPassed = false; }
   if (!entry.description) { console.error(`FAIL: Missing description for ${entry.path}`); allPassed = false; }
   if (!entry.status) { console.error(`FAIL: Missing status for ${entry.path}`); allPassed = false; }
+  if (!allowedStatuses.includes(entry.status)) { console.error(`FAIL: Invalid status for ${entry.path}: ${entry.status}`); allPassed = false; }
   if (typeof entry.shortcutVisible !== 'boolean') { console.error(`FAIL: shortcutVisible must be boolean for ${entry.path}`); allPassed = false; }
+
+  // Required shortcut coverage
+  if (entry.path === '/') {
+    if (entry.shortcutVisible !== false) {
+      console.error(`FAIL: "/" must have shortcutVisible: false`);
+      allPassed = false;
+    }
+  } else if (requiredPaths.includes(entry.path)) {
+    if (entry.shortcutVisible !== true) {
+      console.error(`FAIL: Required path ${entry.path} must have shortcutVisible: true`);
+      allPassed = false;
+    }
+  }
 
   paths.add(entry.path);
 }
@@ -52,13 +74,6 @@ for (const req of requiredPaths) {
   }
 }
 
-// Shortcut validation
-for (const entry of catalog) {
-  if (entry.path === '/' && entry.shortcutVisible) {
-    console.error(`FAIL: "/" must not be shortcut visible`);
-    allPassed = false;
-  }
-}
 const devShortcutsPath = path.join(__dirname, '../src/app/components/DevelopmentShortcuts.tsx');
 if (!fs.existsSync(devShortcutsPath)) {
   console.error(`FAIL: DevelopmentShortcuts.tsx not found`);
@@ -76,9 +91,47 @@ if (!fs.existsSync(devShortcutsPath)) {
   }
 }
 
+// Shortcut placement regression check
+function checkShortcutPlacement(filePath, shouldHaveShortcut) {
+  if (!fs.existsSync(filePath)) return;
+  const content = fs.readFileSync(filePath, 'utf-8');
+  const hasImport = content.includes('DevelopmentShortcuts');
+  const hasRender = content.includes('<DevelopmentShortcuts');
+  
+  if (shouldHaveShortcut) {
+    if (!hasImport) {
+      console.error(`FAIL: ${filePath} must import DevelopmentShortcuts`);
+      allPassed = false;
+    }
+    if (!hasRender) {
+      console.error(`FAIL: ${filePath} must render <DevelopmentShortcuts`);
+      allPassed = false;
+    }
+  } else {
+    if (hasImport) {
+      console.error(`FAIL: ${filePath} must NOT import DevelopmentShortcuts`);
+      allPassed = false;
+    }
+    if (hasRender) {
+      console.error(`FAIL: ${filePath} must NOT render <DevelopmentShortcuts`);
+      allPassed = false;
+    }
+  }
+}
+
+checkShortcutPlacement(path.join(__dirname, '../src/App.tsx'), false);
+checkShortcutPlacement(path.join(__dirname, '../src/app/surfaces/public/index.tsx'), true);
+
+const surfacesDir = path.join(__dirname, '../src/app/surfaces');
+const surfaceFolders = fs.readdirSync(surfacesDir);
+for (const folder of surfaceFolders) {
+  if (folder === 'public') continue;
+  const indexPath = path.join(surfacesDir, folder, 'index.tsx');
+  checkShortcutPlacement(indexPath, false);
+}
+
 const appTsxPath = path.join(__dirname, '../src/App.tsx');
 let appTsx = fs.readFileSync(appTsxPath, 'utf-8');
-
 const routeRegex = /<Route[^>]*path="([^"]+)"/g;
 const routerPaths = new Set();
 let match;
@@ -97,12 +150,14 @@ for (const p of paths) {
     allPassed = false;
   }
 }
+
 for (const p of routerPaths) {
   if (!paths.has(p)) {
     console.error(`FAIL: Path in App.tsx router not found in catalog: ${p}`);
     allPassed = false;
   }
 }
+
 for (const req of requiredPaths) {
   if (!routerPaths.has(req)) {
     console.error(`FAIL: Missing required path in App.tsx router: ${req}`);

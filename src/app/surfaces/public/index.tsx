@@ -1,12 +1,17 @@
 import DevelopmentShortcuts from '../../components/DevelopmentShortcuts';
+import { SurfacePlaceholder } from '../../components/SurfacePlaceholder';
+import { getSurfaceById } from '../../router/getSurface';
 
-export default function PublicSurface() {
+export function PublicSurface() {
+  const surface = getSurfaceById('public');
   return (
-    <div className="surface">
+    <div className="public-surface-container">
+      <SurfacePlaceholder
+        title={surface.label}
+        status={surface.status}
+        description={surface.description}
+      />
       <DevelopmentShortcuts />
-      <h1 className="surface-title">Public Surface</h1>
-      <p className="surface-status">Status: foundation</p>
-      <p className="surface-description">Purpose: Public landing surface</p>
     </div>
   );
 }

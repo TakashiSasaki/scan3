@@ -15,8 +15,10 @@
     "sources:test": "node scripts/test-source-packet-validator.cjs",
     "surfaces:validate": "node scripts/validate-surfaces.cjs",
     "styles:validate": "node scripts/validate-style-residues.cjs",
+    "styles:test": "node scripts/test-style-residue-validator.cjs",
+    "artifacts:validate": "node scripts/validate-accepted-artifacts.cjs",
     "verify:foundation": "npm run typecheck && npm run contracts:validate && npm run build",
-    "verify:reconstruction": "npm run verify:foundation && npm run sources:validate:example && npm run sources:test && npm run surfaces:validate && npm run styles:validate"
+    "verify:reconstruction": "npm run verify:foundation && npm run sources:validate:example && npm run sources:test && npm run surfaces:validate && npm run styles:validate && npm run styles:test && npm run artifacts:validate"
   },
   "dependencies": {
     "react": "^19.0.1",

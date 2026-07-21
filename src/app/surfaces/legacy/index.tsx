@@ -1,10 +1,16 @@
-export default function LegacySurface() {
+import { SurfacePlaceholder } from '../../components/SurfacePlaceholder';
+import { getSurfaceById } from '../../router/getSurface';
+
+export function LegacySurface() {
+  const surface = getSurfaceById('legacy');
   return (
-    <div className="surface">
-      <h1 className="surface-title">Legacy Application</h1>
-      <p className="surface-status">Status: awaiting historical reconstruction</p>
-      <p className="surface-description">Intended database: photos.moukaeritai.work</p>
-      <p className="surface-details">Specification will be frozen after restoration</p>
-    </div>
+    <SurfacePlaceholder
+      title={surface.label}
+      status={surface.status}
+      description={surface.description}
+      details={
+        <p>Target Database: Firebase / Cloud Firestore (Pending Setup)</p>
+      }
+    />
   );
 }

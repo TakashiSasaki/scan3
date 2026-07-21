@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 
+const isJson = process.argv.includes('--json');
 const validatorPath = path.join(__dirname, 'validate-source-packet.cjs');
 const examplesDir = path.join(__dirname, '../reconstruction/examples');
 
@@ -16,10 +17,35 @@ const tests = [
   { name: 'invalid-windows-traversal', expectSuccess: false },
   { name: 'invalid-noninteger-size', expectSuccess: false },
   { name: 'invalid-notes-type', expectSuccess: false },
-  { name: 'invalid-missing-owner-value', expectSuccess: false }
+  { name: 'invalid-missing-owner-value', expectSuccess: false },
+  { name: 'invalid-nul-path', expectSuccess: false },
+  { name: 'invalid-dot-segment-posix', expectSuccess: false },
+  { name: 'invalid-dot-segment-windows', expectSuccess: false },
+  { name: 'invalid-packet-id-type', expectSuccess: false },
+  { name: 'invalid-purpose-type', expectSuccess: false },
+  { name: 'invalid-source-repository-type', expectSuccess: false },
+  { name: 'invalid-file-entry-type', expectSuccess: false },
+  { name: 'invalid-owner-decision-array', expectSuccess: false },
+  { name: 'valid-dotted-filenames', expectSuccess: true }
 ];
 
-let allPassed = true;
+let passed = 0;
+let failed = 0;
+let skipped = 0;
+const results = [];
+
+function logTest(name, result, reason) {
+  results.push({ name, result, reason: reason || null });
+  if (!isJson) {
+    if (result === 'SKIP') {
+      console.log(`SKIP: ${name} — ${reason}`);
+    } else if (result === 'FAIL') {
+      console.error(`FAIL: ${name}${reason ? ` (${reason})` : ''}`);
+    } else {
+      console.log(`PASS: ${name}`);
+    }
+  }
+}
 
 for (const test of tests) {
   const target = path.join(examplesDir, test.name);
@@ -30,17 +56,18 @@ for (const test of tests) {
   } catch (e) {
     success = false;
   }
-
+  
   if (success === test.expectSuccess) {
-    console.log(`PASS: ${test.name}`);
+    passed++;
+    logTest(test.name, 'PASS');
   } else {
-    console.error(`FAIL: ${test.name} (Expected success: ${test.expectSuccess}, but got: ${success})`);
-    allPassed = false;
+    failed++;
+    logTest(test.name, 'FAIL', `Expected success: ${test.expectSuccess}, but got: ${success}`);
   }
 }
 
 // Symlink test
-console.log('Running symbolic link self-test...');
+if (!isJson) console.log('Running symbolic link self-test...');
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'scan3-symlink-test-'));
 try {
   const packetDir = path.join(tempDir, 'packet');
@@ -52,19 +79,20 @@ try {
   
   const symlinkPath = path.join(payloadDir, 'example.txt');
   let symlinkCreated = false;
+  let skipReason = '';
   try {
     fs.symlinkSync(outsideFile, symlinkPath);
     symlinkCreated = true;
   } catch (e) {
-    console.log(`SKIP: Symbolic link test skipped due to environment restriction: ${e.message}`);
+    skipReason = e.message;
   }
-
+  
   if (symlinkCreated) {
     const manifest = {
       "formatVersion": "1.0",
       "packetId": "symlink-test",
       "purpose": "test symlink",
-      "source": { "repository": "test/source", "commit": "0000000000000000000000000000000000000000" },
+      "source": { "repository": "TakashiSasaki/legacy", "commit": "0000000000000000000000000000000000000000" },
       "destination": { "repository": "TakashiSasaki/scan3", "baselineCommit": "0000000000000000000000000000000000000000" },
       "files": [
         {
@@ -79,7 +107,7 @@ try {
       "ownerDecisions": [{ "id": "d1", "value": true, "reason": "test" }]
     };
     fs.writeFileSync(path.join(packetDir, 'manifest.json'), JSON.stringify(manifest));
-
+    
     let success = false;
     try {
       execFileSync(process.execPath, [validatorPath, packetDir], { stdio: 'ignore' });
@@ -87,20 +115,39 @@ try {
     } catch (e) {
       success = false;
     }
-
+    
     if (success === false) {
-      console.log('PASS: symbolic-link-test (validator correctly rejected symlink)');
+      passed++;
+      logTest('symbolic-link-test', 'PASS');
     } else {
-      console.error('FAIL: symbolic-link-test (validator allowed symlink!)');
-      allPassed = false;
+      failed++;
+      logTest('symbolic-link-test', 'FAIL', 'validator allowed symlink!');
     }
+  } else {
+    skipped++;
+    logTest('symbolic-link-test', 'SKIP', skipReason);
   }
 } finally {
   fs.rmSync(tempDir, { recursive: true, force: true });
 }
 
-if (!allPassed) {
+if (isJson) {
+  console.log(JSON.stringify({ passed, failed, skipped, tests: results }, null, 2));
+} else {
+  console.log('\nSummary:');
+  console.log(`  PASS: ${passed}`);
+  console.log(`  FAIL: ${failed}`);
+  console.log(`  SKIP: ${skipped}\n`);
+  
+  if (skipped > 0) {
+    console.log('Validator tests completed with SKIP.');
+  } else {
+    console.log('Validator tests completed successfully with no skips.');
+  }
+}
+
+if (failed > 0) {
   process.exit(1);
 } else {
-  console.log('All validator tests passed.');
+  process.exit(0);
 }

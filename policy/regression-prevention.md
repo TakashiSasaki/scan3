@@ -38,3 +38,17 @@ This policy document defines rules to prevent recurrences of issues identified d
 - For path security, validate raw paths, normalized paths, and real paths separately.
 - Check for symbolic links, path traversals, invalid types, and duplicate identifiers.
 - Explicitly verify that expected failures result in test success.
+
+## 6. Validation Outcome Transparency
+- PASS, FAIL, SKIP must be explicitly distinguished.
+- SKIP must not be counted as PASS.
+- A state with SKIP must not be described as "all tests passed".
+- Record the exact number of PASS, FAIL, and SKIP cases along with their targets in closeout documents.
+- Any items that cannot be verified due to environment constraints must remain documented as unverified.
+
+## 7. Guardrail Precision
+- Static analysis must explicitly identify the prohibited targets.
+- Guardrails must not over-reject legitimate semantic naming or future extensions.
+- Guardrails must be accompanied by both positive and negative fixtures.
+- It must be verified that not only invalid inputs are rejected, but valid inputs are accepted.
+- The precise scope of the inspection rules must be recorded in the closeout document.

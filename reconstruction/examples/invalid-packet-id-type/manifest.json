@@ -1,0 +1,24 @@
+{
+  "formatVersion": "1.0",
+  "packetId": 123,
+  "purpose": "test fixture",
+  "source": {
+    "repository": "TakashiSasaki/legacy",
+    "commit": "1480054c90ac0b78f9b85ca47adcd3837e83fa07"
+  },
+  "destination": {
+    "repository": "TakashiSasaki/scan3",
+    "baselineCommit": "1480054c90ac0b78f9b85ca47adcd3837e83fa07"
+  },
+  "files": [
+    {
+      "sourcePath": "example.txt",
+      "payloadPath": "example.txt",
+      "disposition": "restore",
+      "intendedDestination": "example.txt",
+      "sizeBytes": 7,
+      "sha256": "50d858e0985ecc7f60418aaf0cc5ab587f42c2570a884095a9e8ccacd0f6545c"
+    }
+  ],
+  "ownerDecisions": []
+}

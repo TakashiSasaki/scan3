@@ -1,9 +1,13 @@
-export default function TestSurface() {
+import { SurfacePlaceholder } from '../../components/SurfacePlaceholder';
+import { getSurfaceById } from '../../router/getSurface';
+
+export function TestSurface() {
+  const surface = getSurfaceById('test');
   return (
-    <div className="surface">
-      <h1 className="surface-title">Test Surface</h1>
-      <p className="surface-status">Status: placeholder</p>
-      <p className="surface-description">Purpose: Development verification surface.</p>
-    </div>
+    <SurfacePlaceholder
+      title={surface.label}
+      status={surface.status}
+      description={surface.description}
+    />
   );
 }

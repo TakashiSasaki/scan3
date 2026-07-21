@@ -1,9 +1,13 @@
-export default function AdminSurface() {
+import { SurfacePlaceholder } from '../../components/SurfacePlaceholder';
+import { getSurfaceById } from '../../router/getSurface';
+
+export function AdminSurface() {
+  const surface = getSurfaceById('admin');
   return (
-    <div className="surface">
-      <h1 className="surface-title">Admin Surface</h1>
-      <p className="surface-status">Status: placeholder</p>
-      <p className="surface-description">Purpose: Administration and management.</p>
-    </div>
+    <SurfacePlaceholder
+      title={surface.label}
+      status={surface.status}
+      description={surface.description}
+    />
   );
 }

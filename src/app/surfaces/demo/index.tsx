@@ -1,9 +1,13 @@
-export default function DemoSurface() {
+import { SurfacePlaceholder } from '../../components/SurfacePlaceholder';
+import { getSurfaceById } from '../../router/getSurface';
+
+export function DemoSurface() {
+  const surface = getSurfaceById('demo');
   return (
-    <div className="surface">
-      <h1 className="surface-title">Historical and Experimental Demos</h1>
-      <p className="surface-status">Status: awaiting restoration</p>
-      <p className="surface-description">Production data access is prohibited</p>
-    </div>
+    <SurfacePlaceholder
+      title={surface.label}
+      status={surface.status}
+      description={surface.description}
+    />
   );
 }

@@ -1,9 +1,13 @@
-export default function ApiSurface() {
+import { SurfacePlaceholder } from '../../components/SurfacePlaceholder';
+import { getSurfaceById } from '../../router/getSurface';
+
+export function ApiSurface() {
+  const surface = getSurfaceById('api');
   return (
-    <div className="surface">
-      <h1 className="surface-title">API Surface</h1>
-      <p className="surface-status">Status: placeholder</p>
-      <p className="surface-description">Purpose: External developer API documentation and endpoints.</p>
-    </div>
+    <SurfacePlaceholder
+      title={surface.label}
+      status={surface.status}
+      description={surface.description}
+    />
   );
 }

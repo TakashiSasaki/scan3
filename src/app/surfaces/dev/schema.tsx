@@ -1,9 +1,13 @@
-export default function SchemaWorkbenchSurface() {
+import { SurfacePlaceholder } from '../../components/SurfacePlaceholder';
+import { getSurfaceById } from '../../router/getSurface';
+
+export function SchemaSurface() {
+  const surface = getSurfaceById('schema');
   return (
-    <div className="surface">
-      <h1 className="surface-title">Schema Workbench</h1>
-      <p className="surface-status">Status: draft contracts only</p>
-      <p className="surface-description">Runtime implementation is intentionally deferred</p>
-    </div>
+    <SurfacePlaceholder
+      title={surface.label}
+      status={surface.status}
+      description={surface.description}
+    />
   );
 }
