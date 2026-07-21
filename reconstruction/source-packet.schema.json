@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "formatVersion": { "type": "string", "enum": ["1.0"] },
+    "packetId": { "type": "string" },
+    "purpose": { "type": "string" },
+    "source": {
+      "type": "object",
+      "properties": {
+        "repository": { "type": "string" },
+        "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+      },
+      "required": ["repository", "commit"]
+    },
+    "destination": {
+      "type": "object",
+      "properties": {
+        "repository": { "type": "string", "enum": ["TakashiSasaki/scan3"] },
+        "baselineCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+      },
+      "required": ["repository", "baselineCommit"]
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sourcePath": { "type": "string" },
+          "payloadPath": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "sizeBytes": { "type": "integer", "minimum": 0 },
+          "disposition": { "type": "string", "enum": ["restore", "reference", "exclude"] },
+          "intendedDestination": { "type": ["string", "null"] },
+          "notes": { "type": "string" }
+        },
+        "required": ["sourcePath", "payloadPath", "sha256", "sizeBytes", "disposition"]
+      }
+    },
+    "ownerDecisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "value": {},
+          "reason": { "type": "string" }
+        },
+        "required": ["id", "value", "reason"]
+      }
+    }
+  },
+  "required": ["formatVersion", "packetId", "purpose", "source", "destination", "files", "ownerDecisions"]
+}

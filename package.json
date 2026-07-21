@@ -11,7 +11,9 @@
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "contracts:validate": "node scripts/validate-contracts.cjs",
-    "verify:foundation": "npm run typecheck && npm run contracts:validate && npm run build"
+    "sources:validate:example": "node scripts/validate-source-packet.cjs reconstruction/examples/minimal",
+    "verify:foundation": "npm run typecheck && npm run contracts:validate && npm run build",
+    "verify:reconstruction": "npm run verify:foundation && npm run sources:validate:example"
   },
   "dependencies": {
     "react": "^19.0.1",

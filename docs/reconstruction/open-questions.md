@@ -1,6 +1,6 @@
 # Open Questions
 
-- 旧アプリの正確な復元基準commit
+- 旧アプリの最終source set: a41267a7...をprimary candidateとし、どのpre-redesign fixesを追加採用するか
 - 旧アプリのFirebase Web App設定
 - Hosting site / target
 - Associationの時間意味論

@@ -1,0 +1,31 @@
+{
+  "formatVersion": "1.0",
+  "packetId": "minimal-example-001",
+  "purpose": "validation-test",
+  "source": {
+    "repository": "TakashiSasaki/scan.moukaeritai.work",
+    "commit": "a41267a7d79417706fd8f57b42fa67635a8de3b4"
+  },
+  "destination": {
+    "repository": "TakashiSasaki/scan3",
+    "baselineCommit": "cd1615438ec44976bf89ba32a7cd375768d1ccbc"
+  },
+  "files": [
+    {
+      "sourcePath": "docs/example.txt",
+      "payloadPath": "example.txt",
+      "sha256": "3decc07e5f05ad339fa35c936313dbd8e8bfe910c1c8dea9304102103d27916a",
+      "sizeBytes": 25,
+      "disposition": "restore",
+      "intendedDestination": "docs/example.txt",
+      "notes": "Minimal example file"
+    }
+  ],
+  "ownerDecisions": [
+    {
+      "id": "test-decision",
+      "value": true,
+      "reason": "For testing validator"
+    }
+  ]
+}

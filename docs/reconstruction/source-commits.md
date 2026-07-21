@@ -5,6 +5,12 @@ Historical investigation reference:
 Repository:
 TakashiSasaki/scan.moukaeritai.work
 
+Accepted scan3 baseline (destination baseline):
+cd1615438ec44976bf89ba32a7cd375768d1ccbc
+
+Legacy primary candidate (historical candidate):
+a41267a7d79417706fd8f57b42fa67635a8de3b4
+
 Legacy application candidate snapshot:
 a41267a7d79417706fd8f57b42fa67635a8de3b4
 
