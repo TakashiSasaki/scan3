@@ -16,21 +16,21 @@ import DemoSurface from './app/surfaces/demo';
 
 function Layout() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <nav className="bg-white shadow p-4">
-        <ul className="flex space-x-4">
-          <li><Link to="/" className="text-blue-600 hover:underline">/</Link></li>
-          <li><Link to="/app" className="text-blue-600 hover:underline">/app</Link></li>
-          <li><Link to="/app/legacy" className="text-blue-600 hover:underline">/app/legacy</Link></li>
-          <li><Link to="/admin" className="text-blue-600 hover:underline">/admin</Link></li>
-          <li><Link to="/dev" className="text-blue-600 hover:underline">/dev</Link></li>
-          <li><Link to="/dev/schema" className="text-blue-600 hover:underline">/dev/schema</Link></li>
-          <li><Link to="/api" className="text-blue-600 hover:underline">/api</Link></li>
-          <li><Link to="/test" className="text-blue-600 hover:underline">/test</Link></li>
-          <li><Link to="/demo" className="text-blue-600 hover:underline">/demo</Link></li>
+    <div className="layout">
+      <nav className="nav">
+        <ul className="nav-list">
+          <li><Link to="/" className="nav-link">/</Link></li>
+          <li><Link to="/app" className="nav-link">/app</Link></li>
+          <li><Link to="/app/legacy" className="nav-link">/app/legacy</Link></li>
+          <li><Link to="/admin" className="nav-link">/admin</Link></li>
+          <li><Link to="/dev" className="nav-link">/dev</Link></li>
+          <li><Link to="/dev/schema" className="nav-link">/dev/schema</Link></li>
+          <li><Link to="/api" className="nav-link">/api</Link></li>
+          <li><Link to="/test" className="nav-link">/test</Link></li>
+          <li><Link to="/demo" className="nav-link">/demo</Link></li>
         </ul>
       </nav>
-      <main className="flex-grow">
+      <main className="main-content">
         <Routes>
           <Route path="/" element={<PublicSurface />} />
           <Route path="/app" element={<AppSurface />} />

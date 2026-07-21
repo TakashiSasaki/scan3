@@ -3,11 +3,11 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 
-// application versionが 0.1.0 である
+// application versionが 3.0.0-alpha.1 である
 const pkgPath = path.join(root, 'package.json');
 const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-if (pkg.version !== '0.1.0') {
-  console.error(`Error: package.json version must be 0.1.0, but got ${pkg.version}`);
+if (pkg.version !== '3.0.0-alpha.1') {
+  console.error(`Error: package.json version must be 3.0.0-alpha.1, but got ${pkg.version}`);
   process.exit(1);
 }
 

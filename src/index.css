@@ -1,1 +1,40 @@
-@import "tailwindcss";
+/* Minimal base CSS for placeholder UI */
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: #f9fafb;
+}
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav {
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 1rem;
+}
+
+.nav-list {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 1rem;
+}

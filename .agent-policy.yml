@@ -1,5 +1,0 @@
-# Simple semantic configuration entry point for future agent-policy toolchain
-version: "1.0"
-policies:
-  - path: policy/project.md
-  - path: policy/current-priority.md

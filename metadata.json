@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "scan3",
+  "description": "scan3 Reconstruction Foundation",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }
