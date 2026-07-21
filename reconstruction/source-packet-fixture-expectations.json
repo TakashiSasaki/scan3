@@ -1,0 +1,116 @@
+[
+  {
+    "fixture": "minimal",
+    "schemaExpected": "PASS",
+    "operationalExpected": "PASS",
+    "reason": "Valid baseline"
+  },
+  {
+    "fixture": "valid-dotted-filenames",
+    "schemaExpected": "PASS",
+    "operationalExpected": "PASS",
+    "reason": "Dotted filenames are valid paths"
+  },
+  {
+    "fixture": "invalid-nul-path",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "NUL character in path"
+  },
+  {
+    "fixture": "invalid-dot-segment-posix",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "POSIX dot segment in path"
+  },
+  {
+    "fixture": "invalid-dot-segment-windows",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "Windows dot segment in path"
+  },
+  {
+    "fixture": "invalid-packet-id-type",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "packetId is not a string"
+  },
+  {
+    "fixture": "invalid-purpose-type",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "purpose is not a string"
+  },
+  {
+    "fixture": "invalid-source-repository-type",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "source repository missing or invalid type"
+  },
+  {
+    "fixture": "invalid-file-entry-type",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "file entry is not an object"
+  },
+  {
+    "fixture": "invalid-owner-decision-array",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "ownerDecisions is not an array"
+  },
+  {
+    "fixture": "invalid-noninteger-size",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "sizeBytes is not an integer"
+  },
+  {
+    "fixture": "invalid-notes-type",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "notes is not a string"
+  },
+  {
+    "fixture": "invalid-missing-owner-value",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "owner decision is missing value property"
+  },
+  {
+    "fixture": "invalid-hash",
+    "schemaExpected": "PASS",
+    "operationalExpected": "FAIL",
+    "reason": "File hash mismatch is an operational check"
+  },
+  {
+    "fixture": "invalid-size",
+    "schemaExpected": "PASS",
+    "operationalExpected": "FAIL",
+    "reason": "File size mismatch is an operational check"
+  },
+  {
+    "fixture": "invalid-duplicate-destination",
+    "schemaExpected": "PASS",
+    "operationalExpected": "FAIL",
+    "reason": "Duplicate intendedDestination is an operational check"
+  },
+  {
+    "fixture": "invalid-embedded-traversal",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "Path traversal segment"
+  },
+  {
+    "fixture": "invalid-path-traversal",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "Path traversal segment (POSIX)"
+  },
+  {
+    "fixture": "invalid-windows-traversal",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "Path traversal segment (Windows)"
+  }
+]

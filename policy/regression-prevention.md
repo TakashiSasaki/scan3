@@ -52,3 +52,32 @@ This policy document defines rules to prevent recurrences of issues identified d
 - Guardrails must be accompanied by both positive and negative fixtures.
 - It must be verified that not only invalid inputs are rejected, but valid inputs are accepted.
 - The precise scope of the inspection rules must be recorded in the closeout document.
+
+## Executable Specification Synchronization
+- Where a declarative schema and operational validator define the same artifact, responsibilities must be clearly bounded.
+- Constraints expressible in schema must be recorded there.
+- Adding validator constraints requires checking impacts on schema, docs, fixtures, and tests.
+- Non-expressible constraints must be explicitly documented as operational.
+- Schema-valid does not equal packet-acceptable (authoritative layers must be documented).
+- Automated gates must check for synchronization between schema and validators.
+
+## Self-Protecting Guardrails
+- The accepted artifact inventory must protect itself (self-reference).
+- The accepted artifact validator must also be in the inventory.
+- Avoid structures where deleting a guardrail silently removes its check.
+- Include fixed minimum requirements in the validator.
+- When creating permanent governance artifacts, historical closeouts, security validators, contracts/schemas, or essential documents, they must be added to the accepted artifact inventory in the same Stride.
+- Guardrails must have their own positive/negative tests.
+
+## Decision-Gated Semantic Changes
+- Agents must not guess owner decisions for semantic changes.
+- Provide options, pros/cons, impacts, and a recommendation.
+- Maintain semantic status quo unless decided otherwise.
+- Separate blocked work from independent safe workstreams.
+- Do not falsely claim unresolved items are completed.
+
+## Verification Statement Consistency
+- Do not combine positive behavioral claims with "Unverified".
+- Cleanly separate: Automated, Environment-dependent, Manual visual, External audit, Not performed.
+- Do not claim "all conditions verified" if some are unchecked.
+- Closeouts must reflect actual execution facts and checked scopes only.

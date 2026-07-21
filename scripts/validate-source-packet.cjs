@@ -1,7 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { createValidator } = require('./lib/source-packet-schema-validator.cjs');
 
+// Defensive assertion for file system security boundary.
+// Even though the schema checks regex, we perform JS-level path validation 
+// before touching the real filesystem to prevent subtle bypassing.
 function validateRawRelativePath(pathValue, fieldName) {
   if (typeof pathValue !== 'string') {
     throw new Error(`${fieldName} must be a string`);
@@ -92,31 +96,23 @@ function validate() {
     process.exit(1);
   }
 
-  if (manifest.formatVersion !== "1.0") throw new Error('formatVersion must be "1.0"');
-  if (typeof manifest.packetId !== 'string' || !manifest.packetId.trim()) throw new Error('packetId must be a non-empty string');
-  if (typeof manifest.purpose !== 'string' || !manifest.purpose.trim()) throw new Error('purpose must be a non-empty string');
+  // 1. JSON Schema validation
+  const validator = createValidator();
+  const { valid, errors } = validator.validateManifestSchema(manifest);
+  if (!valid) {
+    console.error("Schema validation failed:");
+    console.error(JSON.stringify(errors, null, 2));
+    process.exit(1);
+  }
 
-  if (!manifest.source || typeof manifest.source !== 'object' || Array.isArray(manifest.source)) throw new Error('source must be an object');
-  if (typeof manifest.source.repository !== 'string' || !manifest.source.repository.trim()) throw new Error('source.repository must be a non-empty string');
-  if (typeof manifest.source.commit !== 'string' || !/^[0-9a-f]{40}$/.test(manifest.source.commit)) throw new Error('source.commit must be 40-character lowercase hex SHA');
-
-  if (!manifest.destination || typeof manifest.destination !== 'object' || Array.isArray(manifest.destination)) throw new Error('destination must be an object');
-  if (manifest.destination.repository !== 'TakashiSasaki/scan3') throw new Error('destination.repository must be strictly "TakashiSasaki/scan3"');
-  if (typeof manifest.destination.baselineCommit !== 'string' || !/^[0-9a-f]{40}$/.test(manifest.destination.baselineCommit)) throw new Error('destination.baselineCommit must be 40-character lowercase hex SHA');
-
-  if (!Array.isArray(manifest.files)) throw new Error('files must be an array');
-  if (!Array.isArray(manifest.ownerDecisions)) throw new Error('ownerDecisions must be an array');
-
+  // 2. Operational validation
   const seenPayloadPaths = new Set();
   const seenSourcePaths = new Set();
   const seenDestinations = new Set();
   const seenDecisionIds = new Set();
 
   for (const decision of manifest.ownerDecisions) {
-    if (!decision || typeof decision !== 'object' || Array.isArray(decision)) throw new Error('ownerDecision must be a plain object');
-    if (typeof decision.id !== 'string' || !decision.id.trim()) throw new Error('ownerDecision id must be a non-empty string');
-    if (typeof decision.reason !== 'string' || !decision.reason.trim()) throw new Error('ownerDecision reason must be a non-empty string');
-    if (!('value' in decision)) throw new Error(`ownerDecision missing 'value' property: ${decision.id}`);
+    // Uniqueness is an operational constraint.
     if (seenDecisionIds.has(decision.id)) throw new Error(`Duplicate ownerDecision id: ${decision.id}`);
     seenDecisionIds.add(decision.id);
   }
@@ -129,8 +125,7 @@ function validate() {
   const payloadDirReal = fs.realpathSync(payloadDirFullPath);
 
   for (const file of manifest.files) {
-    if (!file || typeof file !== 'object' || Array.isArray(file)) throw new Error('File entry must be a plain object');
-    
+    // Defensive assertion before interacting with file system
     validateRawRelativePath(file.sourcePath, 'sourcePath');
     validateRawRelativePath(file.payloadPath, 'payloadPath');
     
@@ -139,22 +134,9 @@ function validate() {
     seenSourcePaths.add(file.sourcePath);
     seenPayloadPaths.add(file.payloadPath);
 
-    if (file.notes !== undefined && typeof file.notes !== 'string') {
-      throw new Error(`Invalid notes type for ${file.payloadPath}`);
-    }
-
-    if (file.intendedDestination !== undefined && file.intendedDestination !== null && typeof file.intendedDestination !== 'string') {
-      throw new Error(`Invalid intendedDestination type for ${file.payloadPath}`);
-    }
-
-    if (typeof file.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(file.sha256)) throw new Error(`sha256 must be a 64-character lowercase hex string for ${file.payloadPath}`);
-
     const payloadFullPath = resolveContainedPath(payloadDirFullPath, file.payloadPath, 'payloadPath');
     const stat = validateExistingRegularPayloadFile(payloadFullPath, payloadDirFullPath, payloadDirReal, file.payloadPath);
 
-    if (typeof file.sizeBytes !== 'number' || !Number.isFinite(file.sizeBytes) || !Number.isSafeInteger(file.sizeBytes) || file.sizeBytes < 0) {
-      throw new Error(`Invalid sizeBytes for ${file.payloadPath}`);
-    }
     if (stat.size !== file.sizeBytes) throw new Error(`Size mismatch for ${file.payloadPath}: expected ${file.sizeBytes}, got ${stat.size}`);
     
     const fileBuffer = fs.readFileSync(payloadFullPath);
@@ -162,14 +144,6 @@ function validate() {
     hashSum.update(fileBuffer);
     const hex = hashSum.digest('hex');
     if (hex !== file.sha256) throw new Error(`SHA-256 mismatch for ${file.payloadPath}: expected ${file.sha256}, got ${hex}`);
-
-    if (typeof file.disposition !== 'string') throw new Error(`disposition must be a string for ${file.payloadPath}`);
-    const allowedDispositions = ['restore', 'reference', 'exclude'];
-    if (!allowedDispositions.includes(file.disposition)) throw new Error(`Invalid disposition for ${file.payloadPath}: ${file.disposition}`);
-
-    if (file.disposition === 'restore') {
-      if (!file.intendedDestination) throw new Error(`restore file ${file.payloadPath} is missing intendedDestination`);
-    }
 
     if (file.intendedDestination) {
       validateRawRelativePath(file.intendedDestination, 'intendedDestination');

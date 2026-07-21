@@ -24,3 +24,12 @@
 - AI Studioのmainブランチは一方向のforce-push対象であり、規範としてGitHub側で直接編集してはいけない。
 - タスクの範囲外の検証ゲート、抽象化、migration機構を善意で追加しない。
 - 過去の監査による退行を防止するため、`policy/regression-prevention.md` に従うこと。
+
+## Additional Policies
+- See `policy/decision-gates.md` and `policy/regression-prevention.md`
+- owner decisionが必要なsemantic changeを推測で実行しない。
+- 選択肢と推奨案を提示して判断を求める。
+- schemaとvalidatorを同期する。
+- accepted artifact inventoryを更新する。
+- 過去closeoutを削除または書き換えない。
+- source packetがない状態でlegacy codeを実装しない。

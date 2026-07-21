@@ -29,3 +29,10 @@ These guidelines are not unique to the `scan3` project and are broadly applicabl
 - Guardrails must be accompanied by both positive and negative fixtures.
 - It must be verified that not only invalid inputs are rejected, but valid inputs are accepted.
 - The precise scope of the inspection rules must be recorded in the closeout document.
+
+- Executable Specification Synchronization
+- Self-Protecting Guardrails
+- Decision-Gated Semantic Changes
+- Verification Statement Consistency
+
+(Note: Currently these are only adopted as local policies within scan3. AI Studio does not update TakashiSasaki/agent-policy. These are candidates for an external reviewer to port upstream later. They will be validated in scan3 before upstreaming.)
