@@ -15,31 +15,31 @@ class OperationalError extends Error {
 // before touching the real filesystem to prevent subtle bypassing.
 function validateRawRelativePath(pathValue, fieldName) {
   if (typeof pathValue !== 'string') {
-    throw new Error(`${fieldName} must be a string`);
+    throw new OperationalError('PATH_INVALID', `${fieldName} must be a string`);
   }
   const trimmed = pathValue.trim();
   if (!trimmed) {
-    throw new Error(`${fieldName} must not be empty`);
+    throw new OperationalError('PATH_INVALID', `${fieldName} must not be empty`);
   }
   if (pathValue.includes('\0')) {
-    throw new Error(`${fieldName} must not contain NUL characters`);
+    throw new OperationalError('PATH_INVALID', `${fieldName} must not contain NUL characters`);
   }
   if (path.isAbsolute(pathValue)) {
-    throw new Error(`${fieldName} must not be an absolute path: ${pathValue}`);
+    throw new OperationalError('PATH_INVALID', `${fieldName} must not be an absolute path: ${pathValue}`);
   }
   if (/^[a-zA-Z]:/.test(pathValue)) {
-    throw new Error(`${fieldName} must not be a drive-letter path: ${pathValue}`);
+    throw new OperationalError('PATH_INVALID', `${fieldName} must not be a drive-letter path: ${pathValue}`);
   }
   if (pathValue.startsWith('\\\\')) {
-    throw new Error(`${fieldName} must not be a UNC path: ${pathValue}`);
+    throw new OperationalError('PATH_INVALID', `${fieldName} must not be a UNC path: ${pathValue}`);
   }
 
   const segments = pathValue.split(/[/\\]/);
   if (segments.includes('.')) {
-    throw new Error(`${fieldName} must not contain '.' segments: ${pathValue}`);
+    throw new OperationalError('PATH_INVALID', `${fieldName} must not contain '.' segments: ${pathValue}`);
   }
   if (segments.includes('..')) {
-    throw new Error(`${fieldName} must not contain '..' segments: ${pathValue}`);
+    throw new OperationalError('PATH_INVALID', `${fieldName} must not contain '..' segments: ${pathValue}`);
   }
   return pathValue;
 }

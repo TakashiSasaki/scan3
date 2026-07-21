@@ -1,0 +1,9 @@
+{
+  "formatVersion": "1.0",
+  "packetId": "   ",
+  "purpose": "test",
+  "source": { "repository": "TakashiSasaki/legacy", "commit": "0000000000000000000000000000000000000000" },
+  "destination": { "repository": "TakashiSasaki/scan3", "baselineCommit": "0000000000000000000000000000000000000000" },
+  "files": [],
+  "ownerDecisions": []
+}

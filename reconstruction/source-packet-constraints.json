@@ -5,10 +5,11 @@
     "authoritativeLayer": "schema",
     "schemaPointer": "/additionalProperties",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
       "invalid-unknown-top-level-property"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
@@ -17,10 +18,11 @@
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/sourceDescriptor/additionalProperties",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
       "invalid-unknown-source-property"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
@@ -29,10 +31,11 @@
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/destinationDescriptor/additionalProperties",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
       "invalid-unknown-destination-property"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
@@ -41,10 +44,11 @@
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/additionalProperties",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
       "invalid-unknown-file-property"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
@@ -53,43 +57,41 @@
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/ownerDecision/additionalProperties",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
       "invalid-unknown-owner-decision-property"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
     "id": "C-PATH-1",
     "description": "Safe relative paths forbid NUL, absolute, drive letters, UNC, and dot segments",
-    "authoritativeLayer": "both",
+    "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/safeRelativePath/pattern",
-    "operationalEvidence": {
-      "file": "scripts/validate-source-packet.cjs",
-      "marker": "validateRawRelativePath"
-    },
-    "fixtures": [
+    "operationalEvidence": null,
+    "schemaFixtures": [
       "invalid-nul-path",
       "invalid-dot-segment-posix",
       "invalid-dot-segment-windows",
       "invalid-path-traversal",
       "invalid-windows-traversal",
+      "invalid-embedded-traversal",
       "valid-dotted-filenames"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
     "id": "C-PATH-2",
     "description": "Safe relative paths forbid whitespace-only paths",
-    "authoritativeLayer": "both",
+    "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/safeRelativePath/pattern",
-    "operationalEvidence": {
-      "file": "scripts/validate-source-packet.cjs",
-      "marker": "must not be empty"
-    },
-    "fixtures": [
+    "operationalEvidence": null,
+    "schemaFixtures": [
       "invalid-whitespace-path"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
@@ -101,7 +103,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_ROOT_MISSING"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-payload-root-missing"
     ],
     "status": "implemented"
@@ -115,7 +118,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_ROOT_SYMLINK"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-payload-root-symlink",
       "invalid-payload-root-dangling-symlink"
     ],
@@ -130,7 +134,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_ROOT_NOT_DIRECTORY"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-payload-root-not-directory"
     ],
     "status": "implemented"
@@ -144,7 +149,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_FILE_MISSING"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-payload-file-missing"
     ],
     "status": "implemented"
@@ -158,7 +164,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_REALPATH_ESCAPE"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-payload-file-symlink-outside"
     ],
     "status": "implemented"
@@ -172,7 +179,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_ANCESTOR_SYMLINK"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-payload-ancestor-symlink"
     ],
     "status": "implemented"
@@ -186,7 +194,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "DUPLICATE_SOURCE_PATH"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-duplicate-source-path"
     ],
     "status": "implemented"
@@ -200,7 +209,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "DUPLICATE_PAYLOAD_PATH"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-duplicate-payload-path"
     ],
     "status": "implemented"
@@ -214,7 +224,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "DUPLICATE_RESTORE_DESTINATION"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-duplicate-destination"
     ],
     "status": "implemented"
@@ -228,7 +239,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "DUPLICATE_OWNER_DECISION_ID"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-duplicate-owner-decision-id"
     ],
     "status": "implemented"
@@ -239,7 +251,8 @@
     "authoritativeLayer": "deferred",
     "schemaPointer": null,
     "operationalEvidence": null,
-    "fixtures": [],
+    "schemaFixtures": [],
+    "operationalTests": [],
     "status": "deferred"
   },
   {
@@ -248,9 +261,10 @@
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/required",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "invalid-missing-intended-destination"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
@@ -259,10 +273,11 @@
     "authoritativeLayer": "schema",
     "schemaPointer": "/properties/formatVersion/const",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
       "invalid-format-version"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
@@ -271,10 +286,19 @@
     "authoritativeLayer": "schema",
     "schemaPointer": "/required",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
-      "invalid-missing-top-level-field"
+      "invalid-missing-top-level-field",
+      "invalid-missing-format-version",
+      "invalid-missing-purpose",
+      "invalid-missing-source",
+      "invalid-missing-destination",
+      "invalid-missing-files",
+      "invalid-missing-owner-decisions",
+      "invalid-file-entry-type",
+      "invalid-owner-decision-array"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
@@ -283,34 +307,42 @@
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/nonBlankString",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
-      "invalid-packet-id-type"
+      "invalid-packet-id-type",
+      "invalid-purpose-type",
+      "invalid-source-repository-type",
+      "invalid-empty-string",
+      "invalid-blank-string",
+      "invalid-notes-type"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
     "id": "C-TYPE-SHA1",
     "description": "Commit SHA type",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/fullCommitSha",
+    "schemaPointer": "/definitions/fullCommitSha/pattern",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
       "invalid-commit-sha"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
     "id": "C-TYPE-SHA256",
     "description": "SHA-256 type",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/sha256",
+    "schemaPointer": "/definitions/sha256/pattern",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
       "invalid-sha256-format"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
@@ -319,34 +351,39 @@
     "authoritativeLayer": "schema",
     "schemaPointer": "/definitions/fileEntry/properties/sizeBytes",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
-      "invalid-noninteger-size"
+      "invalid-noninteger-size",
+      "invalid-negative-size",
+      "invalid-large-size"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
     "id": "C-ENUM-DISP",
     "description": "Disposition enum",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/fileEntry/properties/disposition/enum",
+    "schemaPointer": "/definitions/fileEntry/properties/disposition",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
       "invalid-disposition"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
     "id": "C-REQ-OWNER",
     "description": "Owner decision missing value",
     "authoritativeLayer": "schema",
-    "schemaPointer": "/definitions/ownerDecision/required",
+    "schemaPointer": "/definitions/ownerDecision",
     "operationalEvidence": null,
-    "fixtures": [
+    "schemaFixtures": [
       "minimal",
       "invalid-missing-owner-value"
     ],
+    "operationalTests": [],
     "status": "implemented"
   },
   {
@@ -358,7 +395,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_SIZE_MISMATCH"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-size",
       "invalid-payload-size-mismatch"
     ],
@@ -373,7 +411,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_HASH_MISMATCH"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-hash",
       "invalid-payload-hash-mismatch"
     ],
@@ -388,7 +427,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_NOT_REGULAR_FILE"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-payload-not-regular-file"
     ],
     "status": "implemented"
@@ -402,7 +442,8 @@
       "file": "scripts/validate-source-packet.cjs",
       "marker": "PAYLOAD_FILE_SYMLINK"
     },
-    "fixtures": [
+    "schemaFixtures": [],
+    "operationalTests": [
       "invalid-payload-file-symlink-inside",
       "invalid-payload-file-dangling-symlink"
     ],

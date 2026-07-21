@@ -30,26 +30,18 @@ for (const exp of expectations) {
       console.error(`[FAIL] ${exp.fixture} expected schema FAIL, but got PASS`);
       failed++;
     } else {
-      let keywordMatch = true;
-      let pathMatch = true;
+      const expectedKeyword = exp.expectedSchemaKeyword;
+      const expectedPathClean = exp.expectedSchemaPath ? exp.expectedSchemaPath.replace(/^#/, '') : null;
 
-      if (exp.expectedSchemaKeyword) {
-        keywordMatch = errors && errors.some(err => err.keyword === exp.expectedSchemaKeyword);
-      }
-      if (exp.expectedSchemaPath) {
-        const cleanExpPath = exp.expectedSchemaPath.replace(/^#/, '');
-        pathMatch = errors && errors.some(err => {
-          const cleanErrPath = (err.schemaPath || '').replace(/^#/, '');
-          return cleanErrPath === cleanExpPath ||
-                 cleanErrPath.includes(cleanExpPath) ||
-                 cleanExpPath.includes(cleanErrPath) ||
-                 cleanErrPath.endsWith(cleanExpPath) ||
-                 cleanErrPath.startsWith(cleanExpPath);
-        });
-      }
+      const hasExactMatchingError = errors && errors.some(err => {
+        const errPathClean = (err.schemaPath || '').replace(/^#/, '');
+        const keywordMatch = !expectedKeyword || err.keyword === expectedKeyword;
+        const pathMatch = !expectedPathClean || errPathClean === expectedPathClean;
+        return keywordMatch && pathMatch;
+      });
 
-      if (!keywordMatch || !pathMatch) {
-        console.error(`[FAIL] ${exp.fixture} expected schema FAIL with keyword="${exp.expectedSchemaKeyword}" and path="${exp.expectedSchemaPath}", but got errors:`);
+      if (!hasExactMatchingError) {
+        console.error(`[FAIL] ${exp.fixture} expected schema FAIL with exact keyword="${expectedKeyword}" and path="${expectedPathClean}", but got errors:`);
         console.error(JSON.stringify(errors, null, 2));
         failed++;
       } else {

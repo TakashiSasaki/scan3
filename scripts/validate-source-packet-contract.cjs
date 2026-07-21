@@ -61,9 +61,25 @@ function check() {
 
   const constraints = JSON.parse(fs.readFileSync(constraintsPath, 'utf8'));
   for (const c of constraints) {
-    if (c.status === 'implemented' && (!c.fixtures || c.fixtures.length === 0)) {
-      throw new Error(`Implemented constraint missing fixtures: ${c.id}`);
+    if (c.status === 'implemented') {
+      const hasSchemaFixtures = c.schemaFixtures && c.schemaFixtures.length > 0;
+      const hasOperationalTests = c.operationalTests && c.operationalTests.length > 0;
+      
+      if (c.authoritativeLayer === 'schema' && (!hasSchemaFixtures || hasOperationalTests)) {
+        throw new Error(`Schema authoritative constraint ${c.id} must have schemaFixtures and no operationalTests`);
+      }
+      if (c.authoritativeLayer === 'operational' && (!hasOperationalTests || hasSchemaFixtures)) {
+        throw new Error(`Operational authoritative constraint ${c.id} must have operationalTests and no schemaFixtures`);
+      }
+      if (c.authoritativeLayer === 'both' && (!hasSchemaFixtures || !hasOperationalTests)) {
+        throw new Error(`Constraint ${c.id} with authoritativeLayer='both' must have both schemaFixtures and operationalTests`);
+      }
+    } else if (c.status === 'deferred') {
+      if ((c.schemaFixtures && c.schemaFixtures.length > 0) || (c.operationalTests && c.operationalTests.length > 0)) {
+        throw new Error(`Deferred constraint ${c.id} must not have fixtures or operational tests`);
+      }
     }
+
     if (c.status === 'deferred' && c.description.toLowerCase().includes('implemented')) {
       throw new Error(`Deferred constraint must not claim implementation: ${c.id}`);
     }

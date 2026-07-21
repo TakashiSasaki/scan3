@@ -7,12 +7,13 @@ function generateMatrix() {
 
   let md = `# Source Packet Constraint Matrix\n\n`;
   md += `This file is generated from \`source-packet-constraints.json\`. Do not edit manually.\n\n`;
-  md += `| ID | Description | Status | Authoritative Layer | Fixtures |\n`;
-  md += `|----|-------------|--------|---------------------|----------|\n`;
+  md += `| ID | Description | Status | Authoritative Layer | Schema Fixtures | Operational Tests |\n`;
+  md += `|----|-------------|--------|---------------------|-----------------|-------------------|\n`;
 
   for (const c of constraints) {
-    const fixtures = c.fixtures.join(', ') || '-';
-    md += `| ${c.id} | ${c.description} | ${c.status} | ${c.authoritativeLayer} | ${fixtures} |\n`;
+    const schemaFixtures = (c.schemaFixtures || []).join(', ') || '-';
+    const operationalTests = (c.operationalTests || []).join(', ') || '-';
+    md += `| ${c.id} | ${c.description} | ${c.status} | ${c.authoritativeLayer} | ${schemaFixtures} | ${operationalTests} |\n`;
   }
   
   return md;

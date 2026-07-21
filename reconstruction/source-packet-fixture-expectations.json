@@ -16,7 +16,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/safeRelativePath",
+    "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
     "reason": "NUL character in path"
   },
   {
@@ -24,7 +24,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/safeRelativePath",
+    "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
     "reason": "POSIX dot segment in path"
   },
   {
@@ -32,7 +32,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/safeRelativePath",
+    "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
     "reason": "Windows dot segment in path"
   },
   {
@@ -40,7 +40,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "type",
-    "expectedSchemaPath": "/definitions/nonBlankString",
+    "expectedSchemaPath": "/definitions/nonBlankString/type",
     "reason": "packetId is not a string"
   },
   {
@@ -48,7 +48,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "type",
-    "expectedSchemaPath": "/definitions/nonBlankString",
+    "expectedSchemaPath": "/definitions/nonBlankString/type",
     "reason": "purpose is not a string"
   },
   {
@@ -56,7 +56,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "type",
-    "expectedSchemaPath": "/definitions/nonBlankString",
+    "expectedSchemaPath": "/definitions/nonBlankString/type",
     "reason": "source repository missing or invalid type"
   },
   {
@@ -80,7 +80,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "type",
-    "expectedSchemaPath": "/properties/sizeBytes",
+    "expectedSchemaPath": "/properties/sizeBytes/type",
     "reason": "sizeBytes is not an integer"
   },
   {
@@ -88,7 +88,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "type",
-    "expectedSchemaPath": "/properties/notes",
+    "expectedSchemaPath": "/properties/notes/type",
     "reason": "notes is not a string"
   },
   {
@@ -125,7 +125,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/safeRelativePath",
+    "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
     "reason": "Path traversal segment"
   },
   {
@@ -133,7 +133,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/safeRelativePath",
+    "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
     "reason": "Path traversal segment (POSIX)"
   },
   {
@@ -141,7 +141,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/safeRelativePath",
+    "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
     "reason": "Path traversal segment (Windows)"
   },
   {
@@ -194,7 +194,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/safeRelativePath",
+    "expectedSchemaPath": "/definitions/safeRelativePath/pattern",
     "reason": "Whitespace only path"
   },
   {
@@ -226,7 +226,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "const",
-    "expectedSchemaPath": "/properties/formatVersion",
+    "expectedSchemaPath": "/properties/formatVersion/const",
     "reason": "formatVersion must be 1.0"
   },
   {
@@ -235,14 +235,14 @@
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "required",
     "expectedSchemaPath": "/required",
-    "reason": "Missing top-level required field"
+    "reason": "Missing top-level required field (packetId)"
   },
   {
     "fixture": "invalid-commit-sha",
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/fullCommitSha",
+    "expectedSchemaPath": "/definitions/fullCommitSha/pattern",
     "reason": "Invalid commit SHA format"
   },
   {
@@ -250,7 +250,7 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "pattern",
-    "expectedSchemaPath": "/definitions/sha256",
+    "expectedSchemaPath": "/definitions/sha256/pattern",
     "reason": "Invalid sha256 hash format"
   },
   {
@@ -258,7 +258,87 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "expectedSchemaKeyword": "enum",
-    "expectedSchemaPath": "/properties/disposition",
+    "expectedSchemaPath": "/properties/disposition/enum",
     "reason": "Invalid disposition enum value"
+  },
+  {
+    "fixture": "invalid-negative-size",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "minimum",
+    "expectedSchemaPath": "/properties/sizeBytes/minimum",
+    "reason": "sizeBytes is negative"
+  },
+  {
+    "fixture": "invalid-large-size",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "maximum",
+    "expectedSchemaPath": "/properties/sizeBytes/maximum",
+    "reason": "sizeBytes exceeds Number.MAX_SAFE_INTEGER"
+  },
+  {
+    "fixture": "invalid-empty-string",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/nonBlankString/pattern",
+    "reason": "nonBlankString is empty"
+  },
+  {
+    "fixture": "invalid-blank-string",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "pattern",
+    "expectedSchemaPath": "/definitions/nonBlankString/pattern",
+    "reason": "nonBlankString is whitespace"
+  },
+  {
+    "fixture": "invalid-missing-format-version",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "reason": "Missing required top-level formatVersion"
+  },
+  {
+    "fixture": "invalid-missing-purpose",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "reason": "Missing required top-level purpose"
+  },
+  {
+    "fixture": "invalid-missing-source",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "reason": "Missing required top-level source"
+  },
+  {
+    "fixture": "invalid-missing-destination",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "reason": "Missing required top-level destination"
+  },
+  {
+    "fixture": "invalid-missing-files",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "reason": "Missing required top-level files"
+  },
+  {
+    "fixture": "invalid-missing-owner-decisions",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "expectedSchemaKeyword": "required",
+    "expectedSchemaPath": "/required",
+    "reason": "Missing required top-level ownerDecisions"
   }
 ]

@@ -66,6 +66,17 @@ These guidelines are not unique to the `scan3` project and are broadly applicabl
 - Verify the integrity of control registries (fixture catalogs, constraint matrices, skill lists) through automated validators.
 - Reject unknown fields, malformed formats, duplicate IDs, and unregistered target references.
 
+## Exact Error Evidence Validation
+- Schema error assertions MUST verify both the exact `keyword` and the normalized, exact `schemaPath` of Ajv validation errors. Loose string matching (`includes`, `startsWith`) is forbidden for schema error assertions.
+- Operational error assertions MUST verify the exact registered `OperationalError` code.
+
+## State-Dependent Expectation Cataloging
+- Test fixture expectation catalogs MUST enforce state-dependent validation rules:
+  - Failing schema fixtures require non-empty `expectedSchemaKeyword` and `expectedSchemaPath`, and forbid `expectedErrorCode`.
+  - Failing operational fixtures require a registered `expectedErrorCode`, and forbid schema error fields.
+  - Passing fixtures forbid all failure evidence fields.
+  - Skipped fixtures require an explicit non-empty `reason`.
+
 ## One-Way Export Baseline Guard
 - 一方向export前にworkspace baselineのsentinelを検査する。
 - baseline mismatch時はexportを停止する。
