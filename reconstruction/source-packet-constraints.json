@@ -1,0 +1,161 @@
+[
+  {
+    "id": "C-TOP-1",
+    "description": "Top-level is a closed object",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/additionalProperties",
+    "operationalEvidence": null,
+    "fixtures": ["minimal", "invalid-unknown-top-level-property"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-TOP-2",
+    "description": "Source descriptor is a closed object",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/sourceDescriptor/additionalProperties",
+    "operationalEvidence": null,
+    "fixtures": ["minimal"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-TOP-3",
+    "description": "Destination descriptor is a closed object",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/destinationDescriptor/additionalProperties",
+    "operationalEvidence": null,
+    "fixtures": ["minimal"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-TOP-4",
+    "description": "File entry is a closed object",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/fileEntry/additionalProperties",
+    "operationalEvidence": null,
+    "fixtures": ["minimal", "invalid-unknown-file-property"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-TOP-5",
+    "description": "Owner decision is a closed object",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/ownerDecision/additionalProperties",
+    "operationalEvidence": null,
+    "fixtures": ["minimal"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-PATH-1",
+    "description": "Safe relative paths forbid NUL, absolute, drive letters, UNC, and dot segments",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/safeRelativePath/pattern",
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "validateRawRelativePath"
+    },
+    "fixtures": ["invalid-nul-path", "invalid-dot-segment-posix", "invalid-dot-segment-windows", "invalid-path-traversal", "invalid-windows-traversal", "valid-dotted-filenames"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-PATH-2",
+    "description": "Safe relative paths forbid whitespace-only paths",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/safeRelativePath/pattern",
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "must not be empty"
+    },
+    "fixtures": ["invalid-whitespace-path"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-PAYLOAD-1",
+    "description": "Payload root must exist and be a directory",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "Payload root must be a directory"
+    },
+    "fixtures": ["invalid-payload-root-not-directory"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-PAYLOAD-2",
+    "description": "Payload paths must not escape payload root via symlinks (realpath containment)",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "Payload real path escapes payload root"
+    },
+    "fixtures": ["invalid-embedded-traversal", "symbolic-link-test"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-UNIQUE-1",
+    "description": "Exact-string duplicate sourcePath forbidden",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "Duplicate sourcePath"
+    },
+    "fixtures": ["invalid-duplicate-source-path"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-UNIQUE-2",
+    "description": "Exact-string duplicate payloadPath forbidden",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "Duplicate payloadPath"
+    },
+    "fixtures": ["invalid-duplicate-payload-path"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-UNIQUE-3",
+    "description": "Exact-string duplicate restore intendedDestination forbidden",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "Duplicate intendedDestination for restore"
+    },
+    "fixtures": ["invalid-duplicate-destination"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-UNIQUE-4",
+    "description": "Exact-string duplicate owner decision id forbidden",
+    "authoritativeLayer": "operational",
+    "schemaPointer": null,
+    "operationalEvidence": {
+      "file": "scripts/validate-source-packet.cjs",
+      "marker": "Duplicate ownerDecision id"
+    },
+    "fixtures": ["invalid-duplicate-owner-decision-id"],
+    "status": "implemented"
+  },
+  {
+    "id": "C-UNIQUE-5",
+    "description": "Case-insensitive collision protection",
+    "authoritativeLayer": "deferred",
+    "schemaPointer": null,
+    "operationalEvidence": null,
+    "fixtures": [],
+    "status": "deferred"
+  },
+  {
+    "id": "C-DEST-1",
+    "description": "intendedDestination is required for all entries",
+    "authoritativeLayer": "schema",
+    "schemaPointer": "/definitions/fileEntry/required",
+    "operationalEvidence": null,
+    "fixtures": ["invalid-missing-intended-destination"],
+    "status": "implemented"
+  }
+]

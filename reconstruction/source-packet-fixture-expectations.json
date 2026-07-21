@@ -112,5 +112,41 @@
     "schemaExpected": "FAIL",
     "operationalExpected": "FAIL",
     "reason": "Path traversal segment (Windows)"
+  },
+  {
+    "fixture": "invalid-unknown-top-level-property",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "Unknown top-level property"
+  },
+  {
+    "fixture": "invalid-unknown-file-property",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "Unknown file property"
+  },
+  {
+    "fixture": "invalid-missing-intended-destination",
+    "schemaExpected": "FAIL",
+    "operationalExpected": "FAIL",
+    "reason": "Missing intendedDestination"
+  },
+  {
+    "fixture": "invalid-duplicate-source-path",
+    "schemaExpected": "PASS",
+    "operationalExpected": "FAIL",
+    "reason": "Duplicate sourcePath is operational"
+  },
+  {
+    "fixture": "invalid-duplicate-payload-path",
+    "schemaExpected": "PASS",
+    "operationalExpected": "FAIL",
+    "reason": "Duplicate payloadPath is operational"
+  },
+  {
+    "fixture": "invalid-duplicate-owner-decision-id",
+    "schemaExpected": "PASS",
+    "operationalExpected": "FAIL",
+    "reason": "Duplicate ownerDecision id is operational"
   }
 ]

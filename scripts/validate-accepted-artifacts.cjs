@@ -25,21 +25,45 @@ const REQUIRED_ENTRIES = [
   'policy/regression-prevention.md',
   'policy/decision-gates.md',
   'AGENTS.md',
-  'README.md'
+  'README.md',
+  'package.json',
+  'package-lock.json',
+  '.github/workflows/verify-reconstruction.yml',
+  'reconstruction/source-packet-constraints.json',
+  'reconstruction/source-packet-fixture-expectations.json',
+  'scripts/test-source-packet-validator.cjs',
+  'scripts/test-source-packet-schema.cjs',
+  'scripts/validate-source-packet-contract.cjs',
+  'scripts/validate-agent-skills.cjs',
+  'scripts/validate-ci-workflow.cjs'
 ];
 
+const rootDir = path.resolve(__dirname, '..');
 const seen = new Set();
 let allPassed = true;
 
 for (const entry of inventory) {
-  if (typeof entry !== 'string') {
-    console.error(`FAIL: Invalid entry type: ${typeof entry}`);
+  if (typeof entry !== 'string' || entry.trim() === '') {
+    console.error(`FAIL: Invalid entry: empty or whitespace-only`);
     allPassed = false;
     continue;
   }
   
-  if (path.isAbsolute(entry) || entry.includes('..') || entry.startsWith('./')) {
-    console.error(`FAIL: Invalid relative path: ${entry}`);
+  if (entry.includes('\0')) {
+    console.error(`FAIL: Invalid entry: NUL character`);
+    allPassed = false;
+    continue;
+  }
+
+  if (path.isAbsolute(entry) || /^[a-zA-Z]:/.test(entry) || entry.startsWith('\\\\')) {
+    console.error(`FAIL: Invalid absolute, Windows drive, or UNC path: ${entry}`);
+    allPassed = false;
+    continue;
+  }
+
+  const segments = entry.split(/[/\\]/);
+  if (segments.includes('.') || segments.includes('..')) {
+    console.error(`FAIL: Invalid segment (. or ..): ${entry}`);
     allPassed = false;
     continue;
   }
@@ -51,16 +75,33 @@ for (const entry of inventory) {
   }
   seen.add(entry);
 
-  const fullPath = path.resolve(__dirname, '..', entry);
+  const fullPath = path.resolve(rootDir, entry);
+  if (!fullPath.startsWith(rootDir + path.sep) && fullPath !== rootDir) {
+    console.error(`FAIL: Path escapes repository: ${entry}`);
+    allPassed = false;
+    continue;
+  }
+
   if (!fs.existsSync(fullPath)) {
     console.error(`FAIL: Missing artifact: ${entry}`);
     allPassed = false;
     continue;
   }
 
-  const stat = fs.statSync(fullPath);
+  const stat = fs.lstatSync(fullPath);
+  if (stat.isSymbolicLink()) {
+    console.error(`FAIL: Artifact is a symbolic link: ${entry}`);
+    allPassed = false;
+    continue;
+  }
   if (!stat.isFile()) {
     console.error(`FAIL: Artifact is not a regular file: ${entry}`);
+    allPassed = false;
+    continue;
+  }
+  const realPath = fs.realpathSync(fullPath);
+  if (!realPath.startsWith(rootDir + path.sep)) {
+    console.error(`FAIL: Artifact realpath escapes repository: ${entry}`);
     allPassed = false;
     continue;
   }

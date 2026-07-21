@@ -36,3 +36,11 @@ These guidelines are not unique to the `scan3` project and are broadly applicabl
 - Verification Statement Consistency
 
 (Note: Currently these are only adopted as local policies within scan3. AI Studio does not update TakashiSasaki/agent-policy. These are candidates for an external reviewer to port upstream later. They will be validated in scan3 before upstreaming.)
+
+- Test Catalog Single Source
+- Evidence-Backed Constraint Matrix
+- Guardrail Dependency Closure
+- Safe Child Process Invocation
+- Decision Resolution Recording
+- Procedural Skill Extraction
+- Independent Verification Escalation

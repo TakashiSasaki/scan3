@@ -81,3 +81,51 @@ This policy document defines rules to prevent recurrences of issues identified d
 - Cleanly separate: Automated, Environment-dependent, Manual visual, External audit, Not performed.
 - Do not claim "all conditions verified" if some are unchecked.
 - Closeouts must reflect actual execution facts and checked scopes only.
+
+### Test Catalog Single Source
+- fixture名、期待結果、分類を複数のtest runnerへ重複定義しない。
+- machine-readable expectation catalogをsingle source of truthとする。
+- schema、operational、contract testは同じcatalogを参照する。
+- catalog登録済みfixtureが未実行なら失敗する。
+- filesystem上の未登録fixtureがあれば失敗する。
+
+### Evidence-Backed Constraint Matrix
+- constraint matrixのimplemented／verified主張には実装箇所とfixtureを対応させる。
+- fixtureが先行layerで拒否される場合、後続constraintの証拠にしない。
+- 実装されていないconstraintをimplementedと表現しない。
+- schema、validator、fixture、matrixの不一致をautomated gateで検出する。
+- deferred constraintを明示できるようにする。
+
+### Guardrail Dependency Closure
+- guardrail self-protectionはvalidator本体だけでなく、実行入口、設定、lockfile、test、fixtureを含める。
+- npm scriptから到達する検証では"package.json"とlockfileも保護する。
+- guardrailを実行不能にする単一artifact削除をinventoryで検出する。
+- 新しいdependencyを追加した場合、guardrail dependency closureを確認する。
+
+### Safe Child Process Invocation
+- Node.jsから既知の実行ファイルを起動する場合は"execFileSync"または"spawnSync"を使用する。
+- pathやargumentをshell command stringへ連結しない。
+- test codeにも同じ規則を適用する。
+- shellが本当に必要な場合は理由を文書化する。
+
+### Decision Resolution Recording
+- owner decisionを受け取ったStride内で"decisions.md"へ記録する。
+- 対応するdecision requestをResolvedへ移動する。
+- 会話履歴だけをdecision source of truthにしない。
+- 未記録decisionに依存して次Strideへ進まない。
+
+### Procedural Skill Extraction
+- 繰り返し実施される多段階手順はagent skill化を検討する。
+- 監査で同種の抜け漏れが複数回見つかった手順を優先する。
+- skillはpolicy、script、schemaへの参照を持ち、mutableな事実を重複記載しない。
+- skillはsource of truthではなく、実行手順の補助とする。
+- skill自体をaccepted artifactとして保護する。
+- skillの必須sectionをautomated validatorで検査する。
+
+### Independent Verification Escalation
+- agentの自己報告だけでは十分でないverificationには独立CIを使用する。
+- CIはlocal verificationと同じauthoritative scriptを実行する。
+- CI workflowはread-only、最小権限、secret不要を原則とする。
+- local PASSとCI PASSを区別する。
+- CI未実行または未確認をCI SUCCESSと表現しない。
+- deployment workflowとverification workflowを分離する。

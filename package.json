@@ -22,7 +22,9 @@
     "sources:schema:validate:example": "node scripts/validate-source-packet-schema.cjs reconstruction/examples/minimal",
     "sources:schema:test": "node scripts/test-source-packet-schema.cjs",
     "sources:contract:validate": "node scripts/validate-source-packet-contract.cjs",
-    "artifacts:test": "node scripts/test-accepted-artifacts-validator.cjs"
+    "artifacts:test": "node scripts/test-accepted-artifacts-validator.cjs",
+    "skills:validate": "node scripts/validate-agent-skills.cjs",
+    "ci:validate": "node scripts/validate-ci-workflow.cjs"
   },
   "dependencies": {
     "react": "^19.0.1",

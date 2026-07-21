@@ -17,3 +17,15 @@
 - 新モデルはschema-firstで進める。 (理由: runtimeの実装に先行して設計を確立するため)
 - デモは `/demo` に集約する。 (理由: 本番環境から隔離された実験領域として扱うため)
 - Google AI Studioの会話履歴をsource of truthにしない。 (理由: 一方向export環境であり、将来のセッションでコンテキストを失うのを防ぐため)
+
+## SP-UNKNOWN-PROPERTIES-001
+- JSON Schemaで表現可能なsource packet制約はschemaへ記録する。
+- schema-validはpacket acceptanceの必要条件だが十分条件ではない。
+- operational validatorはfilesystem、hash、size、cross-entry constraintを担当する。
+- JSON Schema dialectは既存のDraft-07を維持する。
+- "SP-UNKNOWN-PROPERTIES-001"ではOption Aを採用した。
+- source packetのcore objectはclosed objectとする。
+- repository-local handwritten agent skillを使用できる。
+- agent-policy managed adoptionまでは、これらをagent-policy生成物と表現しない。
+- 独立verificationにはread-only GitHub Actionsを使用できる。
+- GitHub Actionsの実行結果はAI Studioの自己検証とは別に扱う。

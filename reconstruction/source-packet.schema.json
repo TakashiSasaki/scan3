@@ -13,6 +13,7 @@
     "files",
     "ownerDecisions"
   ],
+  "additionalProperties": false,
   "properties": {
     "formatVersion": { "const": "1.0" },
     "packetId": { "$ref": "#/definitions/nonBlankString" },
@@ -65,7 +66,7 @@
     },
     "fileEntry": {
       "type": "object",
-      "required": ["sourcePath", "payloadPath", "sha256", "sizeBytes", "disposition"],
+      "required": ["sourcePath", "payloadPath", "sha256", "sizeBytes", "disposition", "intendedDestination"],
       "properties": {
         "sourcePath": { "$ref": "#/definitions/safeRelativePath" },
         "payloadPath": { "$ref": "#/definitions/safeRelativePath" },
@@ -87,11 +88,11 @@
         },
         "notes": { "type": "string" }
       },
+      "additionalProperties": false,
       "if": {
         "properties": { "disposition": { "const": "restore" } }
       },
       "then": {
-        "required": ["intendedDestination"],
         "properties": {
           "intendedDestination": { "type": "string" }
         }

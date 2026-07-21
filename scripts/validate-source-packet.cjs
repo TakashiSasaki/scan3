@@ -119,8 +119,13 @@ function validate() {
 
   const payloadDirFullPath = path.resolve(packetDir, 'payload');
   if (!fs.existsSync(payloadDirFullPath)) throw new Error(`Payload root directory does not exist: ${payloadDirFullPath}`);
-  if (fs.lstatSync(payloadDirFullPath).isSymbolicLink()) {
+  
+  const payloadDirStat = fs.lstatSync(payloadDirFullPath);
+  if (payloadDirStat.isSymbolicLink()) {
     throw new Error(`Payload root directory must not be a symbolic link`);
+  }
+  if (!payloadDirStat.isDirectory()) {
+    throw new Error(`Payload root must be a directory`);
   }
   const payloadDirReal = fs.realpathSync(payloadDirFullPath);
 

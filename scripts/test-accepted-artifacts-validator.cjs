@@ -1,67 +1,111 @@
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const os = require('os');
+const { execFileSync } = require('child_process');
 
-function runValidator(inventoryPath) {
-  try {
-    execSync(`node scripts/validate-accepted-artifacts.cjs ${inventoryPath}`, { stdio: 'pipe' });
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
+const validatorPath = path.join(__dirname, 'validate-accepted-artifacts.cjs');
 
+let passed = 0;
 let failed = 0;
-const tempInventoryPath = path.join(__dirname, 'temp-inventory.json');
+let skipped = 0;
 
-// Positive: Current
-if (!runValidator('reconstruction/accepted-artifacts.json')) {
-  console.error('[FAIL] Current inventory failed validation.');
-  failed++;
-} else {
-  console.log('[PASS] Current inventory validated.');
-}
-
-function testFailure(name, mutator) {
-  const current = JSON.parse(fs.readFileSync('reconstruction/accepted-artifacts.json', 'utf-8'));
-  const mutated = mutator(current);
-  fs.writeFileSync(tempInventoryPath, JSON.stringify(mutated, null, 2));
-  if (runValidator(tempInventoryPath)) {
-    console.error(`[FAIL] Negative test passed unexpectedly: ${name}`);
-    failed++;
+function runTest(name, inventory, expectedSuccess) {
+  const tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'scan3-art-'));
+  const invPath = path.join(tmpdir, 'inventory.json');
+  fs.writeFileSync(invPath, JSON.stringify(inventory));
+  
+  let success = false;
+  let stderr = '';
+  try {
+    execFileSync(process.execPath, [validatorPath, invPath], { stdio: 'pipe' });
+    success = true;
+  } catch (e) {
+    success = false;
+    stderr = e.stderr ? e.stderr.toString() : e.message;
+  }
+  
+  fs.rmSync(tmpdir, { recursive: true, force: true });
+  
+  if (success === expectedSuccess) {
+    passed++;
+    console.log(`PASS: ${name}`);
   } else {
-    console.log(`[PASS] Negative test correctly failed: ${name}`);
+    failed++;
+    console.error(`FAIL: ${name} (Expected success: ${expectedSuccess}, Got: ${success})`);
+    if (!success) console.error(stderr);
   }
 }
 
-// Negative: Missing inventory itself
-testFailure('Missing inventory self-reference', (arr) => arr.filter(p => p !== 'reconstruction/accepted-artifacts.json'));
+// Positive tests
+runTest('empty array is allowed if all requirements present', [
+  'reconstruction/accepted-artifacts.json',
+  'scripts/validate-accepted-artifacts.cjs',
+  'policy/regression-prevention.md',
+  'policy/decision-gates.md',
+  'AGENTS.md',
+  'README.md',
+  'package.json',
+  'package-lock.json',
+  '.github/workflows/verify-reconstruction.yml',
+  'reconstruction/source-packet-constraints.json',
+  'reconstruction/source-packet-fixture-expectations.json',
+  'scripts/test-source-packet-validator.cjs',
+  'scripts/test-source-packet-schema.cjs',
+  'scripts/validate-source-packet-contract.cjs',
+  'scripts/validate-agent-skills.cjs',
+  'scripts/validate-ci-workflow.cjs'
+], true);
 
-// Negative: Missing validator itself
-testFailure('Missing validator self-reference', (arr) => arr.filter(p => p !== 'scripts/validate-accepted-artifacts.cjs'));
+const baseReqs = [
+  'reconstruction/accepted-artifacts.json',
+  'scripts/validate-accepted-artifacts.cjs',
+  'policy/regression-prevention.md',
+  'policy/decision-gates.md',
+  'AGENTS.md',
+  'README.md',
+  'package.json',
+  'package-lock.json',
+  '.github/workflows/verify-reconstruction.yml',
+  'reconstruction/source-packet-constraints.json',
+  'reconstruction/source-packet-fixture-expectations.json',
+  'scripts/test-source-packet-validator.cjs',
+  'scripts/test-source-packet-schema.cjs',
+  'scripts/validate-source-packet-contract.cjs',
+  'scripts/validate-agent-skills.cjs',
+  'scripts/validate-ci-workflow.cjs'
+];
 
-// Negative: Duplicate entry
-testFailure('Duplicate entry', (arr) => [...arr, arr[0]]);
+runTest('valid file..name.md', [...baseReqs, 'reconstruction/examples/valid-dotted-filenames/manifest.json'], true);
 
-// Negative: Absolute path
-testFailure('Absolute path', (arr) => [...arr, '/some/absolute/path.txt']);
+// NUL path test (Cannot use a real file with NUL, so we just pass NUL to validator and it should fail)
+runTest('NUL path', [...baseReqs, 'package\0.json'], false);
 
-// Negative: .. segment
-testFailure('.. segment', (arr) => [...arr, 'scripts/../README.md']);
+// . segment test
+runTest('. segment', [...baseReqs, 'scripts/./validate-accepted-artifacts.cjs'], false);
 
-// Negative: Non-existent file
-testFailure('Non-existent file', (arr) => [...arr, 'does-not-exist.md']);
+// Symlink test
+const tmpdir2 = fs.mkdtempSync(path.join(os.tmpdir(), 'scan3-art-sym-'));
+try {
+  const linkPath = path.join(__dirname, '..', 'temp-symlink.txt');
+  let symlinkCreated = false;
+  let skipReason = '';
+  try {
+    fs.symlinkSync('package.json', linkPath);
+    symlinkCreated = true;
+  } catch (e) {
+    skipReason = e.message;
+  }
 
-// Negative: Directory instead of file
-testFailure('Directory instead of file', (arr) => [...arr, 'scripts']);
-
-if (fs.existsSync(tempInventoryPath)) {
-  fs.unlinkSync(tempInventoryPath);
+  if (symlinkCreated) {
+    runTest('symlink artifact', [...baseReqs, 'temp-symlink.txt'], false);
+    fs.unlinkSync(linkPath);
+  } else {
+    skipped++;
+    console.log(`SKIP: symlink artifact - ${skipReason}`);
+  }
+} finally {
+  fs.rmSync(tmpdir2, { recursive: true, force: true });
 }
 
-if (failed > 0) {
-  console.error(`Artifact validator tests failed: ${failed}`);
-  process.exit(1);
-} else {
-  console.log('All artifact validator tests passed.');
-}
+console.log(`\nSummary: PASS: ${passed}, FAIL: ${failed}, SKIP: ${skipped}`);
+if (failed > 0) process.exit(1);

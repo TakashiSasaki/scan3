@@ -6,28 +6,8 @@ const os = require('os');
 const isJson = process.argv.includes('--json');
 const validatorPath = path.join(__dirname, 'validate-source-packet.cjs');
 const examplesDir = path.join(__dirname, '../reconstruction/examples');
-
-const tests = [
-  { name: 'minimal', expectSuccess: true },
-  { name: 'invalid-path-traversal', expectSuccess: false },
-  { name: 'invalid-hash', expectSuccess: false },
-  { name: 'invalid-size', expectSuccess: false },
-  { name: 'invalid-duplicate-destination', expectSuccess: false },
-  { name: 'invalid-embedded-traversal', expectSuccess: false },
-  { name: 'invalid-windows-traversal', expectSuccess: false },
-  { name: 'invalid-noninteger-size', expectSuccess: false },
-  { name: 'invalid-notes-type', expectSuccess: false },
-  { name: 'invalid-missing-owner-value', expectSuccess: false },
-  { name: 'invalid-nul-path', expectSuccess: false },
-  { name: 'invalid-dot-segment-posix', expectSuccess: false },
-  { name: 'invalid-dot-segment-windows', expectSuccess: false },
-  { name: 'invalid-packet-id-type', expectSuccess: false },
-  { name: 'invalid-purpose-type', expectSuccess: false },
-  { name: 'invalid-source-repository-type', expectSuccess: false },
-  { name: 'invalid-file-entry-type', expectSuccess: false },
-  { name: 'invalid-owner-decision-array', expectSuccess: false },
-  { name: 'valid-dotted-filenames', expectSuccess: true }
-];
+const catalogPath = path.join(__dirname, '../reconstruction/source-packet-fixture-expectations.json');
+const expectations = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
 
 let passed = 0;
 let failed = 0;
@@ -47,22 +27,55 @@ function logTest(name, result, reason) {
   }
 }
 
-for (const test of tests) {
-  const target = path.join(examplesDir, test.name);
+const fixtureDirs = new Set(fs.readdirSync(examplesDir).filter(name => fs.statSync(path.join(examplesDir, name)).isDirectory()));
+const expectedFixtures = new Set(expectations.map(exp => exp.fixture));
+
+for (const name of fixtureDirs) {
+  if (!expectedFixtures.has(name)) {
+    failed++;
+    logTest(name, 'FAIL', 'Fixture directory exists on filesystem but is missing from catalog');
+  }
+}
+
+for (const exp of expectations) {
+  if (!fixtureDirs.has(exp.fixture)) {
+    failed++;
+    logTest(exp.fixture, 'FAIL', 'Fixture catalog entry exists but directory is missing from filesystem');
+    continue;
+  }
+  
+  const target = path.join(examplesDir, exp.fixture);
+  const manifestPath = path.join(target, 'manifest.json');
+  if (!fs.existsSync(manifestPath)) {
+    failed++;
+    logTest(exp.fixture, 'FAIL', 'manifest.json not found in fixture directory');
+    continue;
+  }
+
+  if (exp.operationalExpected === 'SKIP_ALLOWED') {
+    skipped++;
+    logTest(exp.fixture, 'SKIP', exp.reason);
+    continue;
+  }
+
   let success = false;
+  let stderr = '';
   try {
-    execFileSync(process.execPath, [validatorPath, target], { stdio: 'ignore' });
+    execFileSync(process.execPath, [validatorPath, target], { stdio: 'pipe' });
     success = true;
   } catch (e) {
     success = false;
+    stderr = e.stderr ? e.stderr.toString() : e.message;
   }
   
-  if (success === test.expectSuccess) {
+  const expectSuccess = exp.operationalExpected === 'PASS';
+  
+  if (success === expectSuccess) {
     passed++;
-    logTest(test.name, 'PASS');
+    logTest(exp.fixture, 'PASS');
   } else {
     failed++;
-    logTest(test.name, 'FAIL', `Expected success: ${test.expectSuccess}, but got: ${success}`);
+    logTest(exp.fixture, 'FAIL', `Expected success: ${expectSuccess}, but got: ${success}. Output: ${stderr}`);
   }
 }
 
@@ -127,6 +140,38 @@ try {
     skipped++;
     logTest('symbolic-link-test', 'SKIP', skipReason);
   }
+
+  // invalid-payload-root-not-directory test
+  if (!isJson) console.log('Running invalid-payload-root-not-directory test...');
+  const packetDir2 = path.join(tempDir, 'packet2');
+  fs.mkdirSync(packetDir2, { recursive: true });
+  fs.writeFileSync(path.join(packetDir2, 'payload'), 'this is a file, not a dir');
+  const manifest2 = {
+    "formatVersion": "1.0",
+    "packetId": "invalid-payload-root",
+    "purpose": "test",
+    "source": { "repository": "TakashiSasaki/legacy", "commit": "0000000000000000000000000000000000000000" },
+    "destination": { "repository": "TakashiSasaki/scan3", "baselineCommit": "0000000000000000000000000000000000000000" },
+    "files": [],
+    "ownerDecisions": []
+  };
+  fs.writeFileSync(path.join(packetDir2, 'manifest.json'), JSON.stringify(manifest2));
+  
+  let success2 = false;
+  try {
+    execFileSync(process.execPath, [validatorPath, packetDir2], { stdio: 'ignore' });
+    success2 = true;
+  } catch (e) {
+    success2 = false;
+  }
+  if (success2 === false) {
+    passed++;
+    logTest('invalid-payload-root-not-directory', 'PASS');
+  } else {
+    failed++;
+    logTest('invalid-payload-root-not-directory', 'FAIL', 'validator allowed file as payload root');
+  }
+  
 } finally {
   fs.rmSync(tempDir, { recursive: true, force: true });
 }
