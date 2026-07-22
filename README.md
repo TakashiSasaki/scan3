@@ -104,6 +104,38 @@ After extraction, run the current `main` repository-local authoritative validato
 node scripts/validate-source-packet.cjs <packet-root>
 ```
 
+### Legacy scanner Web NFC runtime reference — Stride 2B.3
+
+- `source-packets/scan3-source-packet-legacy-scanner-web-nfc-runtime-reference-a41267a7.zip`
+- `source-packets/scan3-source-packet-legacy-scanner-web-nfc-runtime-reference-a41267a7.zip.sha256`
+- `source-packets/scan3-source-packet-legacy-scanner-web-nfc-runtime-reference-a41267a7-validation-report.json`
+
+This purpose-limited reference packet contains exact historical `Scanner.tsx` bytes. It authorizes adaptation of Web NFC capability detection, explicit user-initiated reading, raw `serialNumber` capture, and bounded cancellation/cleanup for Stride 2B.3 only. It does not authorize wholesale copying, camera lifecycle changes, NDEF record parsing, tag writing, `makeReadOnly`, navigation, item lookup, Firebase, Firestore, authentication, persistence, Tailwind, lucide-react, `alert()`, global error handlers, or new dependencies.
+
+ZIP SHA-256:
+
+```text
+fde0fecc44f69554b3941d5ef4ed1e5cf62ea457b2da342336efc7d8885f905c
+```
+
+Download and verify:
+
+```bash
+curl -fL -o scan3-source-packet-legacy-scanner-web-nfc-runtime-reference-a41267a7.zip \
+  https://raw.githubusercontent.com/TakashiSasaki/scan3/refs/heads/chatgpt/source-packets/scan3-source-packet-legacy-scanner-web-nfc-runtime-reference-a41267a7.zip
+
+curl -fL -o scan3-source-packet-legacy-scanner-web-nfc-runtime-reference-a41267a7.zip.sha256 \
+  https://raw.githubusercontent.com/TakashiSasaki/scan3/refs/heads/chatgpt/source-packets/scan3-source-packet-legacy-scanner-web-nfc-runtime-reference-a41267a7.zip.sha256
+
+sha256sum -c scan3-source-packet-legacy-scanner-web-nfc-runtime-reference-a41267a7.zip.sha256
+```
+
+After extraction, run the current `main` repository-local authoritative validator before using any payload bytes:
+
+```bash
+node scripts/validate-source-packet.cjs <packet-root>
+```
+
 ### Superseded scanner staging packets
 
 The following packets are retained for provenance but must not be used for staging:
