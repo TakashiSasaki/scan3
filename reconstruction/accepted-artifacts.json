@@ -92,5 +92,8 @@
   "reconstruction/examples/invalid-missing-owner-decisions/manifest.json",
   "reconstruction/examples/invalid-missing-purpose/manifest.json",
   "reconstruction/examples/invalid-missing-source/manifest.json",
-  "reconstruction/examples/invalid-negative-size/manifest.json"
+  "reconstruction/examples/invalid-negative-size/manifest.json",
+  "reconstruction/historical/legacy-scanner/a41267a7/src/components/Scanner.tsx",
+  "reconstruction/historical/legacy-scanner/a41267a7/src/index.css",
+  "reconstruction/historical/legacy-scanner/a41267a7/receipt.json"
 ]
