@@ -1,0 +1,65 @@
+{
+  "packet": "scan3-source-packet-legacy-scanner-slice-a41267a7",
+  "packetId": "legacy-scanner-slice-a41267a7",
+  "scope": "Bounded legacy scanner implementation slice; not a complete legacy application or complete primary source set.",
+  "source": {
+    "repository": "TakashiSasaki/scan.moukaeritai.work",
+    "commit": "a41267a7d79417706fd8f57b42fa67635a8de3b4"
+  },
+  "destination": {
+    "repository": "TakashiSasaki/scan3",
+    "baselineCommit": "c10f1be62c970cffd0d2c43c965beefdfb2beb37"
+  },
+  "files": [
+    {
+      "sourcePath": "src/components/Scanner.tsx",
+      "payloadPath": "src/components/Scanner.tsx",
+      "sha256": "7598224bdd2fe7f09a111d38430f8d025dfed3747efdb1dc8b7a41aeb358ec38",
+      "sizeBytes": 8562,
+      "disposition": "restore",
+      "intendedDestination": "src/app/surfaces/legacy/historical/components/Scanner.tsx",
+      "notes": "Exact historical scanner component for a bounded /app/legacy/scanner reconstruction slice. Stage in the isolated historical subtree; adapt before activation.",
+      "gitBlobSha1": "d5156bf2da0a161a814621fa83fc1f5214f14f3c"
+    },
+    {
+      "sourcePath": "src/index.css",
+      "payloadPath": "src/index.css",
+      "sha256": "0bf091e17be32b5fe05b2330979c527b620890c4214d7e9082e466e651155f58",
+      "sizeBytes": 2427,
+      "disposition": "restore",
+      "intendedDestination": "src/app/surfaces/legacy/historical/index.css",
+      "notes": "Exact historical stylesheet containing scanner-specific html5-qrcode rules and historical theme context. Stage only; do not import globally without review.",
+      "gitBlobSha1": "543e45d6c9bc665863acbfab1c0d8bcb1c44a7c0"
+    },
+    {
+      "sourcePath": "package.json",
+      "payloadPath": "package.json",
+      "sha256": "f0ec4a8e3028c378d6e6565ace2dd01a1d5863ed8565aff9e4415b40f5366cc1",
+      "sizeBytes": 1431,
+      "disposition": "reference",
+      "intendedDestination": null,
+      "notes": "Historical dependency context only. Do not replace scan3/package.json; dependency changes require explicit implementation review.",
+      "gitBlobSha1": "fec2853bca0f63d66ab55c5892d1a568cea94d46"
+    }
+  ],
+  "validation": {
+    "gitBlobSha1": "PASS",
+    "draft7SchemaEquivalent": "PASS",
+    "operationalEquivalent": "PASS",
+    "archiveStructure": "PASS",
+    "zipSha256": "PASS",
+    "officialRepositoryLocalNodeValidator": "NOT_RUN in the packet-creation container; AI Studio must run scripts/validate-source-packet.cjs after download and extraction."
+  },
+  "zip": {
+    "filename": "scan3-source-packet-legacy-scanner-slice-a41267a7.zip",
+    "sha256": "53bab186d8a72769e5d3abfe5024ae36405fdc8964f7b57a1b76113de72555ab",
+    "sizeBytes": 6169
+  },
+  "limitations": [
+    "This packet covers only the historical scanner slice.",
+    "The exact historical scanner depends on html5-qrcode and lucide-react; package.json is reference-only and must not replace scan3/package.json.",
+    "The historical stylesheet is staged, not authorized for global import.",
+    "No Firebase connectivity or production data operation is included or authorized.",
+    "The primary candidate commit is not asserted to contain every pre-redesign fix."
+  ]
+}
