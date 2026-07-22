@@ -72,6 +72,38 @@ After extraction, run the current `main` repository-local authoritative validato
 node scripts/validate-source-packet.cjs <packet-root>
 ```
 
+### Legacy scanner identifier interpretation reference — Stride 2B.2
+
+- `source-packets/scan3-source-packet-legacy-scanner-identifier-interpretation-reference-a41267a7.zip`
+- `source-packets/scan3-source-packet-legacy-scanner-identifier-interpretation-reference-a41267a7.zip.sha256`
+- `source-packets/scan3-source-packet-legacy-scanner-identifier-interpretation-reference-a41267a7-validation-report.json`
+
+This purpose-limited reference packet contains exact historical `src/lib/utils.ts` bytes. It authorizes adaptation of `sanitizeItemId` and `extractItemId` semantics into a new isolated pure module for Stride 2B.2 only. It does not authorize wholesale copying of the utility module, scanner lifecycle changes, navigation, item lookup, Firebase, Firestore, authentication, persistence, NFC, migration, or new dependencies.
+
+ZIP SHA-256:
+
+```text
+d025c15ca6e9934db7a425983e590e4d360059cc9643cbc75e833f63fd33ee78
+```
+
+Download and verify:
+
+```bash
+curl -fL -o scan3-source-packet-legacy-scanner-identifier-interpretation-reference-a41267a7.zip \
+  https://raw.githubusercontent.com/TakashiSasaki/scan3/refs/heads/chatgpt/source-packets/scan3-source-packet-legacy-scanner-identifier-interpretation-reference-a41267a7.zip
+
+curl -fL -o scan3-source-packet-legacy-scanner-identifier-interpretation-reference-a41267a7.zip.sha256 \
+  https://raw.githubusercontent.com/TakashiSasaki/scan3/refs/heads/chatgpt/source-packets/scan3-source-packet-legacy-scanner-identifier-interpretation-reference-a41267a7.zip.sha256
+
+sha256sum -c scan3-source-packet-legacy-scanner-identifier-interpretation-reference-a41267a7.zip.sha256
+```
+
+After extraction, run the current `main` repository-local authoritative validator before using any payload bytes:
+
+```bash
+node scripts/validate-source-packet.cjs <packet-root>
+```
+
 ### Superseded scanner staging packets
 
 The following packets are retained for provenance but must not be used for staging:
