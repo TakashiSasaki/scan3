@@ -11,11 +11,23 @@ export function LegacyQrScanner() {
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
   const startPromiseRef = useRef<Promise<any> | null>(null);
   
+  const mountedRef = useRef<boolean>(false);
+  const opGenRef = useRef<number>(0);
+  const detectionHandledRef = useRef<boolean>(false);
+  
   const containerId = "legacy-qr-reader";
 
   useEffect(() => {
-    // Cleanup on unmount
+    mountedRef.current = true;
+    
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setScannerState('unsupported');
+    }
+    
     return () => {
+      mountedRef.current = false;
+      opGenRef.current += 1; // invalidate pending starts
+      
       const cleanup = async () => {
         try {
           if (startPromiseRef.current) {
@@ -24,17 +36,59 @@ export function LegacyQrScanner() {
           if (html5QrCodeRef.current?.isScanning) {
             await html5QrCodeRef.current.stop();
           }
-          html5QrCodeRef.current?.clear();
+          if (html5QrCodeRef.current) {
+            (html5QrCodeRef.current as any).clear();
+          }
         } catch (err) {
           console.warn("Scanner cleanup error:", err);
+        } finally {
+          html5QrCodeRef.current = null;
+          startPromiseRef.current = null;
         }
       };
       cleanup();
     };
   }, []);
 
+  const stopAndClear = async (targetState: ScannerState) => {
+    opGenRef.current += 1;
+    
+    try {
+      if (startPromiseRef.current) {
+        await startPromiseRef.current.catch(() => {});
+      }
+      if (html5QrCodeRef.current?.isScanning) {
+        await html5QrCodeRef.current.stop();
+      }
+      if (html5QrCodeRef.current) {
+        (html5QrCodeRef.current as any).clear();
+      }
+    } catch (err: any) {
+      console.warn("Camera stop/clear error:", err);
+      if (mountedRef.current && targetState !== 'unsupported') {
+        setErrorMsg(err?.message || "Failed to stop camera.");
+        setScannerState('error');
+        return;
+      }
+    } finally {
+      html5QrCodeRef.current = null;
+      startPromiseRef.current = null;
+    }
+
+    if (mountedRef.current) {
+      setScannerState(targetState);
+    }
+  };
+
   const startScanner = async () => {
-    if (scannerState === 'starting' || scannerState === 'scanning') return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setScannerState('unsupported');
+      return;
+    }
+
+    opGenRef.current += 1;
+    const currentOp = opGenRef.current;
+    detectionHandledRef.current = false;
     
     setScannerState('starting');
     setErrorMsg(null);
@@ -55,9 +109,10 @@ export function LegacyQrScanner() {
           qrbox: { width: 250, height: 250 }
         },
         (text) => {
+          if (currentOp !== opGenRef.current || !mountedRef.current || detectionHandledRef.current) return;
+          detectionHandledRef.current = true;
           setDecodedText(text);
-          setScannerState('detected');
-          stopScanner(); // auto stop on detection
+          stopAndClear('detected');
         },
         (errorMessage) => {
           // ignore scan errors (mostly no qr code found in frame)
@@ -65,40 +120,26 @@ export function LegacyQrScanner() {
       );
 
       await startPromiseRef.current;
-      setScannerState('scanning');
+      
+      if (mountedRef.current && currentOp === opGenRef.current) {
+        setScannerState('scanning');
+      }
     } catch (err: any) {
       console.error("Camera start error:", err);
-      setErrorMsg(err?.message || "Failed to start camera. Please check permissions.");
-      setScannerState('error');
+      if (mountedRef.current && currentOp === opGenRef.current) {
+        setErrorMsg(err?.message || "Failed to start camera. Please check permissions.");
+        setScannerState('error');
+      }
     }
   };
 
-  const stopScanner = async () => {
+  const stopScanner = () => {
     if (scannerState === 'idle' || scannerState === 'stopping') return;
-    
-    setScannerState('stopping');
-    
-    try {
-      if (startPromiseRef.current) {
-        await startPromiseRef.current.catch(() => {});
-      }
-      if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
-        await html5QrCodeRef.current.stop();
-      }
-      if (scannerState !== 'detected') {
-        setScannerState('idle');
-      }
-    } catch (err: any) {
-      console.warn("Camera stop error:", err);
-      setErrorMsg(err?.message || "Failed to stop camera.");
-      setScannerState('error');
-    }
+    if (mountedRef.current) setScannerState('stopping');
+    stopAndClear('idle');
   };
 
   const restartScanner = () => {
-    setDecodedText(null);
-    setErrorMsg(null);
-    setScannerState('idle');
     startScanner();
   };
 
@@ -119,10 +160,16 @@ export function LegacyQrScanner() {
         </div>
       </div>
 
+      {scannerState === 'unsupported' && (
+        <div className="qr-error">
+          <strong>Unsupported Environment:</strong> Camera APIs (getUserMedia) are not available in this browser or context.
+        </div>
+      )}
+
       <div 
         id={containerId} 
         className="qr-scanner-viewport" 
-        style={{ display: (scannerState === 'scanning' || scannerState === 'starting') ? 'block' : 'none' }}
+        style={{ display: (scannerState === 'scanning' || scannerState === 'starting' || scannerState === 'stopping') ? 'block' : 'none' }}
       ></div>
 
       {scannerState === 'detected' && decodedText && (
