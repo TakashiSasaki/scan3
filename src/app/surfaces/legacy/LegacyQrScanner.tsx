@@ -180,6 +180,22 @@ export function LegacyQrScanner() {
     startScanner();
   };
 
+  const releaseNfcSession = (reader: LegacyNdefReader | null, controller: AbortController) => {
+    if (!controller.signal.aborted) {
+      controller.abort();
+    }
+    if (reader) {
+      reader.onreading = null;
+      reader.onreadingerror = null;
+    }
+    if (nfcReaderRef.current === reader) {
+      nfcReaderRef.current = null;
+    }
+    if (nfcAbortControllerRef.current === controller) {
+      nfcAbortControllerRef.current = null;
+    }
+  };
+
   const startNfcScanner = async () => {
     if (nfcState === 'starting' || nfcState === 'scanning' || nfcState === 'stopping') return;
 
@@ -196,6 +212,7 @@ export function LegacyQrScanner() {
     nfcSessionGenerationRef.current += 1;
     const currentGen = nfcSessionGenerationRef.current;
     nfcReadingHandledRef.current = false;
+    
     setNfcError(null);
     setDecodedText(null);
     setAcquisitionSource(null);
@@ -203,46 +220,42 @@ export function LegacyQrScanner() {
 
     const abortController = new AbortController();
     nfcAbortControllerRef.current = abortController;
-    const reader = new constructor();
-    nfcReaderRef.current = reader;
 
-    reader.onreading = (event) => {
-      if (!mountedRef.current) return;
-      if (currentGen !== nfcSessionGenerationRef.current) return;
-      if (nfcReadingHandledRef.current) return;
-      nfcReadingHandledRef.current = true;
-      
-      setDecodedText(event.serialNumber);
-      setAcquisitionSource('nfc');
-      setNfcState('detected');
-      
-      abortController.abort();
-      reader.onreading = null;
-      reader.onreadingerror = null;
-      nfcReaderRef.current = null;
-      nfcAbortControllerRef.current = null;
-    };
-
-    reader.onreadingerror = (event) => {
-      if (currentGen !== nfcSessionGenerationRef.current) return;
-      abortController.abort();
-      reader.onreading = null;
-      reader.onreadingerror = null;
-      nfcReaderRef.current = null;
-      nfcAbortControllerRef.current = null;
-
-      if (mountedRef.current) {
-        setNfcError("NFC reading error occurred.");
-        setNfcState('error');
-      }
-    };
-
+    let reader: LegacyNdefReader | null = null;
     try {
+      reader = new constructor();
+      nfcReaderRef.current = reader;
+
+      reader.onreading = (event) => {
+        if (!mountedRef.current) return;
+        if (currentGen !== nfcSessionGenerationRef.current) return;
+        if (nfcReadingHandledRef.current) return;
+        nfcReadingHandledRef.current = true;
+        
+        setDecodedText(event.serialNumber);
+        setAcquisitionSource('nfc');
+        setNfcState('detected');
+        
+        releaseNfcSession(reader, abortController);
+      };
+
+      reader.onreadingerror = (event) => {
+        if (currentGen !== nfcSessionGenerationRef.current) return;
+        releaseNfcSession(reader, abortController);
+        if (mountedRef.current) {
+          setNfcError("NFC reading error occurred.");
+          setNfcState('error');
+        }
+      };
+
       await reader.scan({ signal: abortController.signal });
+
       if (mountedRef.current && currentGen === nfcSessionGenerationRef.current) {
         setNfcState('scanning');
       }
     } catch (err: unknown) {
+      releaseNfcSession(reader, abortController);
+      
       if (!mountedRef.current) return;
       if (currentGen !== nfcSessionGenerationRef.current) return;
       if (err instanceof DOMException && err.name === 'AbortError') return;
@@ -256,7 +269,6 @@ export function LegacyQrScanner() {
       setNfcState('error');
     }
   };
-
   const cancelNfcScanner = () => {
     nfcSessionGenerationRef.current += 1;
     setNfcState('stopping');
@@ -284,6 +296,9 @@ export function LegacyQrScanner() {
           ) : null}
           {scannerState === 'scanning' || scannerState === 'starting' ? (
             <button className="qr-btn qr-btn-stop" onClick={stopScanner}>Stop Camera</button>
+          ) : null}
+          {scannerState === 'detected' && nfcState !== 'starting' && nfcState !== 'scanning' && nfcState !== 'stopping' ? (
+            <button className="qr-btn" onClick={restartScanner}>Scan Again</button>
           ) : null}
         </div>
       </div>
