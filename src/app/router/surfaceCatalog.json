@@ -1,7 +1,7 @@
 [
   { "id": "public", "path": "/", "label": "Public", "description": "Public landing surface", "status": "foundation", "shortcutVisible": false },
   { "id": "app", "path": "/app", "label": "Current Application", "description": "Schema-first current application area; runtime not implemented", "status": "planning", "shortcutVisible": true },
-  { "id": "legacy", "path": "/app/legacy", "label": "Legacy Application", "description": "Legacy application restoration area; QR acquisition and legacy scanned-identifier interpretation are active, item resolution and Firebase are unimplemented, and full legacy restoration is incomplete", "status": "foundation", "shortcutVisible": true },
+  { "id": "legacy", "path": "/app/legacy", "label": "Legacy Application", "description": "Legacy application restoration area; QR acquisition active, identifier interpretation active, Web NFC serial-number acquisition active where supported, item resolution unimplemented, Firebase unimplemented, full restoration incomplete", "status": "foundation", "shortcutVisible": true },
   { "id": "admin", "path": "/admin", "label": "Administration", "description": "Administration surface placeholder", "status": "placeholder", "shortcutVisible": true },
   { "id": "dev", "path": "/dev", "label": "Internal Development", "description": "Internal development surface", "status": "foundation", "shortcutVisible": true },
   { "id": "schema", "path": "/dev/schema", "label": "Schema Workbench", "description": "Draft schema workbench", "status": "draft", "shortcutVisible": true },

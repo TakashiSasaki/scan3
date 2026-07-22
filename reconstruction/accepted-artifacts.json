@@ -102,5 +102,6 @@
   "docs/reconstruction/historical-evidence-receipts.md",
   "scripts/lib/historical-evidence-receipt-validator.cjs",
   "src/app/surfaces/legacy/LegacyQrScanner.tsx",
-  "src/app/surfaces/legacy/identifierInterpretation.ts"
+  "src/app/surfaces/legacy/identifierInterpretation.ts",
+  "src/app/surfaces/legacy/legacyWebNfc.ts"
 ]

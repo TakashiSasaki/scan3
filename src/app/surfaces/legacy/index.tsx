@@ -11,7 +11,13 @@ export function LegacySurface() {
       description={surface.description}
       details={
         <div className="surface-details">
-          <p>This is a partial reconstruction of legacy QR acquisition. Firebase connectivity is not established.</p>
+          <ul style={{ marginBottom: '1rem', paddingLeft: '1.5rem', listStyleType: 'disc' }}>
+            <li>QR acquisition is active</li>
+            <li>legacy identifier interpretation is active</li>
+            <li>Web NFC serial-number acquisition is active where supported</li>
+            <li>Firebase connectivity is not established</li>
+            <li>item resolution is not implemented</li>
+          </ul>
           <LegacyQrScanner />
         </div>
       }
