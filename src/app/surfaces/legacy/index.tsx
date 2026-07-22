@@ -1,5 +1,6 @@
 import { SurfacePlaceholder } from '../../components/SurfacePlaceholder';
 import { getSurfaceById } from '../../router/getSurface';
+import { LegacyQrScanner } from './LegacyQrScanner';
 
 export function LegacySurface() {
   const surface = getSurfaceById('legacy');
@@ -9,7 +10,10 @@ export function LegacySurface() {
       status={surface.status}
       description={surface.description}
       details={
-        <p>Target Database: Firebase / Cloud Firestore (Pending Setup)</p>
+        <div className="surface-details">
+          <p>This is a partial reconstruction of legacy QR acquisition. Firebase connectivity is not established.</p>
+          <LegacyQrScanner />
+        </div>
       }
     />
   );

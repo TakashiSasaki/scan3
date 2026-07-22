@@ -133,3 +133,92 @@ body {
 .surface-details {
   margin-top: 1rem;
 }
+
+.qr-scanner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.qr-scanner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.qr-scanner-status {
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.qr-scanner-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.qr-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.qr-btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.qr-btn-stop {
+  background-color: #ef4444;
+}
+
+.qr-scanner-viewport {
+  width: 100%;
+  max-width: 500px;
+  min-height: 300px;
+  background-color: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+}
+
+.qr-scanner-viewport video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
+.qr-result {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #dcfce7;
+  border: 1px solid #86efac;
+  border-radius: 4px;
+}
+
+.qr-result pre {
+  margin: 0.5rem 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: monospace;
+}
+
+.qr-error {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  border-radius: 4px;
+}

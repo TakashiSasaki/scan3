@@ -32,6 +32,7 @@
     "verify:reconstruction": "npm run verify:foundation && npm run sources:schema:validate:example && npm run sources:schema:test && npm run sources:path:test && npm run sources:validate:example && npm run sources:test && npm run sources:error-evidence:validate && npm run sources:contract:validate && npm run surfaces:validate && npm run styles:validate && npm run styles:test && npm run artifacts:validate && npm run artifacts:test && npm run receipts:validate && npm run receipts:test && npm run skills:validate && npm run ci:validate && npm run controls:validate"
   },
   "dependencies": {
+    "html5-qrcode": "2.3.8",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "react-router-dom": "^7.18.1"

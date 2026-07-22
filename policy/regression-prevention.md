@@ -170,3 +170,12 @@ This policy document defines rules to prevent recurrences of issues identified d
 - baseline mismatch時はexportを停止する。
 - 不足artifactを会話履歴から推測して再作成しない。
 - current priorityとaccepted artifactをexport前に検証する。
+
+### Bounded Assurance
+- 各機能strideでは、repository-local central verificationを原則1回実行する。
+- その後のexternal auditは原則1回とする。
+- blocking defectが見つかった場合だけ、corrective strideを最大1回実施する。
+- corrective stride後は、修正対象と直接影響範囲だけを再確認する。
+- testをtestするtest、auditをauditするaudit、validatorを保護する新validatorを、具体的なblocking defectなしに追加しない。
+- verification framework自体の拡張を、機能実装完了の前提条件にしない。
+- non-blocking improvementはbacklogへ送り、次の機能strideを阻害しない。

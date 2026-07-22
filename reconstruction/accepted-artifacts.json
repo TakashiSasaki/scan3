@@ -100,5 +100,6 @@
   "scripts/validate-historical-evidence-receipts.cjs",
   "scripts/test-historical-evidence-receipts.cjs",
   "docs/reconstruction/historical-evidence-receipts.md",
-  "scripts/lib/historical-evidence-receipt-validator.cjs"
+  "scripts/lib/historical-evidence-receipt-validator.cjs",
+  "src/app/surfaces/legacy/LegacyQrScanner.tsx"
 ]
