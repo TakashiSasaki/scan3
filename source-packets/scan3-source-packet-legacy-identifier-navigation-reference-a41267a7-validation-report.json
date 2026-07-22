@@ -1,0 +1,46 @@
+{
+  "packet": "scan3-source-packet-legacy-identifier-navigation-reference-a41267a7",
+  "packetId": "legacy-identifier-navigation-reference-a41267a7",
+  "scope": "Purpose-limited historical reference for Stride 2B.4 identifier-based navigation adaptation only.",
+  "source": {
+    "repository": "TakashiSasaki/scan.moukaeritai.work",
+    "commit": "a41267a7d79417706fd8f57b42fa67635a8de3b4"
+  },
+  "destination": {
+    "repository": "TakashiSasaki/scan3",
+    "baselineCommit": "ef0234fdd9944d57c85e38fb0c03a0ea35c98fac"
+  },
+  "files": [
+    {
+      "sourcePath": "src/App.tsx",
+      "payloadPath": "reference/src/App.handleDetected.tsx.fragment",
+      "sha256": "7d4603f1d0139181e2d1b99632835386253cfd26638bf7e6579c5dd01fcb5801",
+      "sizeBytes": 155,
+      "disposition": "reference",
+      "intendedDestination": null,
+      "notes": "Exact historical contiguous excerpt containing handleDetected and handleCancelScanner. It demonstrates that acquired raw input was interpreted and then navigated to an item route. Authorized only as reference for adapting identifier-based navigation under /app/legacy. It is not the complete App.tsx file and does not authorize Firebase, authentication, CaptureForm, dashboard, global layout, Tailwind, lucide-react, toast, or wholesale App restoration."
+    }
+  ],
+  "validation": {
+    "payloadExactHistoricalContiguousExcerpt": true,
+    "sourceExcerptLocation": "src/App.tsx lines 135-141 at the pinned source commit",
+    "payloadSha256AndSize": "PASS",
+    "manifestDraft7SchemaEquivalent": "PASS",
+    "operationalPathAndFilesystemEquivalent": "PASS",
+    "archiveStructure": "PASS",
+    "zipSha256": "PASS",
+    "officialRepositoryLocalNodeValidator": "NOT_RUN in packet-creation environment; AI Studio must run node scripts/validate-source-packet.cjs after download and extraction."
+  },
+  "zip": {
+    "filename": "scan3-source-packet-legacy-identifier-navigation-reference-a41267a7.zip",
+    "sha256": "c4439947086ff644ac53afa2dd82bbd8a1d5955453adcb33d0ec19d6bdd14505",
+    "sizeBytes": 1587
+  },
+  "limitations": [
+    "The payload is an exact contiguous excerpt, not the complete historical App.tsx file.",
+    "The packet authorizes adaptation of identifier-based navigation semantics only.",
+    "The destination route must remain under /app/legacy to preserve product-generation isolation.",
+    "Firebase, Firestore, authentication, persistence, item lookup, CaptureForm restoration, global layout restoration, NDEF payload parsing, and NFC tag writing are not part of this stride.",
+    "Scope boundaries guide implementation and reporting, but acceptance should primarily evaluate whether usable identifier-based navigation and direct-route behavior work."
+  ]
+}
