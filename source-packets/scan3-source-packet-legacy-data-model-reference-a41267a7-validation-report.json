@@ -1,0 +1,36 @@
+{
+  "packet": "scan3-source-packet-legacy-data-model-reference-a41267a7",
+  "scope": "selective legacy data-model reference; not complete application restoration",
+  "source": {
+    "repository": "TakashiSasaki/scan.moukaeritai.work",
+    "commit": "a41267a7d79417706fd8f57b42fa67635a8de3b4"
+  },
+  "destination": {
+    "repository": "TakashiSasaki/scan3",
+    "baselineCommit": "c10f1be62c970cffd0d2c43c965beefdfb2beb37"
+  },
+  "files": [
+    {
+      "path": "firebase-blueprint.json",
+      "gitBlobSha1": "8f039b6f8b52c1b2afd6a349df4d2c88125be03c",
+      "sha256": "5d29a0a51f3f1054b3d8aa3f5b81fd6ca0c9974370f858b53f0d5b6ab55c342a",
+      "sizeBytes": 2881
+    },
+    {
+      "path": "package.json",
+      "gitBlobSha1": "fec2853bca0f63d66ab55c5892d1a568cea94d46",
+      "sha256": "f0ec4a8e3028c378d6e6565ace2dd01a1d5863ed8565aff9e4415b40f5366cc1",
+      "sizeBytes": 1431
+    }
+  ],
+  "validation": {
+    "gitBlobSha1": "PASS",
+    "draft7Schema": "PASS",
+    "operationalEquivalent": "PASS",
+    "officialNodeValidator": "NOT_RUN here because Ajv is not installed in the execution container; run node scripts/validate-source-packet.cjs after transfer."
+  },
+  "zip": {
+    "filename": "scan3-source-packet-legacy-data-model-reference-a41267a7.zip",
+    "sha256": "a1ff2378c9f4a3a9d78a81598ab6a12fca01365d12274bc25f04eb66ae89421b"
+  }
+}

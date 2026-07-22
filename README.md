@@ -1,17 +1,31 @@
-# scan3
+# Source packet distribution branch
 
-- `scan3`は`scan.moukaeritai.work`の第3世代再構築プロジェクトである。
-- application versionは`3.0.0-alpha.1`。
-- contract packagesは`0.1.0 draft`。
-- `/app`は新アプリ領域。
-- `/app/legacy`は旧アプリ復元領域。
-- `/demo`は隔離されたデモ領域。
-- `/dev/schema`および`contracts/`はschema workbench。
-- 旧アプリのFirestore databaseは`photos.moukaeritai.work`。
-- 新アプリのFirestore databaseは`scan.moukaeritai.work`。
-- migration、dual-write、backfillを行わない。
-- 現時点ではFirebase runtimeを実装していない。
-- historical sourceはvalidated offline source packet経由でのみ受け取る。
-- AI StudioはGitHubへアクセスできない。
-- `scan3/main`はAI Studioによる一方向force-push対象である。
-- GitHub側で`main`を直接編集しない。
+This branch is used only to distribute validated-candidate source packet archives to environments that cannot use Git.
+
+## Packet
+
+- `source-packets/scan3-source-packet-legacy-data-model-reference-a41267a7.zip`
+- `source-packets/scan3-source-packet-legacy-data-model-reference-a41267a7.zip.sha256`
+- `source-packets/scan3-source-packet-legacy-data-model-reference-a41267a7-validation-report.json`
+
+The packet is a selective historical reference. It is not a complete restoration of the historical application.
+
+## Download with curl
+
+```bash
+curl -fL -o scan3-source-packet-legacy-data-model-reference-a41267a7.zip \
+  https://raw.githubusercontent.com/TakashiSasaki/scan3/chatgpt/source-packets/scan3-source-packet-legacy-data-model-reference-a41267a7.zip
+
+curl -fL -o scan3-source-packet-legacy-data-model-reference-a41267a7.zip.sha256 \
+  https://raw.githubusercontent.com/TakashiSasaki/scan3/chatgpt/source-packets/scan3-source-packet-legacy-data-model-reference-a41267a7.zip.sha256
+
+sha256sum -c scan3-source-packet-legacy-data-model-reference-a41267a7.zip.sha256
+```
+
+After extraction, run the authoritative repository-local validator from the scan3 workspace:
+
+```bash
+node scripts/validate-source-packet.cjs <packet-root>
+```
+
+Do not treat download success or SHA-256 verification alone as source-packet acceptance. Full validator success is required.
