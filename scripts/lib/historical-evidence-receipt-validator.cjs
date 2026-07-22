@@ -68,6 +68,12 @@ function validateReceipt(receiptPathStr, options = {}) {
   const relReceiptPath = path.relative(repoRoot, receiptPath).replace(/\\/g, '/');
   checkPath(relReceiptPath, 'receiptPath');
 
+  if (!relReceiptPath.startsWith('reconstruction/historical/') || !relReceiptPath.endsWith('/receipt.json')) {
+    addError('receiptPath', 'Receipt must be located in reconstruction/historical/ and named receipt.json');
+  }
+
+  const artifactRoot = relReceiptPath.substring(0, relReceiptPath.length - 13); // remove '/receipt.json'
+
   if (!inventory.includes(relReceiptPath)) {
     addError('inventory', `Receipt ${relReceiptPath} is not registered in accepted-artifacts.json`);
   }
@@ -81,22 +87,29 @@ function validateReceipt(receiptPathStr, options = {}) {
     checkPath(file.sourcePath, `restoredFiles[${i}].sourcePath`);
     checkPath(sp, `restoredFiles[${i}].storedPath`);
     
-    if (!sp.startsWith('reconstruction/historical/')) {
+    // Convert to forward slashes for prefix checking
+    const normalizedSp = sp.replace(/\\/g, '/');
+
+    if (!normalizedSp.startsWith('reconstruction/historical/')) {
       addError(`restoredFiles[${i}].storedPath`, 'storedPath must be within reconstruction/historical/');
     }
 
-    if (storedPaths.has(sp)) {
-      addError(`restoredFiles[${i}].storedPath`, `Duplicate storedPath: ${sp}`);
+    if (!normalizedSp.startsWith(artifactRoot + '/')) {
+      addError(`restoredFiles[${i}].storedPath`, 'storedPath must be a strict descendant of the artifact root');
     }
-    storedPaths.add(sp);
 
-    if (!inventory.includes(sp)) {
+    if (storedPaths.has(normalizedSp)) {
+      addError(`restoredFiles[${i}].storedPath`, `Duplicate storedPath: ${normalizedSp}`);
+    }
+    storedPaths.add(normalizedSp);
+
+    if (!inventory.includes(normalizedSp)) {
       addError(`restoredFiles[${i}].storedPath`, `storedPath is not registered in accepted-artifacts.json`);
     }
 
     const srcExt = ACTIVE_EXTENSIONS.find(ext => file.sourcePath.endsWith(ext));
     if (srcExt) {
-      const storedExt = ACTIVE_EXTENSIONS.find(ext => sp.endsWith(ext));
+      const storedExt = ACTIVE_EXTENSIONS.find(ext => normalizedSp.endsWith(ext));
       if (storedExt) {
         addError(`restoredFiles[${i}].storedPath`, `Active script extension not allowed for storedPath`);
       }
@@ -132,6 +145,13 @@ function validateReceipt(receiptPathStr, options = {}) {
     const hash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
     if (hash !== file.sha256) {
       addError(`restoredFiles[${i}].sha256`, `SHA-256 mismatch. Expected ${file.sha256}, actual ${hash}`);
+    }
+  }
+
+  const inventoryDescendants = inventory.filter(entry => entry.startsWith(artifactRoot + '/') && entry !== relReceiptPath);
+  for (const entry of inventoryDescendants) {
+    if (!storedPaths.has(entry)) {
+      addError('inventory.reverseBinding', `Inventory entry under receipt artifact root is not declared in restoredFiles: ${entry}`);
     }
   }
 

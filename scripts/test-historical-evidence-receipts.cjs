@@ -3,6 +3,7 @@ const os = require('os');
 const path = require('path');
 const crypto = require('crypto');
 const { validateReceipt } = require('./lib/historical-evidence-receipt-validator.cjs');
+const { isCapabilityLimitedSymlinkError } = require('./lib/symlink-capability.cjs');
 
 let passCount = 0;
 let failCount = 0;
@@ -119,9 +120,12 @@ function main() {
     assertPass(result);
   });
 
-  const getTempRoot = () => fs.mkdtempSync(path.join(os.tmpdir(), 'scan3-receipt-test-'));
-
-  let tempRoot;
+  const createdTempRoots = new Set();
+  const getTempRoot = () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'scan3-receipt-test-'));
+    createdTempRoots.add(dir);
+    return dir;
+  };
 
   try {
     tempRoot = getTempRoot();
@@ -137,6 +141,88 @@ function main() {
       const { receiptPath, tempDir, inventory } = createSyntheticReceipt(dir);
       const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory });
       assertPass(result);
+    });
+
+    const nonblankTests = [
+      ['packetId', 'packetId space-only', '   '],
+      ['source.repository', 'source.repository tab-only', '\t\t'],
+      ['destination.repository', 'destination.repository newline-only', '\n'],
+      ['restoredFiles[0].sourcePath', 'sourcePath whitespace-only', ' \t\n '],
+      ['restoredFiles[0].storedPath', 'storedPath whitespace-only', '   '],
+    ];
+    for (const [field, testName, badValue] of nonblankTests) {
+      runTest(`${testName}ならFAIL`, () => {
+        const dir = getTempRoot();
+        const { receiptPath, tempDir, inventory } = createSyntheticReceipt(dir);
+        const data = JSON.parse(fs.readFileSync(receiptPath));
+        if (field.startsWith('source.')) data.source[field.split('.')[1]] = badValue;
+        else if (field.startsWith('destination.')) data.destination[field.split('.')[1]] = badValue;
+        else if (field.startsWith('restoredFiles[0].')) data.restoredFiles[0][field.split('.')[1]] = badValue;
+        else data[field] = badValue;
+        fs.writeFileSync(receiptPath, JSON.stringify(data));
+        
+        let newInv = inventory;
+        if (field === 'restoredFiles[0].storedPath') {
+           newInv = ['reconstruction/historical/test-receipt/receipt.json', badValue];
+        }
+        const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory: newInv });
+        assertFail(result, 'must match pattern');
+      });
+    }
+
+    runTest('supersedesForStagingのitemがwhitespace-onlyならFAIL', () => {
+      const dir = getTempRoot();
+      const { receiptPath, tempDir, inventory } = createSyntheticReceipt(dir);
+      const data = JSON.parse(fs.readFileSync(receiptPath));
+      data.supersedesForStaging = ["   "];
+      fs.writeFileSync(receiptPath, JSON.stringify(data));
+      const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory });
+      assertFail(result, 'must match pattern');
+    });
+
+    runTest('inventory内にartifact root配下のorphan fileがあるとFAIL', () => {
+      const dir = getTempRoot();
+      const { receiptPath, tempDir, inventory } = createSyntheticReceipt(dir);
+      const orphanPath = 'reconstruction/historical/test-receipt/orphan.bin';
+      const newInv = [...inventory, orphanPath];
+      
+      const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory: newInv });
+      assertFail(result, 'inventory.reverseBinding');
+    });
+
+    runTest('orphan fileが実際にregular fileとして存在する場合でもFAIL', () => {
+      const dir = getTempRoot();
+      const { receiptPath, tempDir, inventory } = createSyntheticReceipt(dir);
+      const orphanPath = 'reconstruction/historical/test-receipt/orphan.bin';
+      fs.writeFileSync(path.join(tempDir, orphanPath), 'orphan');
+      const newInv = [...inventory, orphanPath];
+      
+      const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory: newInv });
+      assertFail(result, 'inventory.reverseBinding');
+    });
+
+    runTest('storedPathが別artifact rootにあるとFAIL', () => {
+      const dir = getTempRoot();
+      const badPath = 'reconstruction/historical/other-receipt/test.tsx.source';
+      const { receiptPath, tempDir, inventory } = createSyntheticReceipt(dir, {}, { storedPath: badPath });
+      fs.mkdirSync(path.join(tempDir, 'reconstruction/historical/other-receipt'), { recursive: true });
+      fs.writeFileSync(path.join(tempDir, badPath), 'synthetic test content');
+      
+      const newInv = ['reconstruction/historical/test-receipt/receipt.json', badPath];
+      const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory: newInv });
+      assertFail(result, 'storedPath must be a strict descendant of the artifact root');
+    });
+
+    runTest('root名の文字列prefixだけが一致するsibling pathはFAIL', () => {
+      const dir = getTempRoot();
+      const badPath = 'reconstruction/historical/test-receipt-copy/test.tsx.source';
+      const { receiptPath, tempDir, inventory } = createSyntheticReceipt(dir, {}, { storedPath: badPath });
+      fs.mkdirSync(path.join(tempDir, 'reconstruction/historical/test-receipt-copy'), { recursive: true });
+      fs.writeFileSync(path.join(tempDir, badPath), 'synthetic test content');
+      
+      const newInv = ['reconstruction/historical/test-receipt/receipt.json', badPath];
+      const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory: newInv });
+      assertFail(result, 'storedPath must be a strict descendant of the artifact root');
     });
 
     runTest('historical .css evidenceがPASS', () => {
@@ -330,15 +416,64 @@ function main() {
       try {
         fs.symlinkSync(targetAbs, fileAbs);
       } catch (e) {
-        throw new SkipError('Environment cannot create symlinks');
+        if (isCapabilityLimitedSymlinkError(e)) {
+          throw new SkipError(`Environment cannot create symlinks: ${e.code} ${e.message}`);
+        }
+        throw e;
       }
 
       const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory });
       assertFail(result, 'File is a symbolic link');
     });
 
+    runTest('Symlink classification (Synthetic EPERM is SKIP)', () => {
+      const e = new Error('synthetic EPERM');
+      e.code = 'EPERM';
+      if (!isCapabilityLimitedSymlinkError(e)) {
+        throw new Error('EPERM should be capability limited');
+      }
+    });
+
+    runTest('Symlink classification (Synthetic EIO is FAIL)', () => {
+      const e = new Error('synthetic EIO');
+      e.code = 'EIO';
+      if (isCapabilityLimitedSymlinkError(e)) {
+        throw new Error('EIO should not be capability limited');
+      }
+    });
+
   } finally {
-    // Note: We leave the dirs around if there's an error, but this is a test script so it's fine to rely on OS tmp dir cleanup.
+    let rootsCreated = createdTempRoots.size;
+    let rootsRemoved = 0;
+    let cleanUpErrors = [];
+    for (const dir of createdTempRoots) {
+      try {
+        fs.rmSync(dir, { recursive: true, force: true });
+        if (fs.existsSync(dir)) {
+           cleanUpErrors.push(`Failed to remove (still exists): ${dir}`);
+        } else {
+           rootsRemoved++;
+        }
+      } catch (e) {
+        cleanUpErrors.push(`${dir} - ${e.code} - ${e.message}`);
+      }
+    }
+    const rootsRemaining = rootsCreated - rootsRemoved;
+
+    if (cleanUpErrors.length > 0) {
+      console.error(`\nTemporary resource cleanup:`);
+      console.error(`  FAIL`);
+      for (const err of cleanUpErrors) {
+        console.error(`  ${err}`);
+      }
+      failCount++;
+    } else {
+      console.log(`\nTemporary resource cleanup:`);
+      console.log(`  PASS`);
+      console.log(`  roots created: ${rootsCreated}`);
+      console.log(`  roots removed: ${rootsRemoved}`);
+      console.log(`  roots remaining: ${rootsRemaining}`);
+    }
   }
 
   console.log(`\nSummary:  PASS: ${passCount}  FAIL: ${failCount}  SKIP: ${skipCount}  NOT_APPLICABLE: 0`);

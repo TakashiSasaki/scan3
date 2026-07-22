@@ -1,19 +1,25 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
+  "definitions": {
+    "nonBlankString": {
+      "type": "string",
+      "pattern": "^.*[^\\s].*$"
+    }
+  },
   "properties": {
     "formatVersion": { "const": "1.0" },
     "scope": { "const": "historical-evidence-only" },
-    "packetId": { "type": "string", "minLength": 1 },
+    "packetId": { "$ref": "#/definitions/nonBlankString" },
     "distributionCommit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
     "supersedesForStaging": {
       "type": ["array", "null"],
-      "items": { "type": "string" }
+      "items": { "$ref": "#/definitions/nonBlankString" }
     },
     "source": {
       "type": "object",
       "properties": {
-        "repository": { "type": "string", "minLength": 1 },
+        "repository": { "$ref": "#/definitions/nonBlankString" },
         "commit": { "type": "string", "pattern": "^[a-f0-9]{40}$" }
       },
       "required": ["repository", "commit"],
@@ -22,7 +28,7 @@
     "destination": {
       "type": "object",
       "properties": {
-        "repository": { "type": "string", "minLength": 1 },
+        "repository": { "$ref": "#/definitions/nonBlankString" },
         "expectedBaselineCommit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
         "workspaceCommitVerified": { "type": "boolean" }
       },
@@ -45,8 +51,8 @@
       "items": {
         "type": "object",
         "properties": {
-          "sourcePath": { "type": "string", "minLength": 1 },
-          "storedPath": { "type": "string", "minLength": 1 },
+          "sourcePath": { "$ref": "#/definitions/nonBlankString" },
+          "storedPath": { "$ref": "#/definitions/nonBlankString" },
           "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
           "sizeBytes": { "type": "integer", "minimum": 0 }
         },

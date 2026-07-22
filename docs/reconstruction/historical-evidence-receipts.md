@@ -7,6 +7,15 @@ The verification of historical evidence is divided into two layers:
 
 ## Accepted Artifact Inventory Binding
 Historical receipts and their stored files are strictly verified against the `reconstruction/accepted-artifacts.json` inventory. A receipt will FAIL validation if itself or any of its `storedPath` files are not present in the inventory.
+- inventory bindingはartifact-root単位で双方向
+- receiptからinventoryへのforward binding
+- inventoryからreceipt restoredFilesへのreverse binding
+- reverse bindingはinventory登録済みfileだけを対象とする
+- storedPathはreceipt artifact rootのstrict descendant
+- test temporary resourcesは各runでcleanupされる
+- symlink setupのSKIPは既知のenvironment capability errorだけ
+- unexpected setup failureはFAIL
+- whitespace-only stringはnonblankではない
 
 ## Stored File Verification
 The operational validator actively reads the bytes on disk for each `storedPath` and verifies that the file size matches `sizeBytes` and the SHA-256 hash strictly matches the recorded `sha256` value in the receipt.
