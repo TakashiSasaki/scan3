@@ -20,6 +20,8 @@ Selective historical reference only; not a complete restoration source set.
 
 This packet preserves exact historical `Scanner.tsx` bytes at the non-runtime destination filename `Scanner.tsx.source`. It does not authorize dependency installation, `tsconfig.json` changes, active-source creation, adaptation, import, route activation, style-validator changes, or Firebase connectivity.
 
+The ZIP distribution was repaired after the first published binary blob was found not to match its sidecar. The current ZIP blob is expected to have SHA-256 `bf9137dc65650474882ce04c7c55f6b42fd01fe28bc15f4b5e3c074c3a55273f`. Consumers must still verify the sidecar after every download.
+
 Download:
 
 ```bash

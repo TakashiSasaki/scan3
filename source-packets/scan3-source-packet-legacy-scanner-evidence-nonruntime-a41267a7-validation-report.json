@@ -52,6 +52,10 @@
     "sha256": "bf9137dc65650474882ce04c7c55f6b42fd01fe28bc15f4b5e3c074c3a55273f",
     "sizeBytes": 6453
   },
+  "distributionRepair": {
+    "status": "REPAIRED",
+    "reason": "The initially published ZIP blob did not match this sidecar. The branch now points to the packet-creation ZIP blob whose Git blob SHA-1 is 1b4e571826998462d6e15e5026c876266275b089 and SHA-256 is bf9137dc65650474882ce04c7c55f6b42fd01fe28bc15f4b5e3c074c3a55273f."
+  },
   "supersedesForStaging": [
     "legacy-scanner-slice-a41267a7",
     "legacy-scanner-evidence-a41267a7"
