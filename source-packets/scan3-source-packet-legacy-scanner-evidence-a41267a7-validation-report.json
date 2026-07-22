@@ -1,0 +1,73 @@
+{
+  "packet": "scan3-source-packet-legacy-scanner-evidence-a41267a7",
+  "packetId": "legacy-scanner-evidence-a41267a7",
+  "supersedesForStaging": "scan3-source-packet-legacy-scanner-slice-a41267a7",
+  "scope": "Evidence-only staging of exact historical scanner bytes outside active source trees; not runtime adaptation, activation, or a complete legacy source set.",
+  "source": {
+    "repository": "TakashiSasaki/scan.moukaeritai.work",
+    "commit": "a41267a7d79417706fd8f57b42fa67635a8de3b4"
+  },
+  "destination": {
+    "repository": "TakashiSasaki/scan3",
+    "baselineCommit": "c10f1be62c970cffd0d2c43c965beefdfb2beb37"
+  },
+  "ownerDecisions": [
+    {
+      "id": "legacy-scanner-evidence-staging-location",
+      "value": "reconstruction/historical/legacy-scanner/a41267a7",
+      "reason": "The repository owner selected evidence-only staging outside src so exact historical bytes can be preserved without weakening the style-residue validator or treating historical source as active runtime code."
+    }
+  ],
+  "files": [
+    {
+      "sourcePath": "src/components/Scanner.tsx",
+      "payloadPath": "src/components/Scanner.tsx",
+      "sha256": "7598224bdd2fe7f09a111d38430f8d025dfed3747efdb1dc8b7a41aeb358ec38",
+      "sizeBytes": 8562,
+      "disposition": "restore",
+      "intendedDestination": "reconstruction/historical/legacy-scanner/a41267a7/src/components/Scanner.tsx",
+      "notes": "Exact historical evidence only. Preserve byte-for-byte outside the active src tree; do not import, adapt, compile, or activate this file in this operation.",
+      "gitBlobSha1": "d5156bf2da0a161a814621fa83fc1f5214f14f3c"
+    },
+    {
+      "sourcePath": "src/index.css",
+      "payloadPath": "src/index.css",
+      "sha256": "0bf091e17be32b5fe05b2330979c527b620890c4214d7e9082e466e651155f58",
+      "sizeBytes": 2427,
+      "disposition": "restore",
+      "intendedDestination": "reconstruction/historical/legacy-scanner/a41267a7/src/index.css",
+      "notes": "Exact historical evidence only. Preserve byte-for-byte outside the active src tree; do not import this stylesheet or weaken style validation in this operation.",
+      "gitBlobSha1": "543e45d6c9bc665863acbfab1c0d8bcb1c44a7c0"
+    },
+    {
+      "sourcePath": "package.json",
+      "payloadPath": "package.json",
+      "sha256": "f0ec4a8e3028c378d6e6565ace2dd01a1d5863ed8565aff9e4415b40f5366cc1",
+      "sizeBytes": 1431,
+      "disposition": "reference",
+      "intendedDestination": null,
+      "notes": "Historical dependency evidence only. Do not copy or merge it into scan3/package.json and do not install dependencies during evidence staging.",
+      "gitBlobSha1": "fec2853bca0f63d66ab55c5892d1a568cea94d46"
+    }
+  ],
+  "validation": {
+    "gitBlobSha1": "PASS",
+    "draft7SchemaEquivalent": "PASS",
+    "operationalEquivalent": "PASS",
+    "archiveStructure": "PASS",
+    "zipSha256": "PASS",
+    "officialRepositoryLocalNodeValidator": "NOT_RUN in the packet-creation container; AI Studio must run scripts/validate-source-packet.cjs after download and extraction."
+  },
+  "zip": {
+    "filename": "scan3-source-packet-legacy-scanner-evidence-a41267a7.zip",
+    "sha256": "64344a13d53aa8af57335bfd99bf0e5edecfe34d1adf7fc5865371c675ea957d",
+    "sizeBytes": 6270
+  },
+  "limitations": [
+    "This packet preserves historical evidence only and must not be imported by runtime code.",
+    "No dependency installation is authorized during this staging operation.",
+    "No style-validator exclusion or weakening is authorized.",
+    "Runtime adaptation and route activation require separate work and evidence.",
+    "The primary candidate commit is not asserted to contain every pre-redesign fix."
+  ]
+}
