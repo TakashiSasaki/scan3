@@ -1,0 +1,45 @@
+{
+  "packet": "scan3-source-packet-legacy-scanner-identifier-interpretation-reference-a41267a7",
+  "packetId": "legacy-scanner-identifier-interpretation-reference-a41267a7",
+  "scope": "Purpose-limited historical reference for Stride 2B.2 identifier interpretation adaptation only.",
+  "source": {
+    "repository": "TakashiSasaki/scan.moukaeritai.work",
+    "commit": "a41267a7d79417706fd8f57b42fa67635a8de3b4"
+  },
+  "destination": {
+    "repository": "TakashiSasaki/scan3",
+    "baselineCommit": "b389c76d155b9695f80eb699c1abdb542e9d531e"
+  },
+  "files": [
+    {
+      "sourcePath": "src/lib/utils.ts",
+      "payloadPath": "src/lib/utils.ts",
+      "sha256": "04b4e803b1d77ee26bbb26a2b0c43da3b3885fc7f5f37be00dab40015a575afc",
+      "sizeBytes": 3328,
+      "disposition": "reference",
+      "intendedDestination": null,
+      "notes": "Exact historical utility-module bytes. Authorized only as reference for adapting sanitizeItemId and extractItemId semantics into a new isolated pure module for Stride 2B.2. Do not copy unrelated cache or image-format utilities, add navigation, or infer persistence behavior."
+    }
+  ],
+  "validation": {
+    "payloadGitBlobShaMatchesSource": true,
+    "payloadSha256AndSize": "PASS",
+    "manifestDraft7SchemaEquivalent": "PASS",
+    "operationalPathAndFilesystemEquivalent": "PASS",
+    "archiveStructure": "PASS",
+    "zipSha256": "PASS",
+    "officialRepositoryLocalNodeValidator": "NOT_RUN in packet-creation environment; AI Studio must run node scripts/validate-source-packet.cjs after download and extraction."
+  },
+  "zip": {
+    "filename": "scan3-source-packet-legacy-scanner-identifier-interpretation-reference-a41267a7.zip",
+    "sha256": "d025c15ca6e9934db7a425983e590e4d360059cc9643cbc75e833f63fd33ee78",
+    "sizeBytes": 2628
+  },
+  "limitations": [
+    "This packet authorizes reference and adaptation of sanitizeItemId and extractItemId semantics only.",
+    "The active scan3 implementation must be a new isolated pure module; the historical utils.ts file must not be copied wholesale.",
+    "Navigation, item lookup, Firebase, Firestore, authentication, persistence, migration, NFC, and scanner lifecycle changes remain excluded.",
+    "No new dependency is authorized.",
+    "The historical algorithm may produce an empty normalized identifier; the implementation must expose this result explicitly and must not invent fallback semantics without an owner decision."
+  ]
+}
