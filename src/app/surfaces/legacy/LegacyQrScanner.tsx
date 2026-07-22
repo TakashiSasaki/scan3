@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
+import { interpretLegacyScannedIdentifier } from './identifierInterpretation';
 
 type ScannerState = 'idle' | 'starting' | 'scanning' | 'detected' | 'stopping' | 'error' | 'unsupported';
 
@@ -16,6 +17,8 @@ export function LegacyQrScanner() {
   const detectionHandledRef = useRef<boolean>(false);
   
   const containerId = "legacy-qr-reader";
+
+  const interpretation = decodedText !== null ? interpretLegacyScannedIdentifier(decodedText) : null;
 
   useEffect(() => {
     mountedRef.current = true;
@@ -172,10 +175,30 @@ export function LegacyQrScanner() {
         style={{ display: (scannerState === 'scanning' || scannerState === 'starting' || scannerState === 'stopping') ? 'block' : 'none' }}
       ></div>
 
-      {scannerState === 'detected' && decodedText && (
+      {scannerState === 'detected' && decodedText !== null && interpretation && (
         <div className="qr-result">
-          <strong>Decoded Text (Raw):</strong>
-          <pre>{decodedText}</pre>
+          <div className="qr-result-field">
+            <strong>Decoded Text (Raw):</strong>
+            <pre>{interpretation.rawValue}</pre>
+          </div>
+          <div className="qr-result-field">
+            <strong>Interpretation Method:</strong> {interpretation.method}
+          </div>
+          <div className="qr-result-field">
+            <strong>Candidate Value:</strong> {interpretation.candidateValue}
+          </div>
+          <div className="qr-result-field">
+            <strong>Normalized Legacy Identifier:</strong>{' '}
+            {interpretation.usable ? interpretation.normalizedIdentifier : '(empty)'}
+          </div>
+          <div className="qr-result-field">
+            <strong>Usability:</strong> {interpretation.usable ? 'usable' : 'empty'}
+          </div>
+          {!interpretation.usable && (
+            <div className="qr-notice">
+              No usable legacy identifier was produced.
+            </div>
+          )}
         </div>
       )}
 

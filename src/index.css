@@ -207,8 +207,26 @@ body {
   border-radius: 4px;
 }
 
+.qr-result-field {
+  margin-bottom: 0.5rem;
+}
+
+.qr-result-field:last-child {
+  margin-bottom: 0;
+}
+
+.qr-notice {
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background-color: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
 .qr-result pre {
-  margin: 0.5rem 0 0 0;
+  margin: 0.25rem 0 0 0;
   white-space: pre-wrap;
   word-break: break-all;
   font-family: monospace;
