@@ -1,0 +1,71 @@
+name: Build Legacy Primary Source Packet
+
+on:
+  push:
+    branches:
+      - chatgpt
+    paths:
+      - .github/workflows/build-legacy-primary-source-packet.yml
+      - tools/build-legacy-primary-source-packet.py
+
+permissions:
+  contents: write
+
+jobs:
+  build-packet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out packet distribution branch
+        uses: actions/checkout@v4
+        with:
+          ref: chatgpt
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install scan3 validator dependencies
+        run: npm ci
+
+      - name: Check out historical source commit
+        run: |
+          rm -rf /tmp/scan-historical-source
+          git clone --filter=blob:none --no-checkout \
+            https://github.com/TakashiSasaki/scan.moukaeritai.work.git \
+            /tmp/scan-historical-source
+          git -C /tmp/scan-historical-source checkout --detach \
+            a41267a7d79417706fd8f57b42fa67635a8de3b4
+          test "$(git -C /tmp/scan-historical-source rev-parse HEAD)" = \
+            "a41267a7d79417706fd8f57b42fa67635a8de3b4"
+
+      - name: Build and validate packet
+        run: |
+          python3 tools/build-legacy-primary-source-packet.py \
+            --source /tmp/scan-historical-source \
+            --repository "$GITHUB_WORKSPACE"
+
+      - name: Verify generated files
+        run: |
+          test -f source-packets/scan3-source-packet-legacy-primary-source-a41267a7.zip
+          test -f source-packets/scan3-source-packet-legacy-primary-source-a41267a7.zip.sha256
+          test -f source-packets/scan3-source-packet-legacy-primary-source-a41267a7-validation-report.json
+          cd source-packets
+          sha256sum -c scan3-source-packet-legacy-primary-source-a41267a7.zip.sha256
+
+      - name: Commit generated packet
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            source-packets/scan3-source-packet-legacy-primary-source-a41267a7.zip \
+            source-packets/scan3-source-packet-legacy-primary-source-a41267a7.zip.sha256 \
+            source-packets/scan3-source-packet-legacy-primary-source-a41267a7-validation-report.json
+          if git diff --cached --quiet; then
+            echo "Generated packet is unchanged."
+            exit 0
+          fi
+          git commit -m "feat: publish legacy primary source packet"
+          git push origin HEAD:chatgpt
