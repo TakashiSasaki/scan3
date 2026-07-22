@@ -1,55 +1,48 @@
 # Source packet distribution branch
 
-This branch is used only to distribute source packet archives to environments that cannot use Git.
+This branch is used only to distribute source packet archives to environments that cannot use Git. It is not intended for merge into `main`.
 
 ## Available packets
 
 ### Legacy data-model reference
 
-Files:
-
 - `source-packets/scan3-source-packet-legacy-data-model-reference-a41267a7.zip`
 - `source-packets/scan3-source-packet-legacy-data-model-reference-a41267a7.zip.sha256`
 - `source-packets/scan3-source-packet-legacy-data-model-reference-a41267a7-validation-report.json`
 
-This packet is a selective historical reference. It is not a complete restoration of the historical application.
+Selective historical reference only; not a complete restoration source set.
 
-### Legacy scanner historical evidence
+### Legacy scanner non-runtime evidence — current staging packet
 
-Files:
+- `source-packets/scan3-source-packet-legacy-scanner-evidence-nonruntime-a41267a7.zip`
+- `source-packets/scan3-source-packet-legacy-scanner-evidence-nonruntime-a41267a7.zip.sha256`
+- `source-packets/scan3-source-packet-legacy-scanner-evidence-nonruntime-a41267a7-validation-report.json`
 
-- `source-packets/scan3-source-packet-legacy-scanner-evidence-a41267a7.zip`
-- `source-packets/scan3-source-packet-legacy-scanner-evidence-a41267a7.zip.sha256`
-- `source-packets/scan3-source-packet-legacy-scanner-evidence-a41267a7-validation-report.json`
+This packet preserves exact historical `Scanner.tsx` bytes at the non-runtime destination filename `Scanner.tsx.source`. It does not authorize dependency installation, `tsconfig.json` changes, active-source creation, adaptation, import, route activation, style-validator changes, or Firebase connectivity.
 
-This replacement packet stages exact historical scanner bytes under `reconstruction/historical/legacy-scanner/a41267a7/`, outside the active `src/` tree. It authorizes evidence preservation only. It does not authorize dependency installation, source adaptation, runtime import, route activation, Firebase connectivity, or weakening style validation.
-
-### Superseded legacy scanner slice
-
-The following earlier packet is retained only for provenance and must not be applied for staging:
-
-- `source-packets/scan3-source-packet-legacy-scanner-slice-a41267a7.zip`
-- `source-packets/scan3-source-packet-legacy-scanner-slice-a41267a7.zip.sha256`
-- `source-packets/scan3-source-packet-legacy-scanner-slice-a41267a7-validation-report.json`
-
-Its `restore` destinations were under `src/` and conflict with the repository's style-residue guardrail. Use the legacy scanner historical evidence packet instead.
-
-## Download the scanner evidence packet with curl
+Download:
 
 ```bash
-curl -fL -o scan3-source-packet-legacy-scanner-evidence-a41267a7.zip \
-  https://raw.githubusercontent.com/TakashiSasaki/scan3/refs/heads/chatgpt/source-packets/scan3-source-packet-legacy-scanner-evidence-a41267a7.zip
+curl -fL -o scan3-source-packet-legacy-scanner-evidence-nonruntime-a41267a7.zip \
+  https://raw.githubusercontent.com/TakashiSasaki/scan3/refs/heads/chatgpt/source-packets/scan3-source-packet-legacy-scanner-evidence-nonruntime-a41267a7.zip
 
-curl -fL -o scan3-source-packet-legacy-scanner-evidence-a41267a7.zip.sha256 \
-  https://raw.githubusercontent.com/TakashiSasaki/scan3/refs/heads/chatgpt/source-packets/scan3-source-packet-legacy-scanner-evidence-a41267a7.zip.sha256
+curl -fL -o scan3-source-packet-legacy-scanner-evidence-nonruntime-a41267a7.zip.sha256 \
+  https://raw.githubusercontent.com/TakashiSasaki/scan3/refs/heads/chatgpt/source-packets/scan3-source-packet-legacy-scanner-evidence-nonruntime-a41267a7.zip.sha256
 
-sha256sum -c scan3-source-packet-legacy-scanner-evidence-a41267a7.zip.sha256
+sha256sum -c scan3-source-packet-legacy-scanner-evidence-nonruntime-a41267a7.zip.sha256
 ```
 
-After extraction, run the authoritative repository-local validator from the scan3 workspace:
+After extraction, run the repository-local authoritative validator:
 
 ```bash
 node scripts/validate-source-packet.cjs <packet-root>
 ```
 
-Do not treat download success, the creation-time validation report, or SHA-256 verification alone as source-packet acceptance. Full repository-local validator success is required.
+### Superseded scanner staging packets
+
+The following packets are retained for provenance but must not be used for staging:
+
+- `scan3-source-packet-legacy-scanner-slice-a41267a7`: destination was under active `src/` and conflicted with style-residue validation.
+- `scan3-source-packet-legacy-scanner-evidence-a41267a7`: destination retained the `.tsx` extension and entered TypeScript compilation, prompting an unauthorized `tsconfig.json` change.
+
+Download success, a sidecar match, or the creation-time report alone is not packet acceptance. The current scan3 repository-local validator must pass before use.
