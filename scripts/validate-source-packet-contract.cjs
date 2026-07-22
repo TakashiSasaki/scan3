@@ -3,6 +3,7 @@ const path = require('path');
 const Ajv = require('ajv');
 const { execFileSync } = require('child_process');
 const { generateMatrix } = require('./generate-source-packet-constraint-matrix.cjs');
+const { VALID_OPERATIONAL_ERROR_CODES } = require('./lib/operational-error-codes.cjs');
 
 function hasOwn(object, key) {
   return Object.prototype.hasOwnProperty.call(object, key);
@@ -43,19 +44,96 @@ function check() {
   if (!fs.existsSync(expectationsPath)) throw new Error('Fixture expectations not found');
   
   const expectations = JSON.parse(fs.readFileSync(expectationsPath, 'utf-8'));
+  const allowedFixtureKeys = new Set([
+    'fixture',
+    'schemaExpected',
+    'operationalExpected',
+    'reason',
+    'expectedErrorCode',
+    'expectedSchemaKeyword',
+    'expectedSchemaPath',
+    'expectedSchemaInstancePath',
+    'expectedSchemaParams',
+    'constraintIds'
+  ]);
+
   for (const exp of expectations) {
+    if (exp === null || typeof exp !== 'object' || Array.isArray(exp)) {
+      throw new Error('Fixture expectation entry must be a non-null plain object');
+    }
+
+    for (const key of Object.keys(exp)) {
+      if (!allowedFixtureKeys.has(key)) throw new Error(`Unknown key in fixture catalog: ${key} in ${exp.fixture}`);
+    }
+
+    if (typeof exp.fixture !== 'string' || exp.fixture.trim() === '' || exp.fixture !== exp.fixture.trim()) {
+      throw new Error(`Fixture name must be a non-empty trimmed string`);
+    }
+    if (typeof exp.schemaExpected !== 'string' || exp.schemaExpected.trim() === '' || exp.schemaExpected !== exp.schemaExpected.trim()) {
+      throw new Error(`Fixture ${exp.fixture} schemaExpected must be a non-empty trimmed string`);
+    }
+    if (typeof exp.operationalExpected !== 'string' || exp.operationalExpected.trim() === '' || exp.operationalExpected !== exp.operationalExpected.trim()) {
+      throw new Error(`Fixture ${exp.fixture} operationalExpected must be a non-empty trimmed string`);
+    }
+    if (!Array.isArray(exp.constraintIds) || exp.constraintIds.length === 0) {
+      throw new Error(`Fixture ${exp.fixture} constraintIds must be a non-empty array`);
+    }
+    const seenCIds = new Set();
+    for (const cId of exp.constraintIds) {
+      if (typeof cId !== 'string' || cId.trim() === '' || cId !== cId.trim()) {
+        throw new Error(`Fixture ${exp.fixture} constraintId must be a non-empty trimmed string`);
+      }
+      if (seenCIds.has(cId)) {
+        throw new Error(`Duplicate constraintId "${cId}" in fixture ${exp.fixture}`);
+      }
+      seenCIds.add(cId);
+    }
+
     const pair = `${exp.schemaExpected}/${exp.operationalExpected}`;
-    if (pair === "PASS/FAIL") {
-      if (!exp.reason || typeof exp.reason !== 'string' || exp.reason.trim() === '') throw new Error(`PASS/FAIL fixture ${exp.fixture} must have a non-empty string reason`);
-      if (hasOwn(exp, 'expectedSchemaKeyword')) throw new Error(`PASS/FAIL fixture ${exp.fixture} must NOT have expectedSchemaKeyword`);
+    if (pair === "PASS/PASS") {
+      const forbiddenPassPass = ['reason', 'expectedErrorCode', 'expectedSchemaKeyword', 'expectedSchemaPath', 'expectedSchemaInstancePath', 'expectedSchemaParams'];
+      for (const field of forbiddenPassPass) {
+        if (hasOwn(exp, field)) {
+          throw new Error(`Fixture ${exp.fixture} (PASS/PASS) must NOT have property "${field}"`);
+        }
+      }
+    } else if (pair === "PASS/FAIL") {
+      if (!hasOwn(exp, 'reason') || typeof exp.reason !== 'string' || exp.reason.trim() === '' || exp.reason !== exp.reason.trim()) {
+        throw new Error(`PASS/FAIL fixture ${exp.fixture} must have a non-empty trimmed string reason`);
+      }
+      if (!hasOwn(exp, 'expectedErrorCode') || typeof exp.expectedErrorCode !== 'string' || exp.expectedErrorCode.trim() === '' || exp.expectedErrorCode !== exp.expectedErrorCode.trim()) {
+        throw new Error(`PASS/FAIL fixture ${exp.fixture} must have a non-empty trimmed string expectedErrorCode`);
+      }
+      if (!VALID_OPERATIONAL_ERROR_CODES.has(exp.expectedErrorCode)) {
+        throw new Error(`Fixture ${exp.fixture} specifies invalid or unregistered expectedErrorCode: ${exp.expectedErrorCode}`);
+      }
+      const forbiddenPassFail = ['expectedSchemaKeyword', 'expectedSchemaPath', 'expectedSchemaInstancePath', 'expectedSchemaParams'];
+      for (const field of forbiddenPassFail) {
+        if (hasOwn(exp, field)) {
+          throw new Error(`Fixture ${exp.fixture} (PASS/FAIL) must NOT have property "${field}"`);
+        }
+      }
     } else if (pair === "FAIL/NOT_APPLICABLE") {
-      if (!exp.reason || typeof exp.reason !== 'string' || exp.reason.trim() === '') throw new Error(`Missing reason for schema-invalid fixture: ${exp.fixture}`);
-      if (hasOwn(exp, 'expectedErrorCode')) throw new Error(`FAIL/NOT_APPLICABLE fixture ${exp.fixture} must NOT have expectedErrorCode`);
-    } else if (pair === "PASS/PASS") {
-      if (hasOwn(exp, 'reason')) throw new Error(`PASS/PASS fixture ${exp.fixture} must NOT have reason`);
-      if (hasOwn(exp, 'expectedErrorCode')) throw new Error(`PASS/PASS fixture ${exp.fixture} must NOT have expectedErrorCode`);
+      if (!hasOwn(exp, 'reason') || typeof exp.reason !== 'string' || exp.reason.trim() === '' || exp.reason !== exp.reason.trim()) {
+        throw new Error(`FAIL/NOT_APPLICABLE fixture ${exp.fixture} must have a non-empty trimmed string reason`);
+      }
+      if (!hasOwn(exp, 'expectedSchemaKeyword') || typeof exp.expectedSchemaKeyword !== 'string' || exp.expectedSchemaKeyword.trim() === '' || exp.expectedSchemaKeyword !== exp.expectedSchemaKeyword.trim()) {
+        throw new Error(`FAIL/NOT_APPLICABLE fixture ${exp.fixture} must have a non-empty trimmed string expectedSchemaKeyword`);
+      }
+      if (!hasOwn(exp, 'expectedSchemaPath') || typeof exp.expectedSchemaPath !== 'string' || exp.expectedSchemaPath.trim() === '' || exp.expectedSchemaPath !== exp.expectedSchemaPath.trim() || !exp.expectedSchemaPath.startsWith('/')) {
+        throw new Error(`FAIL/NOT_APPLICABLE fixture ${exp.fixture} must have expectedSchemaPath starting with '/'`);
+      }
+      if (!hasOwn(exp, 'expectedSchemaInstancePath') || typeof exp.expectedSchemaInstancePath !== 'string' || exp.expectedSchemaInstancePath !== exp.expectedSchemaInstancePath.trim() || (exp.expectedSchemaInstancePath !== '' && !exp.expectedSchemaInstancePath.startsWith('/'))) {
+        throw new Error(`FAIL/NOT_APPLICABLE fixture ${exp.fixture} must have expectedSchemaInstancePath as empty string or starting with '/'`);
+      }
+      if (!hasOwn(exp, 'expectedSchemaParams') || exp.expectedSchemaParams === null || typeof exp.expectedSchemaParams !== 'object' || Array.isArray(exp.expectedSchemaParams)) {
+        throw new Error(`FAIL/NOT_APPLICABLE fixture ${exp.fixture} must have expectedSchemaParams as a non-null plain object`);
+      }
+      if (hasOwn(exp, 'expectedErrorCode')) {
+        throw new Error(`FAIL/NOT_APPLICABLE fixture ${exp.fixture} must NOT have property "expectedErrorCode"`);
+      }
     } else {
-      throw new Error(`Forbidden outcome pair "${pair}" in fixture ${exp.fixture}`);
+      throw new Error(`Forbidden fixture outcome pair "${pair}" in ${exp.fixture}. Allowed pairs are PASS/PASS, PASS/FAIL, FAIL/NOT_APPLICABLE.`);
     }
   }
 
