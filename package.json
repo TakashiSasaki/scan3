@@ -19,15 +19,17 @@
     "styles:validate": "node scripts/validate-style-residues.cjs",
     "styles:test": "node scripts/test-style-residue-validator.cjs",
     "artifacts:validate": "node scripts/validate-accepted-artifacts.cjs",
+    "artifacts:test": "node scripts/test-accepted-artifacts-validator.cjs",
+    "receipts:validate": "node scripts/validate-historical-evidence-receipts.cjs",
+    "receipts:test": "node scripts/test-historical-evidence-receipts.cjs",
     "verify:foundation": "npm run typecheck && npm run contracts:validate && npm run build",
     "sources:schema:validate:example": "node scripts/validate-source-packet-schema.cjs reconstruction/examples/minimal",
     "sources:schema:test": "node scripts/test-source-packet-schema.cjs",
     "sources:contract:validate": "node scripts/validate-source-packet-contract.cjs",
-    "artifacts:test": "node scripts/test-accepted-artifacts-validator.cjs",
     "skills:validate": "node scripts/validate-agent-skills.cjs",
     "ci:validate": "node scripts/validate-ci-workflow.cjs",
     "controls:validate": "node scripts/validate-control-registries.cjs",
-    "verify:reconstruction": "npm run verify:foundation && npm run sources:schema:validate:example && npm run sources:schema:test && npm run sources:path:test && npm run sources:validate:example && npm run sources:test && npm run sources:error-evidence:validate && npm run sources:contract:validate && npm run surfaces:validate && npm run styles:validate && npm run styles:test && npm run artifacts:validate && npm run artifacts:test && npm run skills:validate && npm run ci:validate && npm run controls:validate"
+    "verify:reconstruction": "npm run verify:foundation && npm run sources:schema:validate:example && npm run sources:schema:test && npm run sources:path:test && npm run sources:validate:example && npm run sources:test && npm run sources:error-evidence:validate && npm run sources:contract:validate && npm run surfaces:validate && npm run styles:validate && npm run styles:test && npm run artifacts:validate && npm run artifacts:test && npm run receipts:validate && npm run receipts:test && npm run skills:validate && npm run ci:validate && npm run controls:validate"
   },
   "dependencies": {
     "react": "^19.0.1",

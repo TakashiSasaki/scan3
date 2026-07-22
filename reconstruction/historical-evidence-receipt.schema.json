@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "formatVersion": { "const": "1.0" },
+    "scope": { "const": "historical-evidence-only" },
+    "packetId": { "type": "string", "minLength": 1 },
+    "distributionCommit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "supersedesForStaging": {
+      "type": ["array", "null"],
+      "items": { "type": "string" }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "commit": { "type": "string", "pattern": "^[a-f0-9]{40}$" }
+      },
+      "required": ["repository", "commit"],
+      "additionalProperties": false
+    },
+    "destination": {
+      "type": "object",
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "expectedBaselineCommit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "workspaceCommitVerified": { "type": "boolean" }
+      },
+      "required": ["repository", "expectedBaselineCommit", "workspaceCommitVerified"],
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "zipSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "officialSourcePacketValidator": { "const": "PASS" },
+        "exactByteVerification": { "const": "PASS" }
+      },
+      "required": ["zipSha256", "officialSourcePacketValidator", "exactByteVerification"],
+      "additionalProperties": false
+    },
+    "restoredFiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "sourcePath": { "type": "string", "minLength": 1 },
+          "storedPath": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "sizeBytes": { "type": "integer", "minimum": 0 }
+        },
+        "required": ["sourcePath", "storedPath", "sha256", "sizeBytes"],
+        "additionalProperties": false
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "adapted": { "const": false },
+        "imported": { "const": false },
+        "routeActivated": { "const": false },
+        "dependenciesInstalled": { "const": false },
+        "compilerConfigurationChanged": { "const": false },
+        "firebaseConnectivityAdded": { "const": false }
+      },
+      "required": [
+        "adapted",
+        "imported",
+        "routeActivated",
+        "dependenciesInstalled",
+        "compilerConfigurationChanged",
+        "firebaseConnectivityAdded"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "formatVersion",
+    "scope",
+    "packetId",
+    "distributionCommit",
+    "supersedesForStaging",
+    "source",
+    "destination",
+    "validation",
+    "restoredFiles",
+    "runtime"
+  ],
+  "additionalProperties": false
+}

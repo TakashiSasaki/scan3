@@ -54,7 +54,12 @@ const REQUIRED_ACCEPTED_ARTIFACTS = Object.freeze([
   'reconstruction/examples/invalid-missing-source/manifest.json',
   'reconstruction/examples/invalid-missing-destination/manifest.json',
   'reconstruction/examples/invalid-missing-files/manifest.json',
-  'reconstruction/examples/invalid-missing-owner-decisions/manifest.json'
+  'reconstruction/examples/invalid-missing-owner-decisions/manifest.json',
+  'reconstruction/historical-evidence-receipt.schema.json',
+  'scripts/validate-historical-evidence-receipts.cjs',
+  'scripts/test-historical-evidence-receipts.cjs',
+  'docs/reconstruction/historical-evidence-receipts.md',
+  'scripts/lib/historical-evidence-receipt-validator.cjs'
 ]);
 
 module.exports = {
