@@ -1,0 +1,53 @@
+{
+  "packet": "scan3-source-packet-legacy-scanner-qr-runtime-reference-a41267a7",
+  "packetId": "legacy-scanner-qr-runtime-reference-a41267a7",
+  "scope": "Purpose-limited historical runtime reference for Stride 2B.1 QR camera acquisition adaptation only.",
+  "source": {
+    "repository": "TakashiSasaki/scan.moukaeritai.work",
+    "commit": "a41267a7d79417706fd8f57b42fa67635a8de3b4"
+  },
+  "destination": {
+    "repository": "TakashiSasaki/scan3",
+    "baselineCommit": "c81c50bb41a1a0828f4cd969ebf845fbaf77d53b"
+  },
+  "files": [
+    {
+      "sourcePath": "src/components/Scanner.tsx",
+      "payloadPath": "src/components/Scanner.tsx",
+      "sha256": "7598224bdd2fe7f09a111d38430f8d025dfed3747efdb1dc8b7a41aeb358ec38",
+      "sizeBytes": 8562,
+      "disposition": "reference",
+      "intendedDestination": null,
+      "notes": "Exact historical scanner bytes. Authorized only as reference for a new QR-acquisition adaptation; do not copy wholesale into active source, retain Tailwind classes, activate NFC, add global error suppression, or infer Firebase behavior."
+    },
+    {
+      "sourcePath": "package.json",
+      "payloadPath": "package.json",
+      "sha256": "f0ec4a8e3028c378d6e6565ace2dd01a1d5863ed8565aff9e4415b40f5366cc1",
+      "sizeBytes": 1431,
+      "disposition": "reference",
+      "intendedDestination": null,
+      "notes": "Historical dependency provenance only. html5-qrcode may be evaluated as the QR decoding dependency; do not copy or merge this package.json and do not install Firebase, lucide-react, Tailwind, motion, or unrelated historical dependencies from this evidence."
+    }
+  ],
+  "validation": {
+    "payloadSha256AndSize": "PASS",
+    "manifestDraft7SchemaEquivalent": "PASS",
+    "operationalPathAndFilesystemEquivalent": "PASS",
+    "archiveStructure": "PASS",
+    "zipSha256": "PASS",
+    "officialRepositoryLocalNodeValidator": "NOT_RUN in packet-creation environment because the current environment lacks the repository npm dependency installation; AI Studio must run node scripts/validate-source-packet.cjs after download and extraction."
+  },
+  "zip": {
+    "filename": "scan3-source-packet-legacy-scanner-qr-runtime-reference-a41267a7.zip",
+    "sha256": "9ddc12e1dc30240630b4773146190bcc784fa1e80b16ba35fccb09d1764d6b1b",
+    "sizeBytes": 5433
+  },
+  "limitations": [
+    "This packet authorizes reference and adaptation for QR camera acquisition only; it does not authorize wholesale copying of historical Scanner.tsx.",
+    "NFC, identifier interpretation, item resolution, navigation, Firebase, Firestore, authentication, persistence, migration, backfill, synchronization, reconciliation, dual-write, fallback, and adapters remain excluded.",
+    "Historical Tailwind-style classes, lucide-react, global error suppression, and the full historical package manifest are evidence only and must not be copied into active scan3 source.",
+    "Only html5-qrcode may be evaluated as a new dependency in this stride, and only if required by the adapted implementation.",
+    "The packet is not a complete legacy application or complete primary source set."
+  ]
+}

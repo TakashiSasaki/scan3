@@ -40,6 +40,38 @@ After extraction, run the repository-local authoritative validator:
 node scripts/validate-source-packet.cjs <packet-root>
 ```
 
+### Legacy scanner QR runtime reference — Stride 2B.1
+
+- `source-packets/scan3-source-packet-legacy-scanner-qr-runtime-reference-a41267a7.zip`
+- `source-packets/scan3-source-packet-legacy-scanner-qr-runtime-reference-a41267a7.zip.sha256`
+- `source-packets/scan3-source-packet-legacy-scanner-qr-runtime-reference-a41267a7-validation-report.json`
+
+This purpose-limited reference packet authorizes analysis and adaptation of the historical QR camera acquisition lifecycle under the existing `/app/legacy` surface. It contains exact historical `Scanner.tsx` and `package.json` bytes as reference entries. It does not authorize wholesale copying, NFC, identifier interpretation, item navigation, Firebase, Firestore, authentication, persistence, migration, backfill, synchronization, reconciliation, dual-write, fallback, adapters, Tailwind adoption, or lucide-react adoption.
+
+ZIP SHA-256:
+
+```text
+9ddc12e1dc30240630b4773146190bcc784fa1e80b16ba35fccb09d1764d6b1b
+```
+
+Download and verify:
+
+```bash
+curl -fL -o scan3-source-packet-legacy-scanner-qr-runtime-reference-a41267a7.zip \
+  https://raw.githubusercontent.com/TakashiSasaki/scan3/refs/heads/chatgpt/source-packets/scan3-source-packet-legacy-scanner-qr-runtime-reference-a41267a7.zip
+
+curl -fL -o scan3-source-packet-legacy-scanner-qr-runtime-reference-a41267a7.zip.sha256 \
+  https://raw.githubusercontent.com/TakashiSasaki/scan3/refs/heads/chatgpt/source-packets/scan3-source-packet-legacy-scanner-qr-runtime-reference-a41267a7.zip.sha256
+
+sha256sum -c scan3-source-packet-legacy-scanner-qr-runtime-reference-a41267a7.zip.sha256
+```
+
+After extraction, run the current `main` repository-local authoritative validator before using any payload bytes:
+
+```bash
+node scripts/validate-source-packet.cjs <packet-root>
+```
+
 ### Superseded scanner staging packets
 
 The following packets are retained for provenance but must not be used for staging:
