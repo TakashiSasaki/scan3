@@ -127,8 +127,18 @@ function main() {
     return dir;
   };
 
+  function attemptSymlink(target, file, symlinkFn) {
+    try {
+      symlinkFn(target, file);
+    } catch (e) {
+      if (isCapabilityLimitedSymlinkError(e)) {
+        throw new SkipError(`Environment cannot create symlinks: ${e.code} ${e.message}`);
+      }
+      throw e;
+    }
+  }
+
   try {
-    tempRoot = getTempRoot();
     runTest('synthetic valid receiptがPASS', () => {
       const dir = getTempRoot();
       const { receiptPath, tempDir, inventory } = createSyntheticReceipt(dir);
@@ -413,34 +423,92 @@ function main() {
       const targetAbs = path.join(tempDir, 'target');
       fs.writeFileSync(targetAbs, 'synthetic test content');
       
-      try {
-        fs.symlinkSync(targetAbs, fileAbs);
-      } catch (e) {
-        if (isCapabilityLimitedSymlinkError(e)) {
-          throw new SkipError(`Environment cannot create symlinks: ${e.code} ${e.message}`);
-        }
-        throw e;
-      }
+      attemptSymlink(targetAbs, fileAbs, fs.symlinkSync);
 
       const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory });
       assertFail(result, 'File is a symbolic link');
     });
 
-    runTest('Symlink classification (Synthetic EPERM is SKIP)', () => {
-      const e = new Error('synthetic EPERM');
-      e.code = 'EPERM';
-      if (!isCapabilityLimitedSymlinkError(e)) {
-        throw new Error('EPERM should be capability limited');
+    runTest('Symlink control flow (Synthetic EPERM is SkipError)', () => {
+      try {
+        attemptSymlink('target', 'path', () => {
+          const e = new Error('synthetic EPERM');
+          e.code = 'EPERM';
+          throw e;
+        });
+        throw new Error('Expected attemptSymlink to throw');
+      } catch (e) {
+        if (e.name !== 'SkipError') {
+          throw new Error(`Expected SkipError, got ${e.name}: ${e.message}`);
+        }
       }
     });
 
-    runTest('Symlink classification (Synthetic EIO is FAIL)', () => {
-      const e = new Error('synthetic EIO');
-      e.code = 'EIO';
-      if (isCapabilityLimitedSymlinkError(e)) {
-        throw new Error('EIO should not be capability limited');
+    runTest('Symlink control flow (Synthetic EIO is rethrown)', () => {
+      const originalError = new Error('synthetic EIO');
+      originalError.code = 'EIO';
+      try {
+        attemptSymlink('target', 'path', () => {
+          throw originalError;
+        });
+        throw new Error('Expected attemptSymlink to throw');
+      } catch (e) {
+        if (e !== originalError) {
+          throw new Error(`Expected original error to be thrown, got: ${e}`);
+        }
       }
     });
+
+    runTest('receipt自身はreverse bindingでrestoredFilesに要求されない', () => {
+      const dir = getTempRoot();
+      const { receiptPath, tempDir } = createSyntheticReceipt(dir);
+      const inventory = [
+        'reconstruction/historical/test-receipt/receipt.json',
+        'reconstruction/historical/test-receipt/test.tsx.source'
+      ];
+      const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory });
+      assertPass(result);
+    });
+
+    runTest('inventoryのsibling-prefix entryはreverse bindingの対象にならない (PASSする)', () => {
+      const dir = getTempRoot();
+      const { receiptPath, tempDir, inventory } = createSyntheticReceipt(dir);
+      const siblingPath = 'reconstruction/historical/test-receipt-copy/orphan.bin';
+      const newInv = [...inventory, siblingPath];
+      
+      const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory: newInv });
+      assertPass(result);
+    });
+
+    runTest('安全なbackslash区切りのinventory entryはcanonicalizeされPASSする', () => {
+      const dir = getTempRoot();
+      const { receiptPath, tempDir } = createSyntheticReceipt(dir);
+      const inventory = [
+        'reconstruction\\historical\\test-receipt\\receipt.json',
+        'reconstruction\\historical\\test-receipt\\test.tsx.source'
+      ];
+      const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory });
+      assertPass(result);
+    });
+
+    const negativeInventoryTests = [
+      ['absolute path', path.resolve(__dirname, '../reconstruction/historical/test-receipt/test.tsx.source')],
+      ['Windows drive path', 'C:\\reconstruction\\historical\\test-receipt\\test.tsx.source'],
+      ['UNC path', '\\\\server\\share\\reconstruction\\historical\\test-receipt\\test.tsx.source'],
+      ['NUL path', 'reconstruction/historical/test-receipt/test\0.tsx.source'],
+      ['. segment', 'reconstruction/historical/./test-receipt/test.tsx.source'],
+      ['.. segment', 'reconstruction/historical/test-receipt/../test-receipt/test.tsx.source'],
+      ['escape repository root', '../../outside.txt']
+    ];
+    for (const [name, badEntry] of negativeInventoryTests) {
+      runTest(`inventory safety: ${name}がFAIL`, () => {
+        const dir = getTempRoot();
+        const { receiptPath, tempDir, inventory } = createSyntheticReceipt(dir);
+        const newInv = [...inventory, badEntry];
+        const result = validateReceipt(receiptPath, { repoRoot: tempDir, inventory: newInv });
+        assertFail(result, `inventory[2]:`);
+      });
+    }
 
   } finally {
     let rootsCreated = createdTempRoots.size;

@@ -27,24 +27,6 @@ function validateReceipt(receiptPathStr, options = {}) {
     validateSchemaFn = ajv.compile(schemaObj);
   }
 
-  const inventory = options.inventory || JSON.parse(fs.readFileSync(invPath, 'utf8'));
-
-  let receiptObj;
-  try {
-    const content = fs.readFileSync(receiptPath, 'utf8');
-    receiptObj = JSON.parse(content);
-  } catch (e) {
-    addError('JSON', 'Failed to parse receipt as JSON');
-    return result;
-  }
-
-  if (!validateSchemaFn(receiptObj)) {
-    for (const err of validateSchemaFn.errors) {
-      addError(err.instancePath || 'schema', err.message);
-    }
-    return result; // Don't proceed if schema fails
-  }
-
   const checkPath = (p, fieldName) => {
     if (path.isAbsolute(p)) {
       addError(fieldName, 'Path must not be absolute');
@@ -65,6 +47,36 @@ function validateReceipt(receiptPathStr, options = {}) {
     }
   };
 
+  const rawInventory = options.inventory || JSON.parse(fs.readFileSync(invPath, 'utf8'));
+  const canonicalInventory = [];
+
+  for (let i = 0; i < rawInventory.length; i++) {
+    const entry = rawInventory[i];
+    const initialErrorCount = result.errors.length;
+    
+    checkPath(entry, `inventory[${i}]`);
+    
+    if (result.errors.length === initialErrorCount) {
+      canonicalInventory.push(entry.replace(/\\/g, '/'));
+    }
+  }
+
+  let receiptObj;
+  try {
+    const content = fs.readFileSync(receiptPath, 'utf8');
+    receiptObj = JSON.parse(content);
+  } catch (e) {
+    addError('JSON', 'Failed to parse receipt as JSON');
+    return result;
+  }
+
+  if (!validateSchemaFn(receiptObj)) {
+    for (const err of validateSchemaFn.errors) {
+      addError(err.instancePath || 'schema', err.message);
+    }
+    return result; // Don't proceed if schema fails
+  }
+
   const relReceiptPath = path.relative(repoRoot, receiptPath).replace(/\\/g, '/');
   checkPath(relReceiptPath, 'receiptPath');
 
@@ -74,7 +86,7 @@ function validateReceipt(receiptPathStr, options = {}) {
 
   const artifactRoot = relReceiptPath.substring(0, relReceiptPath.length - 13); // remove '/receipt.json'
 
-  if (!inventory.includes(relReceiptPath)) {
+  if (!canonicalInventory.includes(relReceiptPath)) {
     addError('inventory', `Receipt ${relReceiptPath} is not registered in accepted-artifacts.json`);
   }
 
@@ -103,7 +115,7 @@ function validateReceipt(receiptPathStr, options = {}) {
     }
     storedPaths.add(normalizedSp);
 
-    if (!inventory.includes(normalizedSp)) {
+    if (!canonicalInventory.includes(normalizedSp)) {
       addError(`restoredFiles[${i}].storedPath`, `storedPath is not registered in accepted-artifacts.json`);
     }
 
@@ -148,7 +160,7 @@ function validateReceipt(receiptPathStr, options = {}) {
     }
   }
 
-  const inventoryDescendants = inventory.filter(entry => entry.startsWith(artifactRoot + '/') && entry !== relReceiptPath);
+  const inventoryDescendants = canonicalInventory.filter(entry => entry.startsWith(artifactRoot + '/') && entry !== relReceiptPath);
   for (const entry of inventoryDescendants) {
     if (!storedPaths.has(entry)) {
       addError('inventory.reverseBinding', `Inventory entry under receipt artifact root is not declared in restoredFiles: ${entry}`);
