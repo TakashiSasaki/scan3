@@ -79,6 +79,7 @@
   "docs/reconstruction/stride-2a-11-audit-addendum.md",
   "docs/reconstruction/stride-2a-12-closeout.md",
   "docs/reconstruction/stride-2a-12-audit-addendum.md",
+  "docs/reconstruction/stride-2b-4-closeout.md",
   "reconstruction/source-packet-direct-test-expectations.json",
   "scripts/lib/symlink-capability.cjs",
   "scripts/validate-operational-error-evidence.cjs",
@@ -103,5 +104,6 @@
   "scripts/lib/historical-evidence-receipt-validator.cjs",
   "src/app/surfaces/legacy/LegacyQrScanner.tsx",
   "src/app/surfaces/legacy/identifierInterpretation.ts",
-  "src/app/surfaces/legacy/legacyWebNfc.ts"
+  "src/app/surfaces/legacy/legacyWebNfc.ts",
+  "src/app/surfaces/legacy/LegacyItemRoute.tsx"
 ]

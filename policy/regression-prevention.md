@@ -179,3 +179,11 @@ This policy document defines rules to prevent recurrences of issues identified d
 - testをtestするtest、auditをauditするaudit、validatorを保護する新validatorを、具体的なblocking defectなしに追加しない。
 - verification framework自体の拡張を、機能実装完了の前提条件にしない。
 - non-blocking improvementはbacklogへ送り、次の機能strideを阻害しない。
+
+### Outcome-First Acceptance
+- scope boundaries remain planning and review controls
+- scope boundaries are not standalone acceptance gates
+- acceptance prioritizes working user-visible outcomes
+- functional regression, data-boundary violation, security issue, or failed central verification remains blocking
+- incidental hygiene issues should be cleaned without creating recursive corrective cycles
+- additional work should not be invented solely to satisfy process symmetry

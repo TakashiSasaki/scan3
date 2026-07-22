@@ -29,3 +29,10 @@
 - agent-policy managed adoptionまでは、これらをagent-policy生成物と表現しない。
 - 独立verificationにはread-only GitHub Actionsを使用できる。
 - GitHub Actionsの実行結果はAI Studioの自己検証とは別に扱う。
+
+## OUTCOME-FIRST-ACCEPTANCE-001
+- 機能strideでは、作業の進捗と最終的な到達点を優先する。
+- scope boundaryは計画、レビュー、報告の指針として維持する。
+- scope deviationやtemporary artifactの存在だけを独立したacceptance blockerにしない。
+- acceptanceは主要機能、既存機能の回帰、hard safety/data boundary、central verificationを中心に判断する。
+- non-critical hygieneは可能なら同じStride、そうでなければ次Strideで処理する。

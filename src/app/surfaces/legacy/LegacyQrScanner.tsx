@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { interpretLegacyScannedIdentifier } from './identifierInterpretation';
 import { getLegacyNdefReaderConstructor, LegacyNdefReader } from './legacyWebNfc';
@@ -8,6 +9,7 @@ type NfcState = 'idle' | 'starting' | 'scanning' | 'detected' | 'stopping' | 'er
 type LegacyAcquisitionSource = 'qr' | 'nfc';
 
 export function LegacyQrScanner() {
+  const navigate = useNavigate();
   const [scannerState, setScannerState] = useState<ScannerState>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   
@@ -367,6 +369,16 @@ export function LegacyQrScanner() {
           {!interpretation.usable && (
             <div className="qr-notice">
               No usable legacy identifier was produced.
+            </div>
+          )}
+          {interpretation.usable && (
+            <div style={{ marginTop: '1rem' }}>
+              <button
+                className="qr-btn"
+                onClick={() => navigate(`/app/legacy/item/${encodeURIComponent(interpretation.normalizedIdentifier)}`)}
+              >
+                Open Legacy Item
+              </button>
             </div>
           )}
         </div>

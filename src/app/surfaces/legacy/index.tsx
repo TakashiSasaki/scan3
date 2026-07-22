@@ -13,10 +13,12 @@ export function LegacySurface() {
         <div className="surface-details">
           <ul style={{ marginBottom: '1rem', paddingLeft: '1.5rem', listStyleType: 'disc' }}>
             <li>QR acquisition is active</li>
-            <li>legacy identifier interpretation is active</li>
             <li>Web NFC serial-number acquisition is active where supported</li>
+            <li>legacy identifier interpretation is active</li>
+            <li>identifier-based navigation is active</li>
+            <li>direct legacy item routes are active</li>
+            <li>item lookup is not connected</li>
             <li>Firebase connectivity is not established</li>
-            <li>item resolution is not implemented</li>
           </ul>
           <LegacyQrScanner />
         </div>

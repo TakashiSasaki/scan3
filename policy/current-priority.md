@@ -1,11 +1,12 @@
 # Current Priority
 
-1. Validate the purpose-limited Web NFC source packet.
-2. Implement bounded Web NFC serial-number acquisition under /app/legacy.
-3. Preserve the accepted QR acquisition and identifier-interpretation behavior.
-4. Run the central repository-local verification once.
-5. Export the verified workspace to main.
-6. Obtain one bounded external code audit.
-7. Perform at most one corrective stride only if a blocking defect is found.
-8. Do not begin navigation, item lookup, NDEF payload parsing, tag writing, or Firebase connectivity.
+1. Record OUTCOME-FIRST-ACCEPTANCE-001.
+2. Validate the purpose-limited identifier-navigation source packet.
+3. Implement identifier-based navigation from QR and NFC results.
+4. Add a direct and reload-safe /app/legacy/item/:identifier route.
+5. Keep item lookup and Firebase disconnected.
+6. Remove obsolete temporary artifacts where practical.
+7. Run central repository-local verification.
+8. Export the working workspace to main.
+9. Review primarily for functional progress, regressions, and hard safety boundaries.
 
