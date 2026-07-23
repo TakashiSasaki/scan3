@@ -1,0 +1,69 @@
+{
+  "packet": "scan3-source-packet-legacy-item-lookup-reference-a41267a7-r1",
+  "packetId": "legacy-item-lookup-reference-a41267a7-r1",
+  "scope": "Purpose-limited historical reference for Stride 2B.5 legacy item lookup state/model preparation without production Firebase connectivity.",
+  "source": {
+    "repository": "TakashiSasaki/scan.moukaeritai.work",
+    "commit": "a41267a7d79417706fd8f57b42fa67635a8de3b4"
+  },
+  "destination": {
+    "repository": "TakashiSasaki/scan3",
+    "baselineCommit": "494eb3c4c4115b6100b2058168d3b341462c7f3a"
+  },
+  "files": [
+    {
+      "sourcePath": "firebase-blueprint.json",
+      "payloadPath": "reference/firebase-blueprint.json",
+      "sha256": "5d29a0a51f3f1054b3d8aa3f5b81fd6ca0c9974370f858b53f0d5b6ab55c342a",
+      "sizeBytes": 2881,
+      "disposition": "reference",
+      "intendedDestination": null,
+      "notes": "Exact historical Firebase blueprint. Authorizes reference to the Item entity fields and /items/{itemId} read path only."
+    },
+    {
+      "sourcePath": "src/types.ts",
+      "payloadPath": "reference/src/types.Item.ts.fragment",
+      "sha256": "a788ce52b4ea7b7f9f4dd4b9ad7eb193eaf98a8ea9d5a7cb75fb417e9389d867",
+      "sizeBytes": 510,
+      "disposition": "reference",
+      "intendedDestination": null,
+      "notes": "Exact historical contiguous fragment containing Item and BluetoothTag interfaces. Firebase Timestamp types are evidence only and must not be copied into the active non-Firebase model."
+    },
+    {
+      "sourcePath": "src/components/CaptureForm.tsx",
+      "payloadPath": "reference/src/components/CaptureForm.loadItem.tsx.fragment",
+      "sha256": "e287b051485099bc3ff7c5bd0454dec8bfb0a2eba08bdec16321f52a923dbd4f",
+      "sizeBytes": 625,
+      "disposition": "reference",
+      "intendedDestination": null,
+      "notes": "Exact historical contiguous fragment showing getDoc(doc(db, 'items', id)), found/not-found handling, error handling, and loading lifecycle. Read-only reference only."
+    }
+  ],
+  "validation": {
+    "historicalFullFileGitBlobMatch": {
+      "firebase-blueprint.json": true
+    },
+    "historicalContiguousExcerpt": {
+      "src/types.ts": "lines 1-28 at pinned source commit",
+      "src/components/CaptureForm.tsx": "lines 238-262 at pinned source commit"
+    },
+    "payloadSha256AndSize": "PASS",
+    "manifestDraft7SchemaEquivalent": "PASS",
+    "operationalPathAndFilesystemEquivalent": "PASS",
+    "archiveStructure": "PASS",
+    "zipTest": "PASS",
+    "zipSha256": "PASS",
+    "officialRepositoryLocalNodeValidator": "NOT_RUN in packet-creation environment; AI Studio must run node scripts/validate-source-packet.cjs after download and extraction."
+  },
+  "zip": {
+    "filename": "scan3-source-packet-legacy-item-lookup-reference-a41267a7-r1.zip",
+    "sha256": "479b8a63569286e54429b5c8a553b6a77cd76f56a49fbb7741d8dd3fe3c533df",
+    "sizeBytes": 3713
+  },
+  "limitations": [
+    "This packet authorizes reference to the legacy Item model, /items/{itemId} document-key semantics, and found/not-found/error/loading behavior only.",
+    "It does not authorize production Firebase configuration, authentication, Firestore access, writes, storage, migration, backfill, cross-database access, or item editing.",
+    "The active model must use runtime-neutral serializable types; do not copy Firebase Timestamp imports into active code.",
+    "Scope boundaries guide planning and reporting; acceptance should focus on a working lookup-state foundation, preserved navigation/acquisition behavior, hard data boundaries, and central verification."
+  ]
+}
