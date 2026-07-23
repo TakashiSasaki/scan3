@@ -15,13 +15,8 @@
 - Stride 2A:
   Completed after closeout
 
-Current blocker:
-  No validated historical legacy source packet has been supplied.
-
-Next:
-  External reviewer prepares the legacy source packet.
 - Stride 2B:
-  Starts only after packet validation succeeds.
+  Completed (Legacy item lookup foundation). LEGACY-FIREBASE-READ-001 remains OPEN.
 
 このStrideで実装していないもの：
 - 実働するFirebase機能、Firestoreアクセス、Cloud Functions、データ移行、旧アプリ本体、新EFP runtime

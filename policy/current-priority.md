@@ -1,11 +1,14 @@
 # Current Priority
 
-1. Implement legacy item lookup lifecycle with canonical routing.
-2. Establish read-only lookup provider interface.
-3. Keep production Firebase provider unconfigured.
-4. Implement development fixture provider.
-5. Record Owner Decision Request LEGACY-FIREBASE-READ-001.
-6. Run central repository-local verification.
-7. Export the working workspace to main.
-8. Review primarily for functional progress, regressions, and hard safety boundaries.
+Stride 2B.1 to 2B.5 (Legacy item lookup foundation) have been completed.
+
+Current status:
+- `LEGACY-FIREBASE-READ-001` remains OPEN.
+- Production Firebase provider remains unconfigured.
+- Development fixture provider is implemented.
+- Central repository-local verification passed.
+
+Next steps:
+- Export the working workspace to main.
+- Review for functional progress, regressions, and hard safety boundaries.
 
