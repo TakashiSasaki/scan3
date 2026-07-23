@@ -1,12 +1,11 @@
 # Current Priority
 
-1. Record OUTCOME-FIRST-ACCEPTANCE-001.
-2. Validate the purpose-limited identifier-navigation source packet.
-3. Implement identifier-based navigation from QR and NFC results.
-4. Add a direct and reload-safe /app/legacy/item/:identifier route.
-5. Keep item lookup and Firebase disconnected.
-6. Remove obsolete temporary artifacts where practical.
-7. Run central repository-local verification.
-8. Export the working workspace to main.
-9. Review primarily for functional progress, regressions, and hard safety boundaries.
+1. Implement legacy item lookup lifecycle with canonical routing.
+2. Establish read-only lookup provider interface.
+3. Keep production Firebase provider unconfigured.
+4. Implement development fixture provider.
+5. Record Owner Decision Request LEGACY-FIREBASE-READ-001.
+6. Run central repository-local verification.
+7. Export the working workspace to main.
+8. Review primarily for functional progress, regressions, and hard safety boundaries.
 

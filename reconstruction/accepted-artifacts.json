@@ -105,5 +105,8 @@
   "src/app/surfaces/legacy/LegacyQrScanner.tsx",
   "src/app/surfaces/legacy/identifierInterpretation.ts",
   "src/app/surfaces/legacy/legacyWebNfc.ts",
-  "src/app/surfaces/legacy/LegacyItemRoute.tsx"
+  "src/app/surfaces/legacy/LegacyItemRoute.tsx",
+  "src/app/surfaces/legacy/legacyItemModel.ts",
+  "src/app/surfaces/legacy/legacyItemLookup.ts",
+  "src/app/surfaces/legacy/legacyItemFixtures.ts"
 ]

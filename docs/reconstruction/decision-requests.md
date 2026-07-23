@@ -2,7 +2,23 @@
 
 ## Active Requests
 
-Active Requests: None
+Decision ID:
+  LEGACY-FIREBASE-READ-001
+
+Status:
+  OPEN
+
+Question:
+  Should scan3 connect /app/legacy read-only item lookup to the production legacy Firebase project used by photos.moukaeritai.work?
+
+Options:
+  A. Owner承認後、production legacy Firebaseへread-only接続
+  B. staging projectまたはFirebase emulatorを先に使用
+  C. production providerを未設定のまま維持
+
+Recommendation:
+  staging/emulatorが利用可能ならB。
+  それ以外は、正確なFirebase configurationとauthentication modelをownerが承認するまでAを開始しない。
 
 ## Resolved Requests
 

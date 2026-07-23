@@ -17,8 +17,11 @@ export function LegacySurface() {
             <li>legacy identifier interpretation is active</li>
             <li>identifier-based navigation is active</li>
             <li>direct legacy item routes are active</li>
-            <li>item lookup is not connected</li>
-            <li>Firebase connectivity is not established</li>
+            <li>lookup lifecycle active</li>
+            <li>development fixture available</li>
+            <li>production Firebase lookup unconfigured</li>
+            <li>item editing unimplemented</li>
+            <li>full restoration incomplete</li>
           </ul>
           <LegacyQrScanner />
         </div>

@@ -1,7 +1,7 @@
 [
   { "id": "public", "path": "/", "label": "Public", "description": "Public landing surface", "status": "foundation", "shortcutVisible": false },
   { "id": "app", "path": "/app", "label": "Current Application", "description": "Schema-first current application area; runtime not implemented", "status": "planning", "shortcutVisible": true },
-  { "id": "legacy", "path": "/app/legacy", "label": "Legacy Application", "description": "Legacy application restoration area; QR acquisition active, Web NFC acquisition active where supported, identifier interpretation active, identifier-based navigation active, item lookup unimplemented, Firebase unimplemented, full restoration incomplete", "status": "foundation", "shortcutVisible": true },
+  { "id": "legacy", "path": "/app/legacy", "label": "Legacy Application", "description": "Legacy application restoration area; QR acquisition active, Web NFC acquisition active where supported, identifier interpretation active, identifier-based navigation active, lookup lifecycle active, development fixture available, production Firebase lookup unconfigured, item editing unimplemented, full restoration incomplete", "status": "foundation", "shortcutVisible": true },
   { "id": "legacy_item", "path": "/app/legacy/item/:identifier", "label": "Legacy Item", "description": "Legacy item view", "status": "foundation", "shortcutVisible": false },
   { "id": "admin", "path": "/admin", "label": "Administration", "description": "Administration surface placeholder", "status": "placeholder", "shortcutVisible": true },
   { "id": "dev", "path": "/dev", "label": "Internal Development", "description": "Internal development surface", "status": "foundation", "shortcutVisible": true },
